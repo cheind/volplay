@@ -19,6 +19,14 @@ namespace volplay {
     public:
         /** Evaluate the SDF at given position. */
         virtual Scalar eval(const Vector &x) const = 0;
+        
+        /** Evaluate the gradient of the SDF at the given position.
+         *  The gradient will always point in the direction of maximum distance increase.
+         */
+        virtual Vector gradient(const Vector &x, Scalar eps = Scalar(0.0001)) const;
+        
+        /** Calculate the approximate unit normal at the given position. */
+        virtual Vector normal(const Vector &x, Scalar eps = Scalar(0.0001)) const;
     };
 
 }

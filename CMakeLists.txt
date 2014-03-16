@@ -21,6 +21,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_rigid_transform.h
     inc/volplay/sdf_repetition.h
     inc/volplay/sdf_sphere.h
+    src/sdf_node.cpp
     src/sdf_unary.cpp
     src/sdf_group.cpp
     src/sdf_union.cpp
@@ -59,6 +60,7 @@ target_link_libraries(volplay_examples volplay)
 
 set(VOLPLAY_TEST_FILES
     tests/main.cpp
+    tests/test_derivative.cpp
     tests/test_sdf_sphere.cpp
     tests/test_sdf_union.cpp
     tests/test_sdf_intersection.cpp
@@ -72,6 +74,3 @@ source_group(tests FILES ${VOLPLAY_TEST_FILES})
 include_directories(tests)
 add_executable(volplay_tests ${VOLPLAY_TEST_FILES})
 target_link_libraries(volplay_tests volplay)
-
-find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)

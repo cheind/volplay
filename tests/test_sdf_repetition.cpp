@@ -24,5 +24,4 @@ TEST_CASE("SDFRepetition")
     REQUIRE_CLOSE( r.eval(vp::Vector(1,0,0)), vp::S(0) );
     REQUIRE_CLOSE( r.eval(vp::Vector(6,0,0)), vp::S(0) );
     
-
 }
