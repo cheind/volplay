@@ -17,16 +17,16 @@
 namespace volplay {
 
     /** Represents a rigid body transformation node. */
-    class SDFTransform : public SDFNode {
+    class SDFRigidTransform : public SDFNode {
     public:
         /** Empty transform initializer. Sets transform to identity. */
-        SDFTransform();
+        SDFRigidTransform();
         
         /** Initialize from transform */
-        SDFTransform(const AffineTransform &localToWorld);
+        SDFRigidTransform(const AffineTransform &localToWorld);
         
         /** Initialize from transform and node */
-        SDFTransform(const AffineTransform &localToWorld, const SDFNodePtr &n);
+        SDFRigidTransform(const AffineTransform &localToWorld, const SDFNodePtr &n);
         
         /** Evaluate the SDF at given position. */
         virtual Scalar eval(const Vector &x) const;
@@ -45,8 +45,6 @@ namespace volplay {
         
         /** Set node */
         void setNode(const SDFNodePtr &n);
-        
-        
         
     private:
         AffineTransform _worldToLocal;

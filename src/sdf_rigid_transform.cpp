@@ -7,55 +7,55 @@
 // If a copy of the BSD was not distributed with this file, You can obtain
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
-#include <volplay/sdf_transform.h>
+#include <volplay/sdf_rigid_transform.h>
 
 namespace volplay {
     
-    SDFTransform::SDFTransform()
+    SDFRigidTransform::SDFRigidTransform()
     : _worldToLocal(AffineTransform::Identity())
     {}
     
-    SDFTransform::SDFTransform(const AffineTransform &t)
+    SDFRigidTransform::SDFRigidTransform(const AffineTransform &t)
     : _worldToLocal(t.inverse())
     {}
     
-    SDFTransform::SDFTransform(const AffineTransform &t, const SDFNodePtr &n)
+    SDFRigidTransform::SDFRigidTransform(const AffineTransform &t, const SDFNodePtr &n)
     : _worldToLocal(t.inverse()), _n(n)
     {}
     
     const AffineTransform &
-    SDFTransform::worldToLocal() const
+    SDFRigidTransform::worldToLocal() const
     {
         return _worldToLocal;
     }
     
     AffineTransform
-    SDFTransform::localToWorld() const
+    SDFRigidTransform::localToWorld() const
     {
         return _worldToLocal.inverse();
     }
     
     void
-    SDFTransform::setLocalToWorld(const AffineTransform &t)
+    SDFRigidTransform::setLocalToWorld(const AffineTransform &t)
     {
         _worldToLocal = t.inverse();
     }
     
     const SDFNodePtr &
-    SDFTransform::node() const
+    SDFRigidTransform::node() const
     {
         return _n;
     }
     
     void
-    SDFTransform::setNode(const SDFNodePtr &n)
+    SDFRigidTransform::setNode(const SDFNodePtr &n)
     {
         _n = n;
     }
 
     
     Scalar
-    SDFTransform::eval(const Vector &x) const
+    SDFRigidTransform::eval(const Vector &x) const
     {
         assert(_n);
         

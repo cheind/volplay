@@ -10,20 +10,20 @@
 #include "catch.hpp"
 #include "float_comparison.hpp"
 #include <volplay/sdf_sphere.h>
-#include <volplay/sdf_transform.h>
+#include <volplay/sdf_rigid_transform.h>
 
 namespace vp = volplay;
 
-TEST_CASE("SDFTransform")
+TEST_CASE("SDFRigidTransform")
 {
-    vp::SDFTransform t(vp::AffineTransform::Identity(), std::make_shared<vp::SDFSphere>());
+    vp::SDFRigidTransform t(vp::AffineTransform::Identity(), std::make_shared<vp::SDFSphere>());
     REQUIRE_CLOSE( t.eval(vp::Vector(0,0,0)), vp::S(-1) );
     REQUIRE_CLOSE( t.eval(vp::Vector(1,0,0)), vp::S(0) );
     REQUIRE_CLOSE( t.eval(vp::Vector(10,10,10)), vp::Vector(10,10,10).norm() - vp::S(1) );
     
     vp::AffineTransform at = vp::AffineTransform::Identity();
     at.translate(vp::Vector(5, 0, 0));
-    vp::SDFTransform t2(at, std::make_shared<vp::SDFSphere>());
+    vp::SDFRigidTransform t2(at, std::make_shared<vp::SDFSphere>());
     REQUIRE_CLOSE( t2.eval(vp::Vector(0,0,0)), vp::S(4) );
     REQUIRE_CLOSE( t2.eval(vp::Vector(5,0,0)), vp::S(-1) );
 }
