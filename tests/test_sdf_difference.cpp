@@ -1,5 +1,4 @@
-// This file is part of volplay, a library for interacting with
-// volumetric data.
+// This file is part of volplay, a library for interacting with volumetric data.
 //
 // Copyright (C) 2014 Christoph Heindl <christoph.heindl@gmail.com>
 //
@@ -22,5 +21,4 @@ TEST_CASE("SDFDifference")
     REQUIRE_CLOSE( d.eval(vp::Vector(1.5,0,0)), vp::S(-0.5) );
     REQUIRE_CLOSE( d.eval(vp::Vector(2,0,0)), vp::S(0) );
     REQUIRE_CLOSE( d.eval(vp::Vector(4,0,0)), vp::S(2) );
-    
 }

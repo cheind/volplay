@@ -17,11 +17,13 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_union.h
     inc/volplay/sdf_intersection.h
     inc/volplay/sdf_difference.h
+    inc/volplay/sdf_transform.h
     inc/volplay/sdf_sphere.h
     src/sdf_group.cpp
     src/sdf_union.cpp
     src/sdf_intersection.cpp
     src/sdf_difference.cpp
+    src/sdf_transform.cpp
     src/sdf_sphere.cpp
 )
 
@@ -57,6 +59,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_union.cpp
     tests/test_sdf_intersection.cpp
     tests/test_sdf_difference.cpp
+    tests/test_sdf_transform.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})

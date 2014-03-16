@@ -11,6 +11,7 @@
 #define VOLPLAY_TYPES
 
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 namespace volplay {
     
@@ -21,7 +22,10 @@ namespace volplay {
     typedef Scalar S;
     
     /** Default vector type in three dimensions */
-    typedef Eigen::Matrix<Scalar, 3, 1> Vector; 
+    typedef Eigen::Matrix<Scalar, 3, 1> Vector;
+    
+    /** Affine transform in three dimensions. */
+    typedef Eigen::Transform<Scalar, 3, Eigen::Affine> AffineTransform;
     
 }
 
