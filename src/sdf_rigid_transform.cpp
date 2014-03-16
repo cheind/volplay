@@ -20,7 +20,7 @@ namespace volplay {
     {}
     
     SDFRigidTransform::SDFRigidTransform(const AffineTransform &t, const SDFNodePtr &n)
-    : _worldToLocal(t.inverse()), _n(n)
+    : SDFUnary(n), _worldToLocal(t.inverse())
     {}
     
     const AffineTransform &
@@ -40,26 +40,16 @@ namespace volplay {
     {
         _worldToLocal = t.inverse();
     }
-    
-    const SDFNodePtr &
-    SDFRigidTransform::node() const
-    {
-        return _n;
-    }
-    
-    void
-    SDFRigidTransform::setNode(const SDFNodePtr &n)
-    {
-        _n = n;
-    }
 
     
     Scalar
     SDFRigidTransform::eval(const Vector &x) const
     {
-        assert(_n);
+        SDFNodePtr n = node();
         
-        return _n->eval(_worldToLocal * x);
+        assert(n);
+        
+        return n->eval(_worldToLocal * x);
     }
     
     

@@ -12,12 +12,12 @@
 
 #include <volplay/types.h>
 #include <volplay/fwd.h>
-#include <volplay/sdf_node.h>
+#include <volplay/sdf_unary.h>
 
 namespace volplay {
 
     /** Represents a rigid body transformation node. */
-    class SDFRigidTransform : public SDFNode {
+    class SDFRigidTransform : public SDFUnary {
     public:
         /** Empty transform initializer. Sets transform to identity. */
         SDFRigidTransform();
@@ -40,15 +40,8 @@ namespace volplay {
         /** Set a new transform */
         void setLocalToWorld(const AffineTransform &t);
         
-        /** Get node */
-        const SDFNodePtr &node() const;
-        
-        /** Set node */
-        void setNode(const SDFNodePtr &n);
-        
     private:
         AffineTransform _worldToLocal;
-        SDFNodePtr _n;
     };
 
 }
