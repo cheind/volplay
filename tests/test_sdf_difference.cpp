@@ -18,5 +18,9 @@ TEST_CASE("SDFDifference")
 {
     vp::SDFDifference d(std::make_shared<vp::SDFSphere>(2), std::make_shared<vp::SDFSphere>(1));
     REQUIRE_CLOSE( d.eval(vp::Vector(0,0,0)), vp::S(1) );
+    REQUIRE_CLOSE( d.eval(vp::Vector(1,0,0)), vp::S(0) );
+    REQUIRE_CLOSE( d.eval(vp::Vector(1.5,0,0)), vp::S(-0.5) );
+    REQUIRE_CLOSE( d.eval(vp::Vector(2,0,0)), vp::S(0) );
+    REQUIRE_CLOSE( d.eval(vp::Vector(4,0,0)), vp::S(2) );
     
 }
