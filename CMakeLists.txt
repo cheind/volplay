@@ -21,6 +21,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_rigid_transform.h
     inc/volplay/sdf_repetition.h
     inc/volplay/sdf_sphere.h
+    inc/volplay/ray_tracer.h
     src/sdf_node.cpp
     src/sdf_unary.cpp
     src/sdf_group.cpp
@@ -30,6 +31,7 @@ set(VOLPLAY_CORE_FILES
     src/sdf_rigid_transform.cpp
     src/sdf_repetition.cpp
     src/sdf_sphere.cpp
+    src/ray_tracer.cpp
 )
 
 set(VOLPLAY_UTIL_FILES
@@ -67,6 +69,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_difference.cpp
     tests/test_sdf_rigid_transform.cpp
     tests/test_sdf_repetition.cpp
+    tests/test_ray_tracer.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})

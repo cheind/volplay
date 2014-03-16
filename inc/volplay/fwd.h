@@ -18,6 +18,7 @@ namespace volplay {
     class SDFGroup;
     
     typedef std::shared_ptr<SDFNode> SDFNodePtr;
+    typedef std::shared_ptr<SDFNode const> SDFNodeConstPtr;
     typedef std::shared_ptr<SDFGroup> SDFGroupPtr;
 }
 
