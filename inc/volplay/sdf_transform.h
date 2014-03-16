@@ -16,7 +16,7 @@
 
 namespace volplay {
 
-    /** Represents a affine transformation node. */
+    /** Represents a rigid body transformation node. */
     class SDFTransform : public SDFNode {
     public:
         /** Empty transform initializer. Sets transform to identity. */
