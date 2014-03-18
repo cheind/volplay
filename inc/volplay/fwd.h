@@ -16,10 +16,25 @@ namespace volplay {
     
     class SDFNode;
     class SDFGroup;
+    class SDFUnion;
+    class SDFIntersection;
+    class SDFDifference;
+    class SDFRigidTransform;
+    class SDFRepetition;
+    class SDFSphere;
     
     typedef std::shared_ptr<SDFNode> SDFNodePtr;
-    typedef std::shared_ptr<SDFNode const> SDFNodeConstPtr;
     typedef std::shared_ptr<SDFGroup> SDFGroupPtr;
+    typedef std::shared_ptr<SDFUnion> SDFUnionPtr;
+    typedef std::shared_ptr<SDFIntersection> SDFIntersectionPtr;
+    typedef std::shared_ptr<SDFDifference> SDFDifferencePtr;
+    typedef std::shared_ptr<SDFRigidTransform> SDFRigidTransformPtr;
+    typedef std::shared_ptr<SDFRepetition> SDFRepetitionPtr;
+    typedef std::shared_ptr<SDFSphere> SDFSpherePtr;
+    
+    typedef std::shared_ptr<SDFNode const> SDFNodeConstPtr;
+    typedef std::shared_ptr<SDFGroup const> SDFGroupConstPtr;
+    
 }
 
 #endif
