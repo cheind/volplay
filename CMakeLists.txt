@@ -21,7 +21,10 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_rigid_transform.h
     inc/volplay/sdf_repetition.h
     inc/volplay/sdf_sphere.h
+    inc/volplay/sdf_making.h
     inc/volplay/ray_tracer.h
+    inc/volplay/camera.h
+    inc/volplay/util/iterator_range.h
     src/sdf_node.cpp
     src/sdf_unary.cpp
     src/sdf_group.cpp
@@ -31,7 +34,9 @@ set(VOLPLAY_CORE_FILES
     src/sdf_rigid_transform.cpp
     src/sdf_repetition.cpp
     src/sdf_sphere.cpp
+    src/sdf_making.cpp
     src/ray_tracer.cpp
+    src/camera.cpp
 )
 
 set(VOLPLAY_UTIL_FILES
@@ -45,18 +50,6 @@ include_directories(${EIGEN_INCLUDE_DIR})
 include_directories(inc)
 
 add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_UTIL_FILES})
-
-# Setup examples
-
-set(VOLPLAY_EXAMPLE_FILES
-    examples/main.cpp
-)
-
-source_group(examples FILES ${VOLPLAY_EXAMPLE_FILES})
-
-include_directories(examples)
-add_executable(volplay_examples ${VOLPLAY_EXAMPLE_FILES})
-target_link_libraries(volplay_examples volplay)
 
 # Setup tests
 
@@ -77,3 +70,28 @@ source_group(tests FILES ${VOLPLAY_TEST_FILES})
 include_directories(tests)
 add_executable(volplay_tests ${VOLPLAY_TEST_FILES})
 target_link_libraries(volplay_tests volplay)
+
+# Setup examples
+
+find_package(OpenCV)
+
+set(VOLPLAY_EXAMPLE_FILES
+    examples/main.cpp
+)
+
+if (OpenCV_FOUND)
+    set(VOLPLAY_EXAMPLE_FILES
+        ${VOLPLAY_EXAMPLE_FILES}
+        examples/example_raytracer.cpp
+    )
+    include_directories(${OpenCV_INCLUDE_DIRS})
+    link_libraries(${OpenCV_LIBS})
+else ()
+    message("OpenCV not found, skipping OpenCV related examples")
+endif ()
+
+source_group(examples FILES ${VOLPLAY_EXAMPLE_FILES})
+
+include_directories(examples)
+add_executable(volplay_examples ${VOLPLAY_EXAMPLE_FILES})
+target_link_libraries(volplay_examples volplay)
