@@ -63,6 +63,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_rigid_transform.cpp
     tests/test_sdf_repetition.cpp
     tests/test_ray_tracer.cpp
+    tests/test_camera.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})

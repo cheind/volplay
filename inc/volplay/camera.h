@@ -15,22 +15,42 @@
 
 namespace volplay {
 
-    /** Represents a pinhole camera model. */
+    /** Represents a pinhole / orthographic camera model. */
     class Camera {
     public:
-        /** Empty union initializer. */
+        /** Default type of camera intrinsic matrix. */
+        typedef Eigen::Matrix<Scalar, 3, 3> Matrix33;
+        
+        /** Default type of matrix that performs 3D world -> 2D image projection. */
+        typedef Eigen::Matrix<Scalar, 3, 4> Matrix34;
+        
+        /** Empty initializer. */
         Camera();
         
-        /** Set image dimensions. */
-        void setImageDimensions(int width, int height);
-
-        /** Set projection parameters using focal length and principal point. */
-        void setProjectionIntrinsics(const Vector2 &focalLength, const Vector2 &principalPoint);
+        /** Builds the camera intrinsic matrix using focal lengths and principal point. */
+        void setCameraToImage(const Vector2 &focalLength, const Vector2 &principalPoint);
+        
+        /** Retrieve the matrix that converts 3D points in camera space to points in image space. */
+        Matrix33 cameraToImage() const;
+        
+        /** Retrieve camera view transform, i.e how the camera is positioned in world space. */
+        Matrix34 cameraToWorld() const;
+        
+        /** Set camera view transform. */
+        void setCameraToWorld(const Matrix34 &t);
+        
+        /** Set camera view transform. */
+        void setCameraToWorld(const AffineTransform &t);
+        
+        /** Retrieve matrix that converts 3D world points to 3D points in camera space. */
+        Matrix34 worldToCamera() const;
+        
+        /** Matrix that transforms 3D points to 2D image points. */
+        Matrix34 worldToImage() const;
 
     private:
-        Matrix33 _proj;             // The camera projection matrix
-        Matrix34 _cameraToWorld;    // Camera in world
-        int _width, _height;        // Width and height of image plane (i.e number of pixels).
+        Matrix33 _k;
+        Matrix34 _camera_to_world;
     };
 
 }
