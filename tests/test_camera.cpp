@@ -67,3 +67,29 @@ TEST_CASE("Camera inverse projection")
     REQUIRE_CLOSE(x(1), -10);
     REQUIRE_CLOSE(x(2), 40);
 }
+
+TEST_CASE("Ray generation")
+{
+    vp::Camera c;
+    vp::AffineTransform t = vp::AffineTransform::Identity();
+    t.rotate(Eigen::AngleAxis<vp::Scalar>(0.5 * M_PI, vp::Vector::UnitX()));
+    
+    c.setCameraToImage(vp::Vector2(100, 100), vp::Vector2(320, 240));
+    c.setCameraToWorld(t);
+    
+    vp::Vector r;
+    c.generateCameraRay(vp::Vector2(320,240), r);
+    
+    REQUIRE_CLOSE(r.norm(), 1);
+    REQUIRE_CLOSE(r(0), 0);
+    REQUIRE_CLOSE(r(1), 0);
+    REQUIRE_CLOSE(r(2), 1);
+    
+    c.generateWorldRay(vp::Vector2(320,240), r);
+
+    REQUIRE_CLOSE(r.norm(), 1);
+    REQUIRE_CLOSE(r(0), 0);
+    REQUIRE_CLOSE(r(1), -1);
+    REQUIRE_CLOSE(r(2), 0);
+}
+

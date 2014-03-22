@@ -71,6 +71,47 @@ namespace volplay {
     {
         return _k.inverse();
     }
+    
+    Vector
+    Camera::cameraOriginInWorld() const
+    {
+        return _camera_to_world.block<3,1>(0,3);
+    }
+    
+    void
+    Camera::generateCameraRay(const Vector2 &imagePoint, Vector &direction)
+    {
+        Matrix33 kinv = this->imageToCamera();
+        direction = (kinv * imagePoint.homogeneous()).normalized();
+    }
+    
+    void
+    Camera::generateCameraRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions)
+    {
+        Matrix33 kinv = this->imageToCamera();
+        directions.resize(imagePoints.size());
+        
+        for (size_t i = 0; i < imagePoints.size(); ++i) {
+            directions[i] = (kinv * imagePoints[i].homogeneous()).normalized();
+        }
+    }
+    
+    void
+    Camera::generateWorldRay(const Vector2 &imagePoint, Vector &direction)
+    {
+        Matrix33 f = _camera_to_world.block<3,3>(0, 0) * this->imageToCamera();
+        direction = (f * imagePoint.homogeneous()).normalized();
+    }
+    
+    void
+    Camera::generateWorldRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions)
+    {
+        Matrix33 f = _camera_to_world.block<3,3>(0, 0) * this->imageToCamera();
+        
+        for (size_t i = 0; i < imagePoints.size(); ++i) {
+            directions[i] = (f * imagePoints[i].homogeneous()).normalized();
+        }
+    }
 
     
 }
