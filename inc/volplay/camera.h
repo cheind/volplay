@@ -46,14 +46,17 @@ namespace volplay {
         /** Retrieve matrix that converts 3D world points to 3D points in camera space. */
         Matrix34 worldToCamera() const;
         
-        /** Retrieve camera view transform, i.e how the camera is positioned in world space. */
+        /** Retrieve camera view matrix, i.e how the camera is positioned in world space. */
         Matrix34 cameraToWorld() const;
+        
+        /** Retrieve camera view transform, i.e how the camera is positioned in world space. */
+        AffineTransform cameraToWorldTransform() const;
         
         /** Matrix that transforms 3D points to 2D image points. */
         Matrix34 worldToImage() const;
         
         /** Returns the camera origin in world space. */
-        Vector cameraOriginInWorld() const;
+        Vector originInWorld() const;
         
         /** Generate normalized ray direction through given image point in camera space. */
         void generateCameraRay(const Vector2 &imagePoint, Vector &direction);
@@ -61,11 +64,8 @@ namespace volplay {
         /** Generate normalized ray directions through given image points in camera space. */
         void generateCameraRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions);
         
-        /** Generate normalized ray direction through given image point in world space. */
-        void generateWorldRay(const Vector2 &imagePoint, Vector &direction);
-        
-        /** Generate normalized ray directions through given image points in world space. */
-        void generateWorldRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions);
+        /** Generate normalized ray directions through given image points in camera space. */
+        void generateCameraRays(int imageWidth, int imageHeight, std::vector<Vector> &directions);
 
     private:
         Matrix33 _k;

@@ -85,7 +85,8 @@ TEST_CASE("Ray generation")
     REQUIRE_CLOSE(r(1), 0);
     REQUIRE_CLOSE(r(2), 1);
     
-    c.generateWorldRay(vp::Vector2(320,240), r);
+    vp::AffineTransform c2w = c.cameraToWorldTransform();
+    r = c2w.linear() * r;
 
     REQUIRE_CLOSE(r.norm(), 1);
     REQUIRE_CLOSE(r(0), 0);

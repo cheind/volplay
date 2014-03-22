@@ -48,6 +48,14 @@ namespace volplay {
         return _camera_to_world;
     }
     
+    AffineTransform
+    Camera::cameraToWorldTransform() const
+    {
+        AffineTransform at = AffineTransform::Identity();
+        at.matrix().block<3,4>(0,0) = _camera_to_world;
+        return at;
+    }
+    
     Camera::Matrix34
     Camera::worldToCamera() const
     {
@@ -73,7 +81,7 @@ namespace volplay {
     }
     
     Vector
-    Camera::cameraOriginInWorld() const
+    Camera::originInWorld() const
     {
         return _camera_to_world.block<3,1>(0,3);
     }
@@ -97,19 +105,15 @@ namespace volplay {
     }
     
     void
-    Camera::generateWorldRay(const Vector2 &imagePoint, Vector &direction)
+    Camera::generateCameraRays(int imageWidth, int imageHeight, std::vector<Vector> &directions)
     {
-        Matrix33 f = _camera_to_world.block<3,3>(0, 0) * this->imageToCamera();
-        direction = (f * imagePoint.homogeneous()).normalized();
-    }
-    
-    void
-    Camera::generateWorldRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions)
-    {
-        Matrix33 f = _camera_to_world.block<3,3>(0, 0) * this->imageToCamera();
+        Matrix33 kinv = this->imageToCamera();
+        directions.resize(imageWidth * imageHeight);
         
-        for (size_t i = 0; i < imagePoints.size(); ++i) {
-            directions[i] = (f * imagePoints[i].homogeneous()).normalized();
+        for (size_t r = 0; r < imageHeight; ++r) {
+            for (size_t c = 0; c < imageWidth; ++c) {
+                directions[r * imageWidth + c] = (kinv * Vector2(r, c).homogeneous()).normalized();
+            }
         }
     }
 
