@@ -65,6 +65,12 @@ namespace volplay {
     {
         return _k * worldToCamera();
     }
+    
+    Camera::Matrix33
+    Camera::imageToCamera() const
+    {
+        return _k.inverse();
+    }
 
     
 }

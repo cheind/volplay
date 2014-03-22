@@ -47,6 +47,9 @@ namespace volplay {
         
         /** Matrix that transforms 3D points to 2D image points. */
         Matrix34 worldToImage() const;
+        
+        /** Matrix that transforms 2D image points to 3D points with depth 1. */ 
+        Matrix33 imageToCamera() const;
 
     private:
         Matrix33 _k;
