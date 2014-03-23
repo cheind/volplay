@@ -92,5 +92,24 @@ TEST_CASE("Ray generation")
     REQUIRE_CLOSE(r(0), 0);
     REQUIRE_CLOSE(r(1), -1);
     REQUIRE_CLOSE(r(2), 0);
+    
+    std::vector<vp::Vector> dirs;
+    c.generateCameraRays(12, 6, dirs);
+    
+    c.generateCameraRay(vp::Vector2(0,0), r);
+    REQUIRE(dirs.size() == 12 * 6);
+    REQUIRE_CLOSE(dirs[0](0), r(0));
+    REQUIRE_CLOSE(dirs[0](1), r(1));
+    REQUIRE_CLOSE(dirs[0](2), r(2));
+    
+    c.generateCameraRay(vp::Vector2(5,0), r);
+    REQUIRE_CLOSE(dirs[5](0), r(0));
+    REQUIRE_CLOSE(dirs[5](1), r(1));
+    REQUIRE_CLOSE(dirs[5](2), r(2));
+    
+    c.generateCameraRay(vp::Vector2(0,1), r);
+    REQUIRE_CLOSE(dirs[12](0), r(0));
+    REQUIRE_CLOSE(dirs[12](1), r(1));
+    REQUIRE_CLOSE(dirs[12](2), r(2));
 }
 

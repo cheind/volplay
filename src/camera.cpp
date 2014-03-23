@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/camera.h>
+#include <iostream>
 
 namespace volplay {
     
@@ -22,6 +23,34 @@ namespace volplay {
                        0, focalLength.y(), principalPoint.y(),
                        0, 0, 1;
         
+    }
+    
+    void
+    Camera::setCameraToImage(int imageWidth, int imageHeight, Scalar hfov_radians, Scalar vfov_radians)
+    {
+        Scalar fx = imageWidth / (Scalar(2) * tan(hfov_radians * Scalar(0.5)));
+        Scalar fy = imageHeight / (Scalar(2) * tan(vfov_radians * Scalar(0.5)));
+        
+        _k.matrix() << fx, 0, imageWidth * Scalar(0.5),
+                       0, fy, imageHeight * Scalar(0.5),
+                       0, 0, 1;
+    }
+    
+    void
+    Camera::setCameraToImage(int imageWidth, int imageHeight, Scalar vfov_radians)
+    {
+        Scalar aspect = Scalar(imageWidth) / Scalar(imageHeight);
+        Scalar sy = Scalar(1) / tan(vfov_radians * Scalar(0.5));
+        Scalar sx = sy / aspect;
+        
+        Scalar fy = imageHeight * sy / Scalar(2);
+        Scalar fx = imageWidth * sx / Scalar(2);
+        
+        _k.matrix() << fx, 0, imageWidth * Scalar(0.5),
+                       0, fy, imageHeight * Scalar(0.5),
+                       0, 0, 1;
+        
+        std::cout << fx << " " << fy << std::endl;
     }
     
     Camera::Matrix33
@@ -112,7 +141,7 @@ namespace volplay {
         
         for (size_t r = 0; r < imageHeight; ++r) {
             for (size_t c = 0; c < imageWidth; ++c) {
-                directions[r * imageWidth + c] = (kinv * Vector2(r, c).homogeneous()).normalized();
+                directions[r * imageWidth + c] = (kinv * Vector2(c, r).homogeneous()).normalized();
             }
         }
     }

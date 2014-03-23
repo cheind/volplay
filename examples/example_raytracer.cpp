@@ -11,10 +11,48 @@
 #include <volplay/sdf_repetition.h>
 #include <volplay/sdf_making.h>
 #include <volplay/ray_tracer.h>
+#include <volplay/sdf_rigid_transform.h>
+#include <volplay/camera.h>
+
+#include <opencv2/opencv.hpp>
 
 namespace vp = volplay;
 
 TEST_CASE("Raytracing simple scene using phong shading and a single light source")
 {
-    vp::SDFRepetitionPtr n = vp::makeSDFRepetition(vp::Vector(5, 5, 5), vp::makeSDFSphere(1));
+    vp::SDFRepetitionPtr nrep = vp::makeSDFRepetition(vp::Vector(150, 150, 150), vp::makeSDFSphere(10));
+    
+    vp::AffineTransform at = vp::AffineTransform::Identity();
+    at.translate(vp::Vector(0,0,100));
+    vp::SDFNodePtr n = vp::SDFRigidTransformPtr(new vp::SDFRigidTransform(at, nrep));;
+    
+    vp::RayTracer rt;
+    vp::RayTracer::TraceConstraints tc;
+    rt.setRootNode(n);
+    
+    const int imageWidth = 640;
+    const int imageHeight = 480;
+    
+    vp::Camera cam;
+    cam.setCameraToImage(imageWidth, imageHeight, vp::Scalar(0.99), vp::Scalar(0.75));
+    cam.setCameraToImage(imageWidth, imageHeight, vp::Scalar(0.40));
+    
+    std::vector<vp::Vector> rays;
+    cam.generateCameraRays(imageWidth, imageHeight, rays);
+    
+    cv::Mat img(imageHeight, imageWidth, CV_8UC1);
+    for (int r = 0; r < img.rows; ++r) {
+        for (int c = 0; c < img.cols; ++c) {
+            vp::Scalar s = rt.trace(cam.originInWorld(), rays[r * imageWidth + c], tc);
+            if (s < 1000) {
+                img.at<unsigned char>(r, c) = s * 255 / 1000;
+            } else {
+                img.at<unsigned char>(r, c) = 0;
+            }
+        }
+    }
+    
+    cv::imshow("image", img);
+    cv::waitKey();
+    
 }

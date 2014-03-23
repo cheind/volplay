@@ -31,6 +31,12 @@ namespace volplay {
         /** Builds the camera intrinsic matrix using focal lengths and principal point. */
         void setCameraToImage(const Vector2 &focalLength, const Vector2 &principalPoint);
         
+        /** Builds the camera intrinsic matrix using FOV angles and image size. */
+        void setCameraToImage(int imageWidth, int imageHeight, Scalar hfov_radians, Scalar vfov_radians);
+        
+        /** Builds a symmetrical camera intrinsic matrix using vertica FOV angle. */
+        void setCameraToImage(int imageWidth, int imageHeight, Scalar vfov_radians);
+        
         /** Set camera view transform. */
         void setCameraToWorld(const Matrix34 &t);
         

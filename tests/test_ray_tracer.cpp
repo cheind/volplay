@@ -17,7 +17,11 @@ namespace vp = volplay;
 TEST_CASE("Raytracer")
 {
     vp::RayTracer rt(std::make_shared<vp::SDFSphere>());
-    vp::RayTracer::TraceConstraints tc = vp::RayTracer::TraceConstraints::defaults();
+    vp::RayTracer::TraceConstraints tc;
+    
+    REQUIRE(tc.minT == 0);
+    REQUIRE(tc.maxIter == 500);
+    REQUIRE(tc.maxT == std::numeric_limits<vp::Scalar>::max());
     
     REQUIRE_CLOSE( rt.trace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), tc), 1);
     REQUIRE_CLOSE( rt.trace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), tc), 1);

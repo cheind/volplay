@@ -25,8 +25,8 @@ namespace volplay {
             Scalar maxT;
             Scalar maxIter;
             
-            /** Access trace defaults */
-            static const TraceConstraints &defaults();
+            /** Default trace constraints */
+            TraceConstraints();
         };
         
         /** Empty ray tracer */

@@ -16,13 +16,13 @@ namespace volplay {
     SDFSpherePtr
     makeSDFSphere(Scalar radius)
     {
-        return std::make_shared<SDFSphere>(radius);
+        return SDFSpherePtr(new SDFSphere(radius));
     }
     
     SDFRepetitionPtr
     makeSDFRepetition(const Vector &cellSizes, const SDFNodePtr &node)
     {
-        return std::make_shared<SDFRepetition>(cellSizes, node);
+        return SDFRepetitionPtr(new SDFRepetition(cellSizes, node));
     }
     
     

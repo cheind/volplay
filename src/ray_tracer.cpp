@@ -13,11 +13,9 @@
 
 namespace volplay {
     
-    const RayTracer::TraceConstraints &
-    RayTracer::TraceConstraints::defaults()
+    RayTracer::TraceConstraints::TraceConstraints()
+    :minT(0), maxT(std::numeric_limits<Scalar>::max()), maxIter(500)
     {
-        static TraceConstraints tc = {0, std::numeric_limits<Scalar>::max(), 500};
-        return tc;
     }
     
     RayTracer::RayTracer()
