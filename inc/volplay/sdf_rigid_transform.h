@@ -29,7 +29,7 @@ namespace volplay {
         SDFRigidTransform(const AffineTransform &localToWorld, const SDFNodePtr &n);
         
         /** Evaluate the SDF at given position. */
-        virtual Scalar eval(const Vector &x) const;
+        virtual SDFResult fullEval(const Vector &x) const;
         
         /** Access the stored transform */
         AffineTransform localToWorld() const;

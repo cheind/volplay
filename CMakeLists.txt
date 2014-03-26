@@ -12,6 +12,7 @@ set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 set(VOLPLAY_CORE_FILES
     inc/volplay/types.h
     inc/volplay/fwd.h
+    inc/volplay/sdf_result.h
     inc/volplay/sdf_node.h
     inc/volplay/sdf_unary.h
     inc/volplay/sdf_group.h
@@ -56,6 +57,7 @@ add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_UTIL_FILES})
 set(VOLPLAY_TEST_FILES
     tests/main.cpp
     tests/test_derivative.cpp
+    tests/test_sdf_result.cpp
     tests/test_sdf_sphere.cpp
     tests/test_sdf_union.cpp
     tests/test_sdf_intersection.cpp

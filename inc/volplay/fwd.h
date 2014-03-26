@@ -24,6 +24,7 @@ namespace volplay {
     class SDFSphere;
     
     typedef std::shared_ptr<SDFNode> SDFNodePtr;
+    typedef std::weak_ptr<SDFNode> SDFNodeWeakPtr;
     typedef std::shared_ptr<SDFGroup> SDFGroupPtr;
     typedef std::shared_ptr<SDFUnion> SDFUnionPtr;
     typedef std::shared_ptr<SDFIntersection> SDFIntersectionPtr;

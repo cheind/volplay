@@ -12,6 +12,12 @@
 
 namespace volplay {
     
+    Scalar
+    SDFNode::eval(const Vector &x) const
+    {
+        return this->fullEval(x).sdf;
+    }
+    
     Vector
     SDFNode::gradient(const Vector &x, Scalar eps) const
     {

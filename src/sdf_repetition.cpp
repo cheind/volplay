@@ -34,8 +34,8 @@ namespace volplay {
         _cellSizes = cellSizes;
     }
     
-    Scalar
-    SDFRepetition::eval(const Vector &x) const
+    SDFResult
+    SDFRepetition::fullEval(const Vector &x) const
     {
         SDFNodePtr n = node();
         
@@ -48,7 +48,7 @@ namespace volplay {
             fmod(fabs(x(2)) + halfCell(2), _cellSizes(2)) - halfCell(2)
         );
         
-        return n->eval(modX);
+        return n->fullEval(modX);
     }
     
 }

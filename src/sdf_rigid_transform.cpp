@@ -42,14 +42,14 @@ namespace volplay {
     }
 
     
-    Scalar
-    SDFRigidTransform::eval(const Vector &x) const
+    SDFResult
+    SDFRigidTransform::fullEval(const Vector &x) const
     {
         SDFNodePtr n = node();
         
         assert(n);
         
-        return n->eval(_worldToLocal * x);
+        return n->fullEval(_worldToLocal * x);
     }
     
     

@@ -7,8 +7,8 @@
 // If a copy of the BSD was not distributed with this file, You can obtain
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
-#ifndef VOLPLAY_SDF_GROUP
-#define VOLPLAY_SDF_GROUP
+#ifndef VOLPLAY_SDF_UNARY
+#define VOLPLAY_SDF_UNARY
 
 #include <volplay/types.h>
 #include <volplay/fwd.h>

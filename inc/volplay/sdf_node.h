@@ -11,14 +11,18 @@
 #define VOLPLAY_SDF_NODE
 
 #include <volplay/types.h>
+#include <volplay/sdf_result.h>
 
 namespace volplay {
 
     /** A leaf node in the SDF (signed distance function) scene graph. */
     class SDFNode {
     public:
-        /** Evaluate the SDF at given position. */
-        virtual Scalar eval(const Vector &x) const = 0;
+        /** Evaluate the SDF at given position. Only returns the signed distance. */
+        virtual Scalar eval(const Vector &x) const;
+        
+        /** Evaluate the SDF at the given position. Returns signed distance and additional information. */
+        virtual SDFResult fullEval(const Vector &x) const = 0;
         
         /** Evaluate the gradient of the SDF at the given position.
          *  The gradient will always point in the direction of maximum distance increase.

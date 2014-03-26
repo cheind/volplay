@@ -34,7 +34,7 @@ namespace volplay {
         void setCellSizes(const Vector &cellSizes);
         
         /** Evaluate the SDF at given position. */
-        virtual Scalar eval(const Vector &x) const;
+        virtual SDFResult fullEval(const Vector &x) const;
     private:
         Vector _cellSizes;
     };

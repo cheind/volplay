@@ -25,7 +25,7 @@ namespace volplay {
         SDFSphere(Scalar radius);
         
         /** Evaluate the SDF at given position. */
-        virtual Scalar eval(const Vector &x) const;
+        virtual SDFResult fullEval(const Vector &x) const;
     private:
         Scalar _radius;
     };

@@ -21,19 +21,20 @@ namespace volplay {
         this->add(right);
     }
     
-    Scalar
-    SDFUnion::eval(const Vector &x) const
+    SDFResult
+    SDFUnion::fullEval(const Vector &x) const
     {
         assert(this->size() > 0);
         
         SDFGroup::SDFNodeArray::const_iterator i = this->begin();
         
-        Scalar sdf = (*i)->eval(x);
+        SDFResult r = (*i)->fullEval(x);
         for (auto n : util::makeIteratorRange(++i, this->end())) {
-            sdf = std::min<Scalar>(sdf, n->eval(x));
+            SDFResult o = n->fullEval(x);
+            r = r.sdf < o.sdf ? r : o;
         }
         
-        return sdf;
+        return r;
     }
     
     

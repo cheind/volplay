@@ -21,19 +21,20 @@ namespace volplay {
         this->add(right);
     }
     
-    Scalar
-    SDFDifference::eval(const Vector &x) const
+    SDFResult
+    SDFDifference::fullEval(const Vector &x) const
     {
         assert(this->size() > 0);
         
         SDFGroup::SDFNodeArray::const_iterator i = this->begin();
         
-        Scalar sdf = (*i)->eval(x);
+        SDFResult r = (*i)->fullEval(x);
         for (auto n : util::makeIteratorRange(++i, this->end())) {
-            sdf = std::max<Scalar>(sdf, n->eval(x) * Scalar(-1));
+            Scalar o = n->eval(x) * -1;
+            r.sdf = r.sdf > o ? r.sdf : o;
         }
         
-        return sdf;
+        return r;
     }
     
 }

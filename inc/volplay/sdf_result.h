@@ -7,23 +7,22 @@
 // If a copy of the BSD was not distributed with this file, You can obtain
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
-#include <volplay/sdf_sphere.h>
+#ifndef VOLPLAY_SDF_RESULT
+#define VOLPLAY_SDF_RESULT
+
+#include <volplay/fwd.h>
+
 
 namespace volplay {
     
-    SDFSphere::SDFSphere()
-    : _radius(1)
-    {}
-    
-    SDFSphere::SDFSphere(Scalar radius)
-    : _radius(radius)
-    {}
-    
-    SDFResult
-    SDFSphere::fullEval(const Vector &x) const
-    {
-        SDFResult r = {this, x.norm() - _radius};
-        return r;
-    }
+    /** Represents the result querying the signed distance field at a specific location. */
+    struct SDFResult {
+        /** Closest node */
+        const SDFNode *node;
+        /** Signed distance */
+        Scalar sdf;
+    };
     
 }
+
+#endif

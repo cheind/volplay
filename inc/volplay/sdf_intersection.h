@@ -25,7 +25,7 @@ namespace volplay {
         SDFIntersection(const SDFNodePtr &left, const SDFNodePtr &right);
         
         /** Evaluate the SDF at given position. */
-        virtual Scalar eval(const Vector &x) const;
+        virtual SDFResult fullEval(const Vector &x) const;
     };
 
 }
