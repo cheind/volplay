@@ -31,6 +31,22 @@ namespace volplay {
         
         /** Calculate the approximate unit normal at the given position. */
         virtual Vector normal(const Vector &x, Scalar eps = Scalar(0.0001)) const;
+        
+        /** Sphere tracing options */
+        struct SphereTraceOptions {
+            Scalar minT;
+            Scalar maxT;
+            Scalar stepFact;
+            Scalar sdfThreshold;
+            int maxIter;
+            
+            /** Default trace options */
+            SphereTraceOptions();
+        };
+
+        
+        /** Trace ray. Uses sphere tracing to find intersection */
+        virtual Scalar sphereTrace(const Vector &o, const Vector &d, const SphereTraceOptions &opts) const;
     };
 
 }

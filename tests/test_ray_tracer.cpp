@@ -10,21 +10,22 @@
 #include "catch.hpp"
 #include "float_comparison.hpp"
 #include <volplay/sdf_sphere.h>
-#include <volplay/ray_tracer.h>
 
 namespace vp = volplay;
 
 TEST_CASE("Raytracer")
 {
-    vp::RayTracer rt(std::make_shared<vp::SDFSphere>());
-    vp::RayTracer::TraceConstraints tc;
+    vp::SDFSphere s;
+    vp::SDFNode::SphereTraceOptions opts;
     
-    REQUIRE(tc.minT == 0);
-    REQUIRE(tc.maxIter == 500);
-    REQUIRE(tc.maxT == std::numeric_limits<vp::Scalar>::max());
+    REQUIRE(opts.minT == 0);
+    REQUIRE(opts.maxIter == 500);
+    REQUIRE(opts.maxT == std::numeric_limits<vp::Scalar>::max());
+    REQUIRE_CLOSE(opts.sdfThreshold, 0.001);
+    REQUIRE(opts.stepFact == 1);
     
-    REQUIRE_CLOSE( rt.trace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), tc), 1);
-    REQUIRE_CLOSE( rt.trace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), tc), 1);
-    // Inside, travels into opposite direction.
-    REQUIRE_CLOSE( rt.trace(vp::Vector(0, 0, 0), vp::Vector(1, 0, 0), tc), -1);
+    REQUIRE_CLOSE( s.sphereTrace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), opts), 1);
+    REQUIRE_CLOSE( s.sphereTrace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), opts), 1);
+    // Inside, does nothing
+    REQUIRE_CLOSE( s.sphereTrace(vp::Vector(0, 0, 0), vp::Vector(1, 0, 0), opts), 0);
 }

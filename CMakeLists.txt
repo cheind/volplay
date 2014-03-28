@@ -23,7 +23,6 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_repetition.h
     inc/volplay/sdf_sphere.h
     inc/volplay/sdf_making.h
-    inc/volplay/ray_tracer.h
     inc/volplay/camera.h
     inc/volplay/util/iterator_range.h
     src/sdf_node.cpp
@@ -36,7 +35,6 @@ set(VOLPLAY_CORE_FILES
     src/sdf_repetition.cpp
     src/sdf_sphere.cpp
     src/sdf_making.cpp
-    src/ray_tracer.cpp
     src/camera.cpp
 )
 

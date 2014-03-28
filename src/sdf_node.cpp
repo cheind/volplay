@@ -41,4 +41,41 @@ namespace volplay {
         }
     }
     
+    SDFNode::SphereTraceOptions::SphereTraceOptions()
+    :minT(0), maxT(std::numeric_limits<Scalar>::max()), stepFact(1), sdfThreshold(0.001), maxIter(500)
+    {
+    }
+    
+    Scalar  
+    SDFNode::sphereTrace(const Vector &o, const Vector &d, const SphereTraceOptions &opts) const
+    {
+        
+        // Performs sphere tracing. That is given a position along the ray, the SDF at
+        // this position tells us how far the next surface intersection is at least away.
+        // That is we can move the position along the ray forward by the value of the SDF.
+        //
+        // The method performs generally well but requires many evaluations of the SDF
+        // around edges of objects.
+        //
+        // Note that the underlying assumption made by this algorithm is that nodes might
+        // underestimate the true distance, but do not overestimate it.
+        
+        Scalar t = opts.minT;
+        Vector pos = o + t * d;
+        Scalar sdf = eval(pos) * opts.stepFact;
+        
+        int nIter = 0;
+        while (nIter < opts.maxIter && t < opts.maxT && sdf > opts.sdfThreshold) {
+            t += sdf;
+            pos += sdf * d;
+            sdf = eval(pos) * opts.stepFact;
+            ++nIter;
+        }
+        
+        return t;
+
+    }
+    
+    
+    
 }

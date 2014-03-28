@@ -10,7 +10,6 @@
 #include <volplay/sdf_sphere.h>
 #include <volplay/sdf_repetition.h>
 #include <volplay/sdf_making.h>
-#include <volplay/ray_tracer.h>
 #include <volplay/sdf_rigid_transform.h>
 #include <volplay/camera.h>
 
@@ -20,6 +19,7 @@ namespace vp = volplay;
 
 TEST_CASE("Raytracing simple scene using phong shading and a single light source")
 {
+    /*
     vp::SDFRepetitionPtr nrep = vp::makeSDFRepetition(vp::Vector(150, 150, 150), vp::makeSDFSphere(10));
     
     vp::AffineTransform at = vp::AffineTransform::Identity();
@@ -54,5 +54,6 @@ TEST_CASE("Raytracing simple scene using phong shading and a single light source
     
     cv::imshow("image", img);
     cv::waitKey();
+     */
     
 }
