@@ -22,6 +22,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_rigid_transform.h
     inc/volplay/sdf_repetition.h
     inc/volplay/sdf_sphere.h
+    inc/volplay/sdf_plane.h
     inc/volplay/sdf_making.h
     inc/volplay/camera.h
     inc/volplay/util/iterator_range.h
@@ -34,6 +35,7 @@ set(VOLPLAY_CORE_FILES
     src/sdf_rigid_transform.cpp
     src/sdf_repetition.cpp
     src/sdf_sphere.cpp
+    src/sdf_plane.cpp
     src/sdf_making.cpp
     src/camera.cpp
 )
@@ -57,6 +59,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_derivative.cpp
     tests/test_sdf_result.cpp
     tests/test_sdf_sphere.cpp
+    tests/test_sdf_plane.cpp
     tests/test_sdf_union.cpp
     tests/test_sdf_intersection.cpp
     tests/test_sdf_difference.cpp
