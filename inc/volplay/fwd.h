@@ -22,6 +22,7 @@ namespace volplay {
     class SDFRigidTransform;
     class SDFRepetition;
     class SDFSphere;
+    class SDFPlane;
     
     typedef std::shared_ptr<SDFNode> SDFNodePtr;
     typedef std::weak_ptr<SDFNode> SDFNodeWeakPtr;
@@ -32,6 +33,7 @@ namespace volplay {
     typedef std::shared_ptr<SDFRigidTransform> SDFRigidTransformPtr;
     typedef std::shared_ptr<SDFRepetition> SDFRepetitionPtr;
     typedef std::shared_ptr<SDFSphere> SDFSpherePtr;
+    typedef std::shared_ptr<SDFPlane> SDFPlanePtr;
     
     typedef std::shared_ptr<SDFNode const> SDFNodeConstPtr;
     typedef std::shared_ptr<SDFGroup const> SDFGroupConstPtr;
