@@ -17,20 +17,18 @@
 
 namespace vp = volplay;
 
-TEST_CASE("Raytracing simple scene using phong shading and a single light source")
+TEST_CASE("CPU based raytracing")
 {
-    vp::SDFRepetitionPtr nrep = vp::makeSDFRepetition(vp::Vector(150, 150, 150), vp::makeSDFSphere(10));
-    
-    vp::AffineTransform at = vp::AffineTransform::Identity();
-    at.translate(vp::Vector(0,0,100));
-    vp::SDFNodePtr n = vp::SDFRigidTransformPtr(new vp::SDFRigidTransform(at, nrep));;
-    
     const int imageWidth = 640;
     const int imageHeight = 480;
     
+    vp::SDFNodePtr scene = vp::making::plane().join(vp::making::sphere(1).translate(vp::Vector(0,0,0)));
+    
     vp::Camera cam;
-    cam.setCameraToImage(imageWidth, imageHeight, vp::Scalar(0.99), vp::Scalar(0.75));
     cam.setCameraToImage(imageWidth, imageHeight, vp::Scalar(0.40));
+    cam.setCameraToWorldAsLookAt(vp::Vector(0,0,5), vp::Vector(0,0,0), vp::Vector(0,-1,0));
+    
+    vp::AffineTransform t = cam.cameraToWorldTransform();
     
     std::vector<vp::Vector> rays;
     cam.generateCameraRays(imageWidth, imageHeight, rays);
@@ -40,9 +38,9 @@ TEST_CASE("Raytracing simple scene using phong shading and a single light source
     cv::Mat img(imageHeight, imageWidth, CV_8UC1);
     for (int r = 0; r < img.rows; ++r) {
         for (int c = 0; c < img.cols; ++c) {
-            vp::Scalar s = n->trace(cam.originInWorld(), rays[r * imageWidth + c], to);
-            if (s < 1000) {
-                img.at<unsigned char>(r, c) = s * 255 / 1000;
+            vp::Scalar s = scene->trace(cam.originInWorld(), t.linear() * rays[r * imageWidth + c], to);
+            if (s < 10) {
+                img.at<unsigned char>(r, c) = s * 255 / 10;
             } else {
                 img.at<unsigned char>(r, c) = 0;
             }
