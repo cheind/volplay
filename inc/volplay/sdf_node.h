@@ -33,7 +33,7 @@ namespace volplay {
         virtual Vector normal(const Vector &x, Scalar eps = Scalar(0.0001)) const;
         
         /** Sphere tracing options */
-        struct SphereTraceOptions {
+        struct TraceOptions {
             Scalar minT;
             Scalar maxT;
             Scalar stepFact;
@@ -41,12 +41,12 @@ namespace volplay {
             int maxIter;
             
             /** Default trace options */
-            SphereTraceOptions();
+            TraceOptions();
         };
 
         
         /** Trace ray. Uses sphere tracing to find intersection */
-        virtual Scalar sphereTrace(const Vector &o, const Vector &d, const SphereTraceOptions &opts) const;
+        virtual Scalar trace(const Vector &o, const Vector &d, const TraceOptions &opts) const;
     };
 
 }

@@ -41,13 +41,13 @@ namespace volplay {
         }
     }
     
-    SDFNode::SphereTraceOptions::SphereTraceOptions()
+    SDFNode::TraceOptions::TraceOptions()
     :minT(0), maxT(std::numeric_limits<Scalar>::max()), stepFact(1), sdfThreshold(0.001), maxIter(500)
     {
     }
     
     Scalar  
-    SDFNode::sphereTrace(const Vector &o, const Vector &d, const SphereTraceOptions &opts) const
+    SDFNode::trace(const Vector &o, const Vector &d, const TraceOptions &opts) const
     {
         
         // Performs sphere tracing. That is given a position along the ray, the SDF at

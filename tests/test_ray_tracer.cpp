@@ -16,7 +16,7 @@ namespace vp = volplay;
 TEST_CASE("Raytracer")
 {
     vp::SDFSphere s;
-    vp::SDFNode::SphereTraceOptions opts;
+    vp::SDFNode::TraceOptions opts;
     
     REQUIRE(opts.minT == 0);
     REQUIRE(opts.maxIter == 500);
@@ -24,8 +24,8 @@ TEST_CASE("Raytracer")
     REQUIRE_CLOSE(opts.sdfThreshold, 0.001);
     REQUIRE(opts.stepFact == 1);
     
-    REQUIRE_CLOSE( s.sphereTrace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), opts), 1);
-    REQUIRE_CLOSE( s.sphereTrace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), opts), 1);
+    REQUIRE_CLOSE( s.trace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), opts), 1);
+    REQUIRE_CLOSE( s.trace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), opts), 1);
     // Inside, does nothing
-    REQUIRE_CLOSE( s.sphereTrace(vp::Vector(0, 0, 0), vp::Vector(1, 0, 0), opts), 0);
+    REQUIRE_CLOSE( s.trace(vp::Vector(0, 0, 0), vp::Vector(1, 0, 0), opts), 0);
 }
