@@ -13,10 +13,11 @@
 
 namespace vp = volplay;
 
-TEST_CASE("Raytracer")
+TEST_CASE("SDFNode::trace")
 {
     vp::SDFSphere s;
     vp::SDFNode::TraceOptions opts;
+    vp::SDFNode::TraceResult tr;
     
     REQUIRE(opts.minT == 0);
     REQUIRE(opts.maxIter == 500);
@@ -24,8 +25,15 @@ TEST_CASE("Raytracer")
     REQUIRE_CLOSE(opts.sdfThreshold, 0.001);
     REQUIRE(opts.stepFact == 1);
     
-    REQUIRE_CLOSE( s.trace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), opts), 1);
-    REQUIRE_CLOSE( s.trace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), opts), 1);
+    REQUIRE(tr.t == 0);
+    REQUIRE(tr.iter == 0);
+    REQUIRE(tr.sdf == 0);
+    
+    REQUIRE_CLOSE( s.trace(vp::Vector(2, 0, 0), vp::Vector(-1, 0, 0), opts, &tr), 1);
+    REQUIRE(tr.iter > 0); REQUIRE(tr.iter < 500); REQUIRE(tr.t == 1); REQUIRE_CLOSE(tr.sdf, 0);
+    REQUIRE_CLOSE( s.trace(vp::Vector(-2, 0, 0), vp::Vector(1, 0, 0), opts, &tr), 1);
+    REQUIRE(tr.iter > 0); REQUIRE(tr.iter < 500); REQUIRE(tr.t == 1); REQUIRE_CLOSE(tr.sdf, 0);
     // Inside, does nothing
-    REQUIRE_CLOSE( s.trace(vp::Vector(0, 0, 0), vp::Vector(1, 0, 0), opts), 0);
+    REQUIRE_CLOSE( s.trace(vp::Vector(0, 0, 0), vp::Vector(1, 0, 0), opts, &tr), 0);
+    REQUIRE(tr.iter == 0); REQUIRE(tr.t == 0); REQUIRE(tr.sdf < 0);
 }
