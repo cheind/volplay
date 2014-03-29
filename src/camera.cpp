@@ -49,8 +49,6 @@ namespace volplay {
         _k.matrix() << fx, 0, imageWidth * Scalar(0.5),
                        0, fy, imageHeight * Scalar(0.5),
                        0, 0, 1;
-        
-        std::cout << fx << " " << fy << std::endl;
     }
     
     Camera::Matrix33
