@@ -15,12 +15,34 @@
 
 namespace volplay {
     
-    /** Make a new sphere. */
-    SDFSpherePtr makeSDFSphere(Scalar radius);
+    namespace making {
     
-    /** Repeat object along axis. */
-    SDFRepetitionPtr makeSDFRepetition(const Vector &cellSizes, const SDFNodePtr &node = SDFNodePtr());
-
+        /** Helps in making complex scene graphs with a syntax similar to plane().join(sphere()). */
+        class MakeWrapper {
+        public:
+            explicit MakeWrapper(SDFNodePtr n);
+            
+            MakeWrapper &join(const MakeWrapper &right);
+            MakeWrapper &intersect(const MakeWrapper &right);
+            MakeWrapper &remove(const MakeWrapper &right);
+            MakeWrapper &translate(const Vector &t);
+            MakeWrapper &repeat(const Vector &cellSizes);
+            
+            operator SDFNodePtr() const;
+            
+        private:
+            SDFNodePtr _n;
+        };
+        
+        /** Encapsulate exisiting node. */
+        MakeWrapper wrap(const SDFNodePtr &n);
+        
+        /** Make a new sphere. */
+        MakeWrapper sphere(Scalar radius);
+        
+        /** Make a new plane. */
+        MakeWrapper plane();
+    }
 }
 
 #endif

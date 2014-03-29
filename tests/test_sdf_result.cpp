@@ -18,14 +18,10 @@ namespace vp = volplay;
 
 TEST_CASE("SDFResult")
 {
-    vp::SDFSpherePtr s0 = vp::makeSDFSphere(1);
-    vp::SDFSpherePtr s1 = vp::makeSDFSphere(1);
+    vp::SDFNodePtr s0 = vp::making::sphere(1);
+    vp::SDFNodePtr s1 = vp::making::sphere(1);
     
-    vp::AffineTransform at = vp::AffineTransform::Identity();
-    at.translate(vp::Vector(5, 0, 0));
-
-    vp::SDFRigidTransformPtr r(new vp::SDFRigidTransform(at, s1));
-    vp::SDFUnionPtr u(new vp::SDFUnion(s0, r));
+    vp::SDFNodePtr u = vp::making::wrap(s0).join(vp::making::wrap(s1).translate(vp::Vector(5, 0, 0)));;
     
     REQUIRE(u->fullEval(vp::Vector(0,0,0)).node == s0.get());
     REQUIRE(u->fullEval(vp::Vector(5,0,0)).node == s1.get());

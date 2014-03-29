@@ -9,21 +9,79 @@
 
 #include <volplay/sdf_making.h>
 #include <volplay/sdf_sphere.h>
+#include <volplay/sdf_plane.h>
+#include <volplay/sdf_union.h>
+#include <volplay/sdf_intersection.h>
+#include <volplay/sdf_difference.h>
 #include <volplay/sdf_repetition.h>
+#include <volplay/sdf_rigid_transform.h>
 
 namespace volplay {
+    namespace making {
     
-    SDFSpherePtr
-    makeSDFSphere(Scalar radius)
-    {
-        return SDFSpherePtr(new SDFSphere(radius));
-    }
-    
-    SDFRepetitionPtr
-    makeSDFRepetition(const Vector &cellSizes, const SDFNodePtr &node)
-    {
-        return SDFRepetitionPtr(new SDFRepetition(cellSizes, node));
-    }
-    
+        MakeWrapper::MakeWrapper(SDFNodePtr n)
+        :_n(n)
+        {}
+        
+        MakeWrapper &
+        MakeWrapper::join(const MakeWrapper &right)
+        {
+            _n = SDFUnionPtr(new SDFUnion(_n, right._n));
+            return *this;
+        }
+        
+        MakeWrapper &
+        MakeWrapper::intersect(const MakeWrapper &right)
+        {
+            _n = SDFIntersectionPtr(new SDFIntersection(_n, right._n));
+            return *this;
+        }
+        
+        MakeWrapper &
+        MakeWrapper::remove(const MakeWrapper &right)
+        {
+            _n = SDFDifferencePtr(new SDFDifference(_n, right._n));
+            return *this;
+        }
+        
+        MakeWrapper &
+        MakeWrapper::translate(const Vector &t)
+        {
+            AffineTransform at = AffineTransform::Identity();
+            at.translate(t);
+            _n = SDFRigidTransformPtr(new SDFRigidTransform(at, _n));
+            return *this;
+        }
+        
+        MakeWrapper &
+        MakeWrapper::repeat(const Vector &cellSizes)
+        {
+            _n = SDFRepetitionPtr(new SDFRepetition(cellSizes, _n));
+            return *this;
+        }
+        
+        MakeWrapper::operator SDFNodePtr() const
+        {
+            return _n;
+        }
+        
+        // Free functions
+        
+        MakeWrapper wrap(const SDFNodePtr &n)
+        {
+            return MakeWrapper(n);
+        }
+        
+        MakeWrapper sphere(Scalar radius)
+        {
+            return MakeWrapper(SDFNodePtr(new SDFSphere(radius)));
+        }
+        
+        MakeWrapper plane()
+        {
+            return MakeWrapper(SDFPlanePtr(new SDFPlane()));
+        }
+        
+    }    
     
 }
