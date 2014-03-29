@@ -46,8 +46,13 @@ namespace volplay {
     {
     }
     
+    SDFNode::TraceResult::TraceResult()
+    :iter(0), t(0), sdf(0)
+    {
+    }
+    
     Scalar  
-    SDFNode::trace(const Vector &o, const Vector &d, const TraceOptions &opts) const
+    SDFNode::trace(const Vector &o, const Vector &d, const TraceOptions &opts, TraceResult *tr) const
     {
         
         // Performs sphere tracing. That is given a position along the ray, the SDF at
@@ -70,6 +75,12 @@ namespace volplay {
             pos += sdf * d;
             sdf = eval(pos) * opts.stepFact;
             ++nIter;
+        }
+        
+        if (tr) {
+            tr->t = t;
+            tr->sdf = sdf;
+            tr->iter = nIter;
         }
         
         return t;
