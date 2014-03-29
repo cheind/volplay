@@ -43,6 +43,9 @@ namespace volplay {
         /** Set camera view transform. */
         void setCameraToWorld(const AffineTransform &t);
         
+        /** Set camera view transform as look at. */
+        void setCameraToWorldAsLookAt(const Vector &eye, const Vector &center, const Vector &up);
+        
         /** Matrix that transforms 2D image points to 3D points with depth 1. */
         Matrix33 imageToCamera() const;
         

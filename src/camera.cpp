@@ -69,6 +69,20 @@ namespace volplay {
         _camera_to_world = t.matrix().block<3,4>(0,0);
     }
     
+    void
+    Camera::setCameraToWorldAsLookAt(const Vector &eye, const Vector &center, const Vector &up)
+    {
+        Vector z = (center - eye).normalized();
+        Vector y = up.normalized();
+        Vector x = y.cross(z).normalized();
+        y = z.cross(x);
+        
+        _camera_to_world = Matrix34::Identity();
+        _camera_to_world << x.x(), y.x(), z.x(), eye.x(),
+                            x.y(), y.y(), z.y(), eye.y(),
+                            x.z(), y.z(), z.z(), eye.z();
+    }
+    
     Camera::Matrix34
     Camera::cameraToWorld() const
     {
