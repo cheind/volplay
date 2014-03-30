@@ -9,7 +9,7 @@
 
 #include <volplay/rendering/camera.h>
 #include <volplay/rendering/renderer.h>
-#include <volplay/rendering/saturate.h>
+#include <volplay/rendering/image_generator.h>
 #include <volplay/sdf_node.h>
 
 namespace volplay {
@@ -17,7 +17,7 @@ namespace volplay {
     namespace rendering {
     
         Renderer::Renderer()
-        : _imageWidth(0), _imageHeight(0), _heatImage(new Image<unsigned char>())
+        : _imageWidth(0), _imageHeight(0)
         {}
         
         void
@@ -33,10 +33,22 @@ namespace volplay {
         }
         
         void
-        Renderer::setImageResolution(int imageWidth, int imageHeight)
+        Renderer::setImageResolution(int imageHeight, int imageWidth)
         {
             _imageHeight = imageHeight;
             _imageWidth = imageWidth;
+        }
+        
+        int
+        Renderer::imageHeight() const
+        {
+            return _imageHeight;
+        }
+        
+        int
+        Renderer::imageWidth() const
+        {
+            return _imageWidth;
         }
         
         void
@@ -45,11 +57,16 @@ namespace volplay {
             _primaryTraceOptions = opts;
         }
         
-        
-        Renderer::ByteImagePtr
-        Renderer::heatImage() const
+        const SDFNode::TraceOptions &
+        Renderer::primaryTraceOptions() const
         {
-            return _heatImage;
+            return _primaryTraceOptions;
+        }
+        
+        void
+        Renderer::addImageGenerator(const ImageGeneratorPtr &g)
+        {
+            _generators.push_back(g);
         }
         
         void
@@ -59,30 +76,51 @@ namespace volplay {
                 return;
             }
             
-            // Allocate images.
-            _heatImage->create(_imageHeight, _imageWidth, 1);
-            
             // Prepare rays
             std::vector<Vector> rays;
             _camera->generateCameraRays(_imageHeight, _imageWidth, rays);
-            Vector origin = _camera->originInWorld();
             AffineTransform::LinearPart t = _camera->cameraToWorldTransform().linear();
             
-            // Trace images
-            SDFNode::TraceResult tr;
+            // Prepare generators
+            std::vector<ImageGeneratorPtr>::iterator gBegin = _generators.begin();
+            std::vector<ImageGeneratorPtr>::iterator gEnd = _generators.end();
+            std::vector<ImageGeneratorPtr>::iterator gi;
             
-            for (int r = 0; r < _imageHeight; ++r) {
-                const Vector *rayRow = &rays[r * _imageWidth];
-                unsigned char *heatRow = _heatImage->row(r);
-
-                for (int c = 0; c < _imageWidth; ++c) {
-                    
-                    // Primary ray
-                    _root->trace(origin, t * rayRow[c], _primaryTraceOptions, &tr);
-
-                    heatRow[c] = saturate<unsigned char>(((float)tr.iter / _primaryTraceOptions.maxIter) * 255.f);
+            for (gi = gBegin; gi != gEnd; ++gi) {
+                (*gi)->onRenderingBegin(this);
+            }
+            
+            ImageGenerator::PixelInfo pi;
+            pi.origin = _camera->originInWorld();
+            
+            // For each row
+            for (pi.row = 0; pi.row < _imageHeight; ++pi.row) {
+                
+                // Update generators
+                for (gi = gBegin; gi != gEnd; ++gi) {
+                    (*gi)->onRowBegin(pi.row);
                 }
-            }  
+                
+                const Vector *rayRow = &rays[pi.row * _imageWidth];
+                
+                for (pi.col = 0; pi.col < _imageWidth; ++pi.col) {
+                    
+                    // Trace primary ray
+                    pi.direction = t * rayRow[pi.col];
+                    _root->trace(pi.origin, pi.direction, _primaryTraceOptions, &pi.tr);
+                    
+                    // Update generators
+                    for (gi = gBegin; gi != gEnd; ++gi) {
+                        (*gi)->onUpdatePixel(pi);
+                    }
+
+                }
+            }
+            
+            // Finish generators
+            for (gi = gBegin; gi != gEnd; ++gi) {
+                (*gi)->onRenderingComplete(this);
+            }
         }
         
         

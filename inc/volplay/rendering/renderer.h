@@ -14,6 +14,7 @@
 #include <volplay/fwd.h>
 #include <volplay/sdf_node.h>
 #include <volplay/rendering/image.h>
+#include <vector>
 
 namespace volplay {
     
@@ -22,8 +23,6 @@ namespace volplay {
         /** Renders SDF scenes to images solely on CPU resources. */
         class Renderer {
         public:
-            /** Image type with byte sized channels. */
-            typedef std::shared_ptr< Image<unsigned char> > ByteImagePtr;
             
             /** Default initializer. */
             Renderer();
@@ -35,20 +34,26 @@ namespace volplay {
             void setCamera(const CameraPtr &cam);
             
             /** Set the resulting image resolution. */
-            void setImageResolution(int imageWidth, int imageHeight);
+            void setImageResolution(int imageHeight, int imageWidth);
+            
+            /** Access image height. */
+            int imageHeight() const;
+            
+            /** Access image width. */
+            int imageWidth() const;
             
             /** Set the default trace options for primary rays. */
             void setPrimaryTraceOptions(const SDFNode::TraceOptions &opts);
             
+            /** Access the primary trace options. */
+            const SDFNode::TraceOptions &primaryTraceOptions() const;
+            
+            /** Add a new image generator */
+            void addImageGenerator(const ImageGeneratorPtr &g);
+            
             /** Render the scene */
             void render();
             
-            /** Access the heat image.
-             *  The heat image shows for each pixel how many ray steps where necessary
-             *  to produce a result. The more steps required the higher the image intensity. 
-             *  In general along object edges sphere tracing will take more steps.
-             */
-            ByteImagePtr heatImage() const;
             
         private:
             SDFNodePtr _root;
@@ -56,7 +61,7 @@ namespace volplay {
             int _imageWidth, _imageHeight;
             SDFNode::TraceOptions _primaryTraceOptions;
             
-            ByteImagePtr _heatImage;
+            std::vector<ImageGeneratorPtr> _generators;
         };
         
     }

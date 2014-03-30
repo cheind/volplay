@@ -27,7 +27,6 @@ namespace volplay {
     
     typedef std::shared_ptr<SDFNode> SDFNodePtr;
     typedef std::shared_ptr<SDFNodeAttachment> SDFNodeAttachmentPtr;
-    typedef std::weak_ptr<SDFNode> SDFNodeWeakPtr;
     typedef std::shared_ptr<SDFGroup> SDFGroupPtr;
     typedef std::shared_ptr<SDFUnion> SDFUnionPtr;
     typedef std::shared_ptr<SDFIntersection> SDFIntersectionPtr;
@@ -43,11 +42,20 @@ namespace volplay {
     namespace rendering {
         
         class Camera;
-        template<class T> class Image;
         class Renderer;
+        class ImageGenerator;
+        class HeatImageGenerator;
+        
+        template<class T> class Image;
+        typedef Image<unsigned char> ByteImage;
+        
         
         typedef std::shared_ptr<Camera> CameraPtr;
         typedef std::shared_ptr<Renderer> RendererPtr;
+        typedef std::weak_ptr<Renderer> RendererWeakPtr;
+        typedef std::shared_ptr<ImageGenerator> ImageGeneratorPtr;
+        typedef std::shared_ptr<HeatImageGenerator> HeatImageGeneratorPtr;
+        typedef std::shared_ptr<ByteImage> ByteImagePtr;
     }
     
 }
