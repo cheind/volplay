@@ -9,8 +9,9 @@
 #include "catch.hpp"
 #include <volplay/sdf_sphere.h>
 #include <volplay/sdf_make.h>
-#include <volplay/sdf_rigid_transform.h>
 #include <volplay/rendering/camera.h>
+#include <volplay/rendering/image.h>
+#include <volplay/rendering/renderer.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -23,14 +24,26 @@ TEST_CASE("CPU based raytracing")
     
     vp::SDFNodePtr scene = vp::SDFMake::plane().join(vp::SDFMake::sphere(1).translate(vp::Vector(0,0,0)));
     
-    vp::rendering::Camera cam;
-    cam.setCameraToImage(imageWidth, imageHeight, vp::Scalar(0.40));
-    cam.setCameraToWorldAsLookAt(vp::Vector(0,0,5), vp::Vector(0,0,0), vp::Vector(0,-1,0));
+    vp::rendering::CameraPtr cam(new vp::rendering::Camera());
+    cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
+    cam->setCameraToWorldAsLookAt(vp::Vector(0,0,5), vp::Vector(0,0,0), vp::Vector(0,-1,0));
     
+    vp::rendering::RendererPtr r(new vp::rendering::Renderer());
+    r->setScene(scene);
+    r->setCamera(cam);
+    r->setImageResolution(imageWidth, imageHeight);
+    
+    vp::SDFNode::TraceOptions to;
+    to.maxIter = 50;
+    r->setPrimaryTraceOptions(to);
+    
+    r->render();
+    
+    /*
     vp::AffineTransform t = cam.cameraToWorldTransform();
     
     std::vector<vp::Vector> rays;
-    cam.generateCameraRays(imageWidth, imageHeight, rays);
+    cam.generateCameraRays(imageHeight, imageWidth, rays);
     
     vp::SDFNode::TraceOptions to;
     
@@ -39,14 +52,14 @@ TEST_CASE("CPU based raytracing")
         for (int c = 0; c < img.cols; ++c) {
             vp::Scalar s = scene->trace(cam.originInWorld(), t.linear() * rays[r * imageWidth + c], to);
             if (s < 10) {
-                img.at<unsigned char>(r, c) = s * 255 / 500;
+                img.at<unsigned char>(r, c) = s * 255 / 10;
             } else {
                 img.at<unsigned char>(r, c) = 0;
             }
         }
-    }
+    }*/
     
-    cv::imshow("image", img);
+    cv::imshow("Heat Image", r->heatImage()->toOpenCV());
     cv::waitKey();
 
 }
