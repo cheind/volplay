@@ -43,7 +43,11 @@ namespace volplay {
             /** Render the scene */
             void render();
             
-            /** Access the heat image. */
+            /** Access the heat image.
+             *  The heat image shows for each pixel how many ray steps where necessary
+             *  to produce a result. The more steps required the higher the image intensity. 
+             *  In general along object edges sphere tracing will take more steps.
+             */
             ByteImagePtr heatImage() const;
             
         private:
