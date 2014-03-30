@@ -8,10 +8,9 @@
 
 #include "catch.hpp"
 #include <volplay/sdf_sphere.h>
-#include <volplay/sdf_repetition.h>
-#include <volplay/sdf_making.h>
+#include <volplay/sdf_make.h>
 #include <volplay/sdf_rigid_transform.h>
-#include <volplay/camera.h>
+#include <volplay/rendering/camera.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -22,9 +21,9 @@ TEST_CASE("CPU based raytracing")
     const int imageWidth = 640;
     const int imageHeight = 480;
     
-    vp::SDFNodePtr scene = vp::making::plane().join(vp::making::sphere(1).translate(vp::Vector(0,0,0)));
+    vp::SDFNodePtr scene = vp::SDFMake::plane().join(vp::SDFMake::sphere(1).translate(vp::Vector(0,0,0)));
     
-    vp::Camera cam;
+    vp::rendering::Camera cam;
     cam.setCameraToImage(imageWidth, imageHeight, vp::Scalar(0.40));
     cam.setCameraToWorldAsLookAt(vp::Vector(0,0,5), vp::Vector(0,0,0), vp::Vector(0,-1,0));
     
@@ -40,7 +39,7 @@ TEST_CASE("CPU based raytracing")
         for (int c = 0; c < img.cols; ++c) {
             vp::Scalar s = scene->trace(cam.originInWorld(), t.linear() * rays[r * imageWidth + c], to);
             if (s < 10) {
-                img.at<unsigned char>(r, c) = s * 255 / 10;
+                img.at<unsigned char>(r, c) = s * 255 / 500;
             } else {
                 img.at<unsigned char>(r, c) = 0;
             }

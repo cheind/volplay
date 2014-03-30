@@ -38,6 +38,13 @@ namespace volplay {
     typedef std::shared_ptr<SDFNode const> SDFNodeConstPtr;
     typedef std::shared_ptr<SDFGroup const> SDFGroupConstPtr;
     
+    namespace rendering {
+        
+        class Camera;
+        
+        typedef std::shared_ptr<Camera> CameraPtr;
+    }
+    
 }
 
 #endif

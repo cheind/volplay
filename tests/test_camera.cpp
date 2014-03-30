@@ -9,21 +9,21 @@
 
 #include "catch.hpp"
 #include "float_comparison.hpp"
-#include <volplay/camera.h>
+#include <volplay/rendering/camera.h>
 
 namespace vp = volplay;
 
 TEST_CASE("Camera projection")
 {
-    vp::Camera c;
+    vp::rendering::Camera c;
     vp::AffineTransform t = vp::AffineTransform::Identity();
     t.translate(vp::Vector(10, 10, 10));
     
     c.setCameraToImage(vp::Vector2(100, 100), vp::Vector2(320, 240));
     c.setCameraToWorld(t);
     
-    vp::Camera::Matrix34 w2c = c.worldToCamera();
-    vp::Camera::Matrix34 w2i = c.worldToImage();
+    vp::rendering::Camera::Matrix34 w2c = c.worldToCamera();
+    vp::rendering::Camera::Matrix34 w2i = c.worldToImage();
     
     vp::Vector x = w2c * vp::Vector(0,0,50).homogeneous();
     
@@ -44,21 +44,21 @@ TEST_CASE("Camera projection")
 
 TEST_CASE("Camera inverse projection")
 {
-    vp::Camera c;
+    vp::rendering::Camera c;
     vp::AffineTransform t = vp::AffineTransform::Identity();
     t.translate(vp::Vector(10, 10, 10));
     
     c.setCameraToImage(vp::Vector2(100, 100), vp::Vector2(320, 240));
     c.setCameraToWorld(t);
     
-    vp::Camera::Matrix34 c2w = c.cameraToWorld();
+    vp::rendering::Camera::Matrix34 c2w = c.cameraToWorld();
     vp::Vector x = c2w * vp::Vector(-10,-10,40).homogeneous();
     
     REQUIRE_CLOSE(x(0), 0);
     REQUIRE_CLOSE(x(1), 0);
     REQUIRE_CLOSE(x(2), 50);
     
-    vp::Camera::Matrix33 i2c = c.imageToCamera();
+    vp::rendering::Camera::Matrix33 i2c = c.imageToCamera();
     
     x = i2c * vp::Vector2((100 * -10 + 320 * 40) / vp::Scalar(40),(100 * -10 + 240 * 40) / vp::Scalar(40)).homogeneous();
     x *= 40;
@@ -70,7 +70,7 @@ TEST_CASE("Camera inverse projection")
 
 TEST_CASE("Ray generation")
 {
-    vp::Camera c;
+    vp::rendering::Camera c;
     vp::AffineTransform t = vp::AffineTransform::Identity();
     t.rotate(Eigen::AngleAxis<vp::Scalar>(0.5 * M_PI, vp::Vector::UnitX()));
     

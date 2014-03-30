@@ -7,11 +7,23 @@ set(EIGEN_INCLUDE_DIR "../eigen" CACHE PATH "Where is the include directory of E
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 
+# Setup externals
+
+find_package(OpenCV)
+
+if (OpenCV_FOUND)
+    include_directories(${OpenCV_INCLUDE_DIRS})
+    link_libraries(${OpenCV_LIBS})
+    add_definitions(-DVOLPLAY_WITH_OPENCV)
+else ()
+    message("OpenCV not found")
+endif ()
+
 # Setup library
 
 set(VOLPLAY_CORE_FILES
-    inc/volplay/types.h
     inc/volplay/fwd.h
+    inc/volplay/types.h
     inc/volplay/sdf_result.h
     inc/volplay/sdf_node.h
     inc/volplay/sdf_unary.h
@@ -23,9 +35,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_repetition.h
     inc/volplay/sdf_sphere.h
     inc/volplay/sdf_plane.h
-    inc/volplay/sdf_making.h
-    inc/volplay/camera.h
-    inc/volplay/util/iterator_range.h
+    inc/volplay/sdf_make.h
     src/sdf_node.cpp
     src/sdf_unary.cpp
     src/sdf_group.cpp
@@ -36,8 +46,13 @@ set(VOLPLAY_CORE_FILES
     src/sdf_repetition.cpp
     src/sdf_sphere.cpp
     src/sdf_plane.cpp
-    src/sdf_making.cpp
-    src/camera.cpp
+    src/sdf_make.cpp
+)
+
+set(VOLPLAY_RENDERING_FILES
+    inc/volplay/rendering/camera.h
+    inc/volplay/rendering/image.h
+    src/rendering/camera.cpp
 )
 
 set(VOLPLAY_UTIL_FILES
@@ -45,12 +60,13 @@ set(VOLPLAY_UTIL_FILES
 )
 
 source_group(core FILES ${VOLPLAY_CORE_FILES})
+source_group(rendering FILES ${VOLPLAY_RENDERING_FILES})
 source_group(util FILES ${VOLPLAY_UTIL_FILES})
 
 include_directories(${EIGEN_INCLUDE_DIR})
 include_directories(inc)
 
-add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_UTIL_FILES})
+add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_RENDERING_FILES} ${VOLPLAY_UTIL_FILES})
 
 # Setup tests
 
@@ -67,6 +83,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_repetition.cpp
     tests/test_ray_tracer.cpp
     tests/test_camera.cpp
+    tests/test_image.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})
@@ -77,22 +94,16 @@ target_link_libraries(volplay_tests volplay)
 
 # Setup examples
 
-find_package(OpenCV)
-
 set(VOLPLAY_EXAMPLE_FILES
     examples/main.cpp
 )
 
-if (OpenCV_FOUND)
+if(OpenCV_FOUND)
     set(VOLPLAY_EXAMPLE_FILES
         ${VOLPLAY_EXAMPLE_FILES}
         examples/example_raytracer.cpp
     )
-    include_directories(${OpenCV_INCLUDE_DIRS})
-    link_libraries(${OpenCV_LIBS})
-else ()
-    message("OpenCV not found, skipping OpenCV related examples")
-endif ()
+endif()
 
 source_group(examples FILES ${VOLPLAY_EXAMPLE_FILES})
 
