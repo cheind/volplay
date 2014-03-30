@@ -34,10 +34,10 @@ namespace volplay {
             void setCameraToImage(const Vector2 &focalLength, const Vector2 &principalPoint);
             
             /** Builds the camera intrinsic matrix using FOV angles and image size. */
-            void setCameraToImage(int imageWidth, int imageHeight, Scalar hfov_radians, Scalar vfov_radians);
+            void setCameraToImage(int imageHeight, int imageWidth, Scalar hfov_radians, Scalar vfov_radians);
             
             /** Builds a symmetrical camera intrinsic matrix using vertica FOV angle. */
-            void setCameraToImage(int imageWidth, int imageHeight, Scalar vfov_radians);
+            void setCameraToImage(int imageHeight, int imageWidth, Scalar vfov_radians);
             
             /** Set camera view transform. */
             void setCameraToWorld(const Matrix34 &t);
@@ -76,7 +76,7 @@ namespace volplay {
             void generateCameraRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions);
             
             /** Generate normalized ray directions through given image points in camera space. */
-            void generateCameraRays(int imageWidth, int imageHeight, std::vector<Vector> &directions);
+            void generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector> &directions);
             
         private:
             Matrix33 _k;

@@ -27,7 +27,7 @@ namespace volplay {
         }
         
         void
-        Camera::setCameraToImage(int imageWidth, int imageHeight, Scalar hfov_radians, Scalar vfov_radians)
+        Camera::setCameraToImage(int imageHeight, int imageWidth, Scalar hfov_radians, Scalar vfov_radians)
         {
             Scalar fx = imageWidth / (Scalar(2) * tan(hfov_radians * Scalar(0.5)));
             Scalar fy = imageHeight / (Scalar(2) * tan(vfov_radians * Scalar(0.5)));
@@ -38,7 +38,7 @@ namespace volplay {
         }
         
         void
-        Camera::setCameraToImage(int imageWidth, int imageHeight, Scalar vfov_radians)
+        Camera::setCameraToImage(int imageHeight, int imageWidth, Scalar vfov_radians)
         {
             Scalar aspect = Scalar(imageWidth) / Scalar(imageHeight);
             Scalar sy = Scalar(1) / tan(vfov_radians * Scalar(0.5));
@@ -147,7 +147,7 @@ namespace volplay {
         }
         
         void
-        Camera::generateCameraRays(int imageWidth, int imageHeight, std::vector<Vector> &directions)
+        Camera::generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector> &directions)
         {
             Matrix33 kinv = this->imageToCamera();
             directions.resize(imageWidth * imageHeight);
