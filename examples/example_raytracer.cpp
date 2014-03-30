@@ -12,6 +12,7 @@
 #include <volplay/rendering/camera.h>
 #include <volplay/rendering/image.h>
 #include <volplay/rendering/renderer.h>
+#include <volplay/rendering/heat_image_generator.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -31,15 +32,18 @@ TEST_CASE("CPU based raytracing")
     vp::rendering::RendererPtr r(new vp::rendering::Renderer());
     r->setScene(scene);
     r->setCamera(cam);
-    r->setImageResolution(imageWidth, imageHeight);
+    r->setImageResolution(imageHeight, imageWidth);
     
     vp::SDFNode::TraceOptions to;
     to.maxIter = 50;
     r->setPrimaryTraceOptions(to);
     
+    vp::rendering::HeatImageGeneratorPtr heat(new vp::rendering::HeatImageGenerator());
+    r->addImageGenerator(heat);
+    
     r->render();
     
-    cv::imshow("Heat Image", r->heatImage()->toOpenCV());
+    cv::imshow("Heat Image", heat->image()->toOpenCV());
     cv::waitKey();
 
 }
