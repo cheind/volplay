@@ -96,7 +96,7 @@ namespace volplay {
                 return cv::Mat(_rows, _cols, CV_MAKETYPE(cv::DataType<T>::depth, _channels), (char*)_data);
             }
 #endif
-                       
+         
         private:
             T *_data;
             int _rows, _cols, _channels;
