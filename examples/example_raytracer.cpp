@@ -39,26 +39,6 @@ TEST_CASE("CPU based raytracing")
     
     r->render();
     
-    /*
-    vp::AffineTransform t = cam.cameraToWorldTransform();
-    
-    std::vector<vp::Vector> rays;
-    cam.generateCameraRays(imageHeight, imageWidth, rays);
-    
-    vp::SDFNode::TraceOptions to;
-    
-    cv::Mat img(imageHeight, imageWidth, CV_8UC1);
-    for (int r = 0; r < img.rows; ++r) {
-        for (int c = 0; c < img.cols; ++c) {
-            vp::Scalar s = scene->trace(cam.originInWorld(), t.linear() * rays[r * imageWidth + c], to);
-            if (s < 10) {
-                img.at<unsigned char>(r, c) = s * 255 / 10;
-            } else {
-                img.at<unsigned char>(r, c) = 0;
-            }
-        }
-    }*/
-    
     cv::imshow("Heat Image", r->heatImage()->toOpenCV());
     cv::waitKey();
 
