@@ -12,6 +12,8 @@
 
 #include <volplay/types.h>
 #include <volplay/sdf_result.h>
+#include <unordered_map>
+#include <string>
 
 namespace volplay {
 
@@ -57,6 +59,38 @@ namespace volplay {
         
         /** Trace ray. Uses sphere tracing to find intersection */
         virtual Scalar trace(const Vector &o, const Vector &d, const TraceOptions &opts, TraceResult *tr = 0) const;
+        
+        /** Set node attachment */
+        void setAttachment(const std::string &key, const SDFNodeAttachmentPtr &attachment);
+        
+        /** Get node attachment */
+        template<class Derived>
+        std::shared_ptr<Derived> attachment(const std::string &key) const
+        {
+            auto iter = _attachments.find(key);
+            if (iter != _attachments.end()) {
+                return std::dynamic_pointer_cast<Derived>(iter->second);
+            } else {
+                return std::shared_ptr<Derived>();
+            }
+        }
+        
+        /** Get or create node attachment */
+        template<class Derived>
+        std::shared_ptr<Derived> getOrCreateAttachment(const std::string &key)
+        {
+            auto iter = _attachments.find(key);
+            if (iter != _attachments.end()) {
+                return std::dynamic_pointer_cast<Derived>(iter->second);
+            } else {
+                std::shared_ptr<Derived> d(new Derived());
+                setAttachment(key, d);
+                return d;
+            }
+        }
+        
+    private:
+        std::unordered_map<std::string, SDFNodeAttachmentPtr> _attachments;
     };
 
 }

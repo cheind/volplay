@@ -15,6 +15,7 @@
 namespace volplay {
     
     class SDFNode;
+    class SDFNodeAttachment;
     class SDFGroup;
     class SDFUnion;
     class SDFIntersection;
@@ -25,6 +26,7 @@ namespace volplay {
     class SDFPlane;
     
     typedef std::shared_ptr<SDFNode> SDFNodePtr;
+    typedef std::shared_ptr<SDFNodeAttachment> SDFNodeAttachmentPtr;
     typedef std::weak_ptr<SDFNode> SDFNodeWeakPtr;
     typedef std::shared_ptr<SDFGroup> SDFGroupPtr;
     typedef std::shared_ptr<SDFUnion> SDFUnionPtr;

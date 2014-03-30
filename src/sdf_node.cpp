@@ -86,6 +86,12 @@ namespace volplay {
         return t;
 
     }
+
+    void
+    SDFNode::setAttachment(const std::string &key, const SDFNodeAttachmentPtr &attachment)
+    {
+        _attachments[key] = attachment;
+    }
     
     
     
