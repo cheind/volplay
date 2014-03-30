@@ -41,8 +41,11 @@ namespace volplay {
     namespace rendering {
         
         class Camera;
+        template<class T> class Image;
+        class Renderer;
         
         typedef std::shared_ptr<Camera> CameraPtr;
+        typedef std::shared_ptr<Renderer> RendererPtr;
     }
     
 }
