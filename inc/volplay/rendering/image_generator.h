@@ -32,9 +32,16 @@ namespace volplay {
                 SDFNode::TraceResult tr;
             };
             
+            /** Invoked by Renderer to signal beginning of a new frame. */
             virtual void onRenderingBegin(const Renderer *r) = 0;
+            
+            /** Invoked by Renderer to signal a new row. */
             virtual void onRowBegin(int row) = 0;
+            
+            /** Invoked by Renderer to request updating of a pixel. */
             virtual void onUpdatePixel(const PixelInfo &pi) = 0;
+            
+            /** Invoked by Renderer to signal end of frame. */
             virtual void onRenderingComplete(const Renderer *r) = 0;
         };
         
