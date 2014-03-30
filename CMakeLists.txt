@@ -52,6 +52,9 @@ set(VOLPLAY_CORE_FILES
 set(VOLPLAY_RENDERING_FILES
     inc/volplay/rendering/camera.h
     inc/volplay/rendering/image.h
+    inc/volplay/rendering/saturate.h
+    inc/volplay/rendering/renderer.h
+    src/rendering/renderer.cpp
     src/rendering/camera.cpp
 )
 
@@ -84,6 +87,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_ray_tracer.cpp
     tests/test_camera.cpp
     tests/test_image.cpp
+    tests/test_saturate.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})
