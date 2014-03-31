@@ -17,7 +17,7 @@ namespace volplay {
     
     namespace rendering {
 
-        /** A light source. */
+        /** A light source. Currently only supports point lights. */
         class Light {
         public:
             
@@ -30,9 +30,36 @@ namespace volplay {
             /** Access the position of the light source. */
             const Vector &position() const;
             
-
+            /** Set diffuse color of light. */
+            void setDiffuseColor(const Vector &c);
+            
+            /** Access diffuse color of light. */
+            const Vector &diffuseColor() const;
+            
+            /** Set diffuse color of light. */
+            void setSpecularColor(const Vector &c);
+            
+            /** Access diffuse color of light. */
+            const Vector &specularColor() const;
+            
+            /** Set diffuse color power. */
+            void setDiffusePower(Scalar power);
+            
+            /** Access diffuse power. */
+            Scalar diffusePower() const;
+            
+            /** Set specular color power. */
+            void setSpecularPower(Scalar power);
+            
+            /** Access specular power. */
+            Scalar specularPower() const;
+            
         private:
             Vector _position;
+            Vector _diffuseColor;
+            Vector _specularColor;
+            Scalar _diffusePower;
+            Scalar _specularPower;
         };
         
     }

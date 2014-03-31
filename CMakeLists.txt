@@ -56,15 +56,19 @@ set(VOLPLAY_RENDERING_FILES
     inc/volplay/rendering/image.h
     inc/volplay/rendering/saturate.h
     inc/volplay/rendering/light.h
+    inc/volplay/rendering/material.h
     inc/volplay/rendering/renderer.h
     inc/volplay/rendering/image_generator.h
     inc/volplay/rendering/heat_image_generator.h
     inc/volplay/rendering/depth_image_generator.h
+    inc/volplay/rendering/blinn_phong_image_generator.h
     src/rendering/renderer.cpp
     src/rendering/camera.cpp
     src/rendering/light.cpp
+    src/rendering/material.cpp
     src/rendering/heat_image_generator.cpp
     src/rendering/depth_image_generator.cpp
+    src/rendering/blinn_phong_image_generator.cpp
 )
 
 set(VOLPLAY_UTIL_FILES
