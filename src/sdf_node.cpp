@@ -42,7 +42,7 @@ namespace volplay {
     }
     
     SDFNode::TraceOptions::TraceOptions()
-    :minT(0), maxT(std::numeric_limits<Scalar>::max()), stepFact(1), sdfThreshold(0.001), maxIter(500)
+    :minT(0), maxT(std::numeric_limits<Scalar>::max()), stepFact(1), sdfThreshold(0.001f), maxIter(500)
     {
     }
     

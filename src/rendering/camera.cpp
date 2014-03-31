@@ -152,8 +152,8 @@ namespace volplay {
             Matrix33 kinv = this->imageToCamera();
             directions.resize(imageWidth * imageHeight);
             
-            for (size_t r = 0; r < imageHeight; ++r) {
-                for (size_t c = 0; c < imageWidth; ++c) {
+            for (int r = 0; r < imageHeight; ++r) {
+                for (int c = 0; c < imageWidth; ++c) {
                     directions[r * imageWidth + c] = (kinv * Vector2(c, r).homogeneous()).normalized();
                 }
             }

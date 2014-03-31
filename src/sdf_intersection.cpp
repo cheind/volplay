@@ -29,8 +29,8 @@ namespace volplay {
         SDFGroup::SDFNodeArray::const_iterator i = this->begin();
         
         SDFResult r = (*i)->fullEval(x);
-        for (auto n : util::makeIteratorRange(++i, this->end())) {
-            SDFResult o = n->fullEval(x);
+        for (++i; i != this->end(); ++i) {
+            SDFResult o = (*i)->fullEval(x);
             r = r.sdf > o.sdf ? r : o;
         }
         
