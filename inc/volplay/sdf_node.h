@@ -51,6 +51,7 @@ namespace volplay {
             int iter;       ///< Number of iterations applied
             Scalar t;       ///< Parametric t of ray equation
             Scalar sdf;     ///< Signed distance at intersection
+            bool hit;       ///< True if abs(sdf) < TraceOptions.sdfThreshold
             
             /** Default trace options */
             TraceResult();

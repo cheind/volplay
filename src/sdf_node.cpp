@@ -50,7 +50,7 @@ namespace volplay {
     :iter(0), t(0), sdf(0)
     {
     }
-    
+   
     Scalar  
     SDFNode::trace(const Vector &o, const Vector &d, const TraceOptions &opts, TraceResult *tr) const
     {
@@ -81,6 +81,7 @@ namespace volplay {
             tr->t = t;
             tr->sdf = sdf;
             tr->iter = nIter;
+            tr->hit = fabs(sdf) < opts.sdfThreshold;
         }
         
         return t;
