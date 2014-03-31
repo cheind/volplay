@@ -25,6 +25,12 @@ namespace volplay {
         {
             _camera = cam;
         }
+
+        const CameraPtr &
+        Renderer::camera() const
+        {
+            return _camera;
+        }
         
         void
         Renderer::setScene(const SDFNodePtr &root)

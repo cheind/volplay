@@ -32,6 +32,9 @@ namespace volplay {
             
             /** Set the camera object */
             void setCamera(const CameraPtr &cam);
+
+            /** Access the camera */
+            const CameraPtr &camera() const;
             
             /** Set the resulting image resolution. */
             void setImageResolution(int imageHeight, int imageWidth);
