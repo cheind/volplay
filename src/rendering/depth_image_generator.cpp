@@ -39,6 +39,7 @@ namespace volplay {
         DepthImageGenerator::onUpdatePixel(const PixelInfo &pi)
         {
             if (pi.tr.hit) {
+                // Note that ray is traced in world coordinate sytem.
                 _row[pi.col] = (_worldToCamera * (pi.origin + pi.tr.t * pi.direction)).z();
             } else {
                 _row[pi.col] = _invValue;
