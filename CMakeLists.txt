@@ -59,10 +59,12 @@ set(VOLPLAY_RENDERING_FILES
     inc/volplay/rendering/renderer.h
     inc/volplay/rendering/image_generator.h
     inc/volplay/rendering/heat_image_generator.h
+    inc/volplay/rendering/depth_image_generator.h
     src/rendering/renderer.cpp
     src/rendering/camera.cpp
     src/rendering/light.cpp
     src/rendering/heat_image_generator.cpp
+    src/rendering/depth_image_generator.cpp
 )
 
 set(VOLPLAY_UTIL_FILES

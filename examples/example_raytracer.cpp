@@ -13,6 +13,7 @@
 #include <volplay/rendering/image.h>
 #include <volplay/rendering/renderer.h>
 #include <volplay/rendering/heat_image_generator.h>
+#include <volplay/rendering/depth_image_generator.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -35,15 +36,22 @@ TEST_CASE("CPU based raytracing")
     r->setImageResolution(imageHeight, imageWidth);
     
     vp::SDFNode::TraceOptions to;
-    to.maxIter = 50;
+    to.maxIter = 200;
     r->setPrimaryTraceOptions(to);
     
     vp::rendering::HeatImageGeneratorPtr heat(new vp::rendering::HeatImageGenerator());
     r->addImageGenerator(heat);
+
+    vp::rendering::DepthImageGeneratorPtr depth(new vp::rendering::DepthImageGenerator());
+    r->addImageGenerator(depth);
     
     r->render();
+
+    cv::Mat depthImage;
+    depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 20);
     
     cv::imshow("Heat Image", heat->image()->toOpenCV());
+    cv::imshow("Depth Image",depthImage);
     cv::waitKey();
 
 }
