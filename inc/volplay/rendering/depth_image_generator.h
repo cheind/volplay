@@ -32,8 +32,10 @@ namespace volplay {
             DepthImageGenerator();
             
             virtual void onRenderingBegin(const Renderer *r);
-            virtual void onRowBegin(int row);
-            virtual void onUpdatePixel(const PixelInfo &pi);
+            virtual void onUpdateRow(int row,
+                                     const Vector &origin,
+                                     const Vector *directions,
+                                     const SDFNode::TraceResult *tr, int cols);
             virtual void onRenderingComplete(const Renderer *r);
             
             /** Access the generated heat image. */
@@ -46,7 +48,6 @@ namespace volplay {
             
         private:
             float _invValue;
-            float *_row;
             FloatImagePtr _image;
             SDFNode::TraceOptions _to;
             AffineTransform _worldToCamera;

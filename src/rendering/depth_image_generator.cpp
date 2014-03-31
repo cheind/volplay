@@ -30,20 +30,21 @@ namespace volplay {
         }
         
         void
-        DepthImageGenerator::onRowBegin(int row)
-        {            
-            _row = _image->row(row);
-        }
-        
-        void
-        DepthImageGenerator::onUpdatePixel(const PixelInfo &pi)
+        DepthImageGenerator::onUpdateRow(int row,
+                                         const Vector &origin,
+                                         const Vector *directions,
+                                         const SDFNode::TraceResult *tr, int cols)
         {
-            if (pi.tr.hit) {
-                // Note that ray is traced in world coordinate sytem.
-                _row[pi.col] = (_worldToCamera * (pi.origin + pi.tr.t * pi.direction)).z();
-            } else {
-                _row[pi.col] = _invValue;
-            }            
+            float *imageRow = _image->row(row);
+            
+            for (int c = 0; c < cols; ++c) {
+                if (tr[c].hit) {
+                    // Note that ray is traced in world coordinate sytem.
+                    imageRow[c] = (_worldToCamera * (origin + tr[c].t * directions[c])).z();
+                } else {
+                    imageRow[c] = _invValue;
+                }
+            }
         }
         
         void

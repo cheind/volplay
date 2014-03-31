@@ -82,10 +82,19 @@ namespace volplay {
                 return;
             }
             
-            // Prepare rays
+            // Prepare primary rays
             std::vector<Vector> rays;
             _camera->generateCameraRays(_imageHeight, _imageWidth, rays);
+            
+            std::vector<SDFNode::TraceResult> traceResults(rays.size());
             AffineTransform::LinearPart t = _camera->cameraToWorldTransform().linear();
+            
+            // Convert to world rays and trace
+            const Vector origin = _camera->originInWorld();
+            for (size_t i = 0; i < rays.size(); ++i) {
+                rays[i] = t * rays[i];
+                _root->trace(origin, rays[i], _primaryTraceOptions, &traceResults[i]);
+            }
             
             // Prepare generators
             std::vector<ImageGeneratorPtr>::iterator gBegin = _generators.begin();
@@ -96,30 +105,14 @@ namespace volplay {
                 (*gi)->onRenderingBegin(this);
             }
             
-            ImageGenerator::PixelInfo pi;
-            pi.origin = _camera->originInWorld();
-            
-            // For each row
-            for (pi.row = 0; pi.row < _imageHeight; ++pi.row) {
+            // For each row invoke generators
+            for (int row = 0; row < _imageHeight; ++row) {
                 
-                // Update generators
+                const Vector *rayRow = &rays[row * _imageWidth];
+                const SDFNode::TraceResult *traceResultsRow = &traceResults[row * _imageWidth];
+                
                 for (gi = gBegin; gi != gEnd; ++gi) {
-                    (*gi)->onRowBegin(pi.row);
-                }
-                
-                const Vector *rayRow = &rays[pi.row * _imageWidth];
-                
-                for (pi.col = 0; pi.col < _imageWidth; ++pi.col) {
-                    
-                    // Trace primary ray
-                    pi.direction = t * rayRow[pi.col];
-                    _root->trace(pi.origin, pi.direction, _primaryTraceOptions, &pi.tr);
-                    
-                    // Update generators
-                    for (gi = gBegin; gi != gEnd; ++gi) {
-                        (*gi)->onUpdatePixel(pi);
-                    }
-
+                    (*gi)->onUpdateRow(row, origin, rayRow, traceResultsRow, _imageWidth);
                 }
             }
             

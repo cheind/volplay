@@ -24,7 +24,7 @@ namespace volplay {
         public:
             
             /** Info about the current pixel to be traced. */
-            struct PixelInfo {
+            struct RayInfo {
                 int row;
                 int col;
                 Vector origin;
@@ -35,11 +35,14 @@ namespace volplay {
             /** Invoked by Renderer to signal beginning of a new frame. */
             virtual void onRenderingBegin(const Renderer *r) = 0;
             
-            /** Invoked by Renderer to signal a new row. */
-            virtual void onRowBegin(int row) = 0;
-            
-            /** Invoked by Renderer to request updating of a pixel. */
-            virtual void onUpdatePixel(const PixelInfo &pi) = 0;
+            /** Invoked by Renderer to request updating of a pixel.
+             *  Note that this function is required to be thread-safe as the Renderer might
+             *  choose to invoke this method in parallel for different rows.
+             */
+            virtual void onUpdateRow(int row,
+                                     const Vector &origin,
+                                     const Vector *directions,
+                                     const SDFNode::TraceResult *tr, int cols) = 0;
             
             /** Invoked by Renderer to signal end of frame. */
             virtual void onRenderingComplete(const Renderer *r) = 0;

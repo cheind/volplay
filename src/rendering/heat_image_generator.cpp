@@ -27,16 +27,18 @@ namespace volplay {
             _image->create(r->imageHeight(), r->imageWidth(), 1);
         }
         
-        void
-        HeatImageGenerator::onRowBegin(int row)
-        {
-            _row = _image->row(row);
-        }
         
         void
-        HeatImageGenerator::onUpdatePixel(const PixelInfo &pi)
+        HeatImageGenerator::onUpdateRow(int row,
+                                        const Vector &origin,
+                                        const Vector *directions,
+                                        const SDFNode::TraceResult *tr, int cols)
         {
-            _row[pi.col] = saturate<unsigned char>(((float)pi.tr.iter / _maxIter) * 255.f);
+            unsigned char *imageRow = _image->row(row);
+            
+            for (int c =0; c < cols; ++c) {
+                imageRow[c] = saturate<unsigned char>(((float)tr[c].iter / _maxIter) * 255.f);
+            }
         }
         
         void
