@@ -109,6 +109,14 @@ namespace volplay {
             r.block<3,1>(0,3) = tinv;
             return r;
         }
+
+        AffineTransform 
+        Camera::worldToCameraTransform() const
+        {
+            AffineTransform at = AffineTransform::Identity();
+            at.matrix().block<3,4>(0,0) = worldToCamera();
+            return at;
+        }
         
         Camera::Matrix34
         Camera::worldToImage() const

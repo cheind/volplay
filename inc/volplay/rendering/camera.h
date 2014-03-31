@@ -56,6 +56,9 @@ namespace volplay {
             
             /** Retrieve matrix that converts 3D world points to 3D points in camera space. */
             Matrix34 worldToCamera() const;
+
+            /** Retrieve camera view transform, i.e how the camera is positioned in world space. */
+            AffineTransform worldToCameraTransform() const;
             
             /** Retrieve camera view matrix, i.e how the camera is positioned in world space. */
             Matrix34 cameraToWorld() const;
