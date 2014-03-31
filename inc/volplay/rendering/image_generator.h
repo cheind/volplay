@@ -23,15 +23,6 @@ namespace volplay {
         class ImageGenerator {
         public:
             
-            /** Info about the current pixel to be traced. */
-            struct RayInfo {
-                int row;
-                int col;
-                Vector origin;
-                Vector direction;
-                SDFNode::TraceResult tr;
-            };
-            
             /** Invoked by Renderer to signal beginning of a new frame. */
             virtual void onRenderingBegin(const Renderer *r) = 0;
             
