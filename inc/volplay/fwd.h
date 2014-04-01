@@ -43,21 +43,25 @@ namespace volplay {
         
         class Camera;
         class Renderer;
+        class Material;
+        class Light;
         class ImageGenerator;
         class HeatImageGenerator;
         class DepthImageGenerator;
+        class BlinnPhongImageGenerator;
+        
+        typedef std::shared_ptr<Camera> CameraPtr;
+        typedef std::shared_ptr<Renderer> RendererPtr;
+        typedef std::shared_ptr<Material> MaterialPtr;
+        typedef std::shared_ptr<Light> LightPtr;
+        typedef std::shared_ptr<ImageGenerator> ImageGeneratorPtr;
+        typedef std::shared_ptr<HeatImageGenerator> HeatImageGeneratorPtr;
+        typedef std::shared_ptr<DepthImageGenerator> DepthImageGeneratorPtr;
+        typedef std::shared_ptr<BlinnPhongImageGenerator> BlinnPhongImageGeneratorPtr;
         
         template<class T> class Image;
         typedef Image<unsigned char> ByteImage;
         typedef Image<float> FloatImage;
-        
-        
-        typedef std::shared_ptr<Camera> CameraPtr;
-        typedef std::shared_ptr<Renderer> RendererPtr;
-        typedef std::weak_ptr<Renderer> RendererWeakPtr;
-        typedef std::shared_ptr<ImageGenerator> ImageGeneratorPtr;
-        typedef std::shared_ptr<HeatImageGenerator> HeatImageGeneratorPtr;
-        typedef std::shared_ptr<DepthImageGenerator> DepthImageGeneratorPtr;
         typedef std::shared_ptr<ByteImage> ByteImagePtr;
         typedef std::shared_ptr<FloatImage> FloatImagePtr;
     }

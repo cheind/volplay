@@ -59,6 +59,13 @@ namespace volplay {
         return *this;
     }
     
+    SDFMake &
+    SDFMake::attach(const std::string &s, const SDFNodeAttachmentPtr &a)
+    {
+        _n->setAttachment(s, a);
+        return *this;
+    }
+    
     SDFMake::operator SDFNodePtr() const
     {
         return _n;

@@ -19,6 +19,8 @@ namespace volplay {
     namespace rendering {
 
         /** Generates a color image using the Blinn-Phong reflection model.
+         *
+         *  SDFNodes need to carry a 'Material' attachment of type Material.
          */
         class BlinnPhongImageGenerator : public ImageGenerator {
         public:
@@ -36,7 +38,15 @@ namespace volplay {
             ByteImagePtr image() const;
             
         private:
+            
+            /** Illuminate point. */
+            Vector illuminate(const Vector &viewDir, const Vector &p) const;
+            
             ByteImagePtr _image;
+            SDFNodePtr _root;
+            LightPtr _light;
+            Vector _clearColor;
+                                    
         };
         
     }

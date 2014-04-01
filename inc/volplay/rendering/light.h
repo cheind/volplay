@@ -30,6 +30,12 @@ namespace volplay {
             /** Access the position of the light source. */
             const Vector &position() const;
             
+            /** Set ambient color of light. */
+            void setAmbientColor(const Vector &c);
+            
+            /** Access ambient color of light. */
+            const Vector &ambientColor() const;
+            
             /** Set diffuse color of light. */
             void setDiffuseColor(const Vector &c);
             
@@ -42,24 +48,11 @@ namespace volplay {
             /** Access diffuse color of light. */
             const Vector &specularColor() const;
             
-            /** Set diffuse color power. */
-            void setDiffusePower(Scalar power);
-            
-            /** Access diffuse power. */
-            Scalar diffusePower() const;
-            
-            /** Set specular color power. */
-            void setSpecularPower(Scalar power);
-            
-            /** Access specular power. */
-            Scalar specularPower() const;
-            
         private:
             Vector _position;
+            Vector _ambientColor;
             Vector _diffuseColor;
             Vector _specularColor;
-            Scalar _diffusePower;
-            Scalar _specularPower;
         };
         
     }

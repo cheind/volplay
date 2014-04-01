@@ -34,6 +34,12 @@ namespace volplay {
             return static_cast<T>(r);
         }
         
+        /** Clamp value to range. */
+        template<class T>
+        T clamp(T t, T minimum, T maximum) {
+            return std::min<T>(maximum, std::max<T>(t, minimum));
+        }
+        
     }
 }
 

@@ -30,6 +30,9 @@ namespace volplay {
             /** Set the SDF scene to be rendered. */
             void setScene(const SDFNodePtr &root);
             
+            /** Acces the SDF scene to be rendered. */
+            const SDFNodePtr &scene() const;
+            
             /** Set the camera object */
             void setCamera(const CameraPtr &cam);
 

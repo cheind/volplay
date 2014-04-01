@@ -38,6 +38,12 @@ namespace volplay {
             _root = root;
         }
         
+        const SDFNodePtr &
+        Renderer::scene() const
+        {
+            return _root;
+        }
+        
         void
         Renderer::setImageResolution(int imageHeight, int imageWidth)
         {

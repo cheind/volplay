@@ -25,6 +25,7 @@ namespace volplay {
         SDFMake &remove(const SDFMake &right);
         SDFMake &translate(const Vector &t);
         SDFMake &repeat(const Vector &cellSizes);
+        SDFMake &attach(const std::string &s, const SDFNodeAttachmentPtr &a);
         
         operator SDFNodePtr() const;
         

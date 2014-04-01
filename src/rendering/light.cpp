@@ -14,7 +14,7 @@ namespace volplay {
     namespace rendering {
     
         Light::Light()
-        : _position(0, 0, 100), _diffuseColor(1,1,1), _specularColor(1,1,1), _specularPower(1), _diffusePower(1)
+        : _position(0, 0, 100), _ambientColor(1,1,1), _diffuseColor(1,1,1), _specularColor(1,1,1)
         {}
         
         void
@@ -27,6 +27,18 @@ namespace volplay {
         Light::position() const
         {
             return _position;
+        }
+        
+        void
+        Light::setAmbientColor(const Vector &c)
+        {
+            _ambientColor = c;
+        }
+        
+        const Vector &
+        Light::ambientColor() const
+        {
+            return _ambientColor;
         }
         
         void
@@ -51,30 +63,6 @@ namespace volplay {
         Light::specularColor() const
         {
             return _specularColor;
-        }
-        
-        void
-        Light::setDiffusePower(Scalar power)
-        {
-            _diffusePower = power;
-        }
-        
-        Scalar
-        Light::diffusePower() const
-        {
-            return _diffusePower;
-        }
-        
-        void
-        Light::setSpecularPower(Scalar power)
-        {
-            _specularPower = power;
-        }
-        
-        Scalar
-        Light::specularPower() const
-        {
-            return _specularPower;
         }
         
     }
