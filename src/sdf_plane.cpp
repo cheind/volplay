@@ -15,6 +15,10 @@ namespace volplay {
     : _normal(0,0,1), _w(0)
     {}
     
+    SDFPlane::SDFPlane(const Vector &n)
+    : _normal(n), _w(0)
+    {}
+    
     SDFResult
     SDFPlane::fullEval(const Vector &x) const
     {
