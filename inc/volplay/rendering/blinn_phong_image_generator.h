@@ -34,7 +34,7 @@ namespace volplay {
                                      const SDFNode::TraceResult *tr, int cols);
             virtual void onRenderingComplete(const Renderer *r);
             
-            /** Access the generated BGR color image. */
+            /** Access the generated RGB color image. */
             ByteImagePtr image() const;
             
         private:
