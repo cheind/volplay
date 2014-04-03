@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/rendering/camera.h>
+#include <iostream>
 
 namespace volplay {
     
@@ -80,8 +81,8 @@ namespace volplay {
             
             _camera_to_world = Matrix34::Identity();
             _camera_to_world << x.x(), y.x(), z.x(), eye.x(),
-            x.y(), y.y(), z.y(), eye.y(),
-            x.z(), y.z(), z.z(), eye.z();
+                                x.y(), y.y(), z.y(), eye.y(),
+                                x.z(), y.z(), z.z(), eye.z();
         }
         
         Camera::Matrix34
