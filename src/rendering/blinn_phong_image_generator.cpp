@@ -20,15 +20,15 @@ namespace volplay {
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        :_image(new ByteImage()), _clearColor(Vector::Zero())
-        {}
+        :_image(new ByteImage()), _clearColor(Vector::Zero()), _light(new Light()), _defaultMaterial(new Material())
+        {
+        }
         
         void
         BlinnPhongImageGenerator::onRenderingBegin(const Renderer *r)
         {
             _image->create(r->imageHeight(), r->imageWidth(), 3);
             _root = r->scene();
-            _light = LightPtr(new Light());
         }
         
         
@@ -41,11 +41,18 @@ namespace volplay {
             unsigned char *imageRow = _image->row(row);
             
             for (int c = 0; c < cols; ++c) {
-                /*if (tr[c].hit) {
+                Vector i = _clearColor;
+                if (tr[c].hit) {
                     Vector p = origin + tr[c].t * directions[c];
-                } else {
-                    imageRow[c] = _invValue;
-                }*/
+                    i = illuminate(directions[c], p);
+                }
+                unsigned char r = saturate<unsigned char>(i.x() * Scalar(255));
+                unsigned char g = saturate<unsigned char>(i.y() * Scalar(255));
+                unsigned char b = saturate<unsigned char>(i.z() * Scalar(255));
+
+                imageRow[c*3+0] = r;
+                imageRow[c*3+1] = g;
+                imageRow[c*3+2] = b;
             }
         }
         
@@ -64,41 +71,29 @@ namespace volplay {
         Vector
         BlinnPhongImageGenerator::illuminate(const Vector &viewDir, const Vector &p) const
         {
+            // Note that illumination is performed in world space. I.e inputs are
+            // w.r.t to world
+
             // http://www.cs.uregina.ca/Links/class-info/315/WWW/Lab4/
-            /*
-            Illumination r;
+
             SDFResult sdf = _root->fullEval(p);
-            MaterialPtr m = sdf.node->attachment<Material>("Material");
+            MaterialPtr m = sdf.node->attachmentOrDefault<Material>("Material", _defaultMaterial);
             LightPtr l = _light;
-            
-            r.ambient = m->l->ambientColor() * m->ambientReflectionConstant();
-            
-            if (m->diffuseReflectionConstant() == 0) {
-                return r;
-            }
-            
+
+            // Ambient illumination
+            Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor());
+
+            // Diffuse illumination
             Vector n = _root->normal(p);
-            Vector ldir = l->position() - p;
-            Scalar dist = ldir.norm();
-            ldir /= dist;
-            dist = dist * dist;
-            
-            // Diffuse term
-            
-            Scalar ndotl = n.dot(ldir);
-            Scalar intensity = clamp(ndotl, Scalar(0), Scalar(1));
-            r.diffuse = (intensity * l->diffuseColor() * m->diffuseReflectionConstant()) / dist;
-            
-            // Specular term
-            
-            Vector h = (ldir + viewDir).normalized();
-            Scalar ndoth = n.dot(h);
-            intensity = std::pow(clamp(ndoth, Scalar(0), Scalar(1)), m->specularHardness());
-            r.specular = (intensity * l->specularColor() * m->specularReflectionConstant()) / dist;
-            
-            
-            return r;
-            */
+            Vector ldir = (l->position() - p).normalized();
+            Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor());
+
+            // Specular illumination
+            Vector edir = -viewDir;
+            Vector h = (ldir + edir).normalized();
+            Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor());
+
+            return iAmbient + iDiffuse + iSpecular;
         }
         
     }

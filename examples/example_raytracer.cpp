@@ -14,6 +14,7 @@
 #include <volplay/rendering/renderer.h>
 #include <volplay/rendering/heat_image_generator.h>
 #include <volplay/rendering/depth_image_generator.h>
+#include <volplay/rendering/blinn_phong_image_generator.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -44,6 +45,9 @@ TEST_CASE("CPU based raytracing")
 
     vp::rendering::DepthImageGeneratorPtr depth(new vp::rendering::DepthImageGenerator());
     r->addImageGenerator(depth);
+
+    vp::rendering::BlinnPhongImageGeneratorPtr phong(new vp::rendering::BlinnPhongImageGenerator());
+    r->addImageGenerator(phong);
     
     r->render();
 
@@ -52,6 +56,7 @@ TEST_CASE("CPU based raytracing")
     
     cv::imshow("Heat Image", heat->image()->toOpenCV());
     cv::imshow("Depth Image",depthImage);
+    cv::imshow("Blinn Phong Image",phong->image()->toOpenCV());
     cv::waitKey();
 
 }

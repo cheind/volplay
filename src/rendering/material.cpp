@@ -15,11 +15,8 @@ namespace volplay {
     
         Material::Material()
         : _ambientColor(0,0,0)
-        , _diffuseColor(1,1,1)
+        , _diffuseColor(0.5,0.5,0.5)
         , _specularColor(1,1,1)
-        , _ambientConstant(1)
-        , _diffuseConstant(1)
-        , _specularConstant(1)
         , _specularHardness(32)
         {}
         
@@ -69,42 +66,6 @@ namespace volplay {
         Material::specularColor() const
         {
             return _specularColor;
-        }
-        
-        void
-        Material::setAmbientReflectionConstant(Scalar s)
-        {
-            _ambientConstant = s;
-        }
-        
-        Scalar
-        Material::ambientReflectionConstant() const
-        {
-            return _ambientConstant;
-        }
-        
-        void
-        Material::setDiffuseReflectionConstant(Scalar s)
-        {
-            _diffuseConstant = s;
-        }
-        
-        Scalar
-        Material::diffuseReflectionConstant() const
-        {
-            return _diffuseConstant;
-        }
-        
-        void
-        Material::setSpecularReflectionConstant(Scalar s)
-        {
-            _specularConstant = s;
-        }
-        
-        Scalar
-        Material::specularReflectionConstant() const
-        {
-            return _specularConstant;
         }
         
     }

@@ -75,7 +75,19 @@ namespace volplay {
                 return std::shared_ptr<Derived>();
             }
         }
-        
+
+        /** Get node attachment or default */
+        template<class Derived>
+        std::shared_ptr<Derived> attachmentOrDefault(const std::string &key, const std::shared_ptr<Derived> &defaultValue) const
+        {
+            auto iter = _attachments.find(key);
+            if (iter != _attachments.end()) {
+                return std::dynamic_pointer_cast<Derived>(iter->second);
+            } else {
+                return defaultValue;                
+            }
+        }
+
         /** Get or create node attachment */
         template<class Derived>
         std::shared_ptr<Derived> getOrCreateAttachment(const std::string &key)

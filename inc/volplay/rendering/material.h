@@ -47,33 +47,12 @@ namespace volplay {
             void setSpecularColor(const Vector &specular);
             
             /** Specular color of material. */
-            const Vector &specularColor() const;
-            
-            /** Ambient reflection constant. */
-            void setAmbientReflectionConstant(Scalar s);
-            
-            /** Ambient reflection constant. */
-            Scalar ambientReflectionConstant() const;
-            
-            /** Diffuse reflection constant. */
-            void setDiffuseReflectionConstant(Scalar s);
-            
-            /** Diffuse reflection constant. */
-            Scalar diffuseReflectionConstant() const;
-            
-            /** Specular reflection constant. */
-            void setSpecularReflectionConstant(Scalar s);
-            
-            /** Specular reflection constant. */
-            Scalar specularReflectionConstant() const;
+            const Vector &specularColor() const;          
 
         private:
             Vector _ambientColor;
             Vector _diffuseColor;
             Vector _specularColor;
-            Scalar _ambientConstant;
-            Scalar _diffuseConstant;
-            Scalar _specularConstant;
             Scalar _specularHardness;
         };
         

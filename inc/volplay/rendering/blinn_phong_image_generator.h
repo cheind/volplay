@@ -45,6 +45,7 @@ namespace volplay {
             ByteImagePtr _image;
             SDFNodePtr _root;
             LightPtr _light;
+            MaterialPtr _defaultMaterial;
             Vector _clearColor;
                                     
         };

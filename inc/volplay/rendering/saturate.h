@@ -39,6 +39,12 @@ namespace volplay {
         T clamp(T t, T minimum, T maximum) {
             return std::min<T>(maximum, std::max<T>(t, minimum));
         }
+
+        /** Clamp value to [0,1] range. */
+        template<class T>
+        T clamp01(T t) {
+            return clamp(t, T(0), T(1));
+        }
         
     }
 }
