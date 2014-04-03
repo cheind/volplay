@@ -21,11 +21,19 @@ namespace volplay {
         explicit SDFMake(SDFNodePtr n);
         
         SDFMake &join(const SDFMake &right);
+        SDFMake &operator+(const SDFMake &right);
+        
         SDFMake &intersect(const SDFMake &right);
+        SDFMake &operator|(const SDFMake &right);
+        
         SDFMake &remove(const SDFMake &right);
+        SDFMake &operator-(const SDFMake &right);
+        
         SDFMake &translate(const Vector &t);
         SDFMake &repeat(const Vector &cellSizes);
         SDFMake &attach(const std::string &s, const SDFNodeAttachmentPtr &a);
+        
+        
         
         operator SDFNodePtr() const;
         
@@ -37,6 +45,9 @@ namespace volplay {
         
         /** Make a new plane. */
         static SDFMake plane();
+        
+        /** Make a new plane. */
+        static SDFMake plane(const Vector &normal);
         
     private:
         SDFNodePtr _n;
