@@ -62,6 +62,7 @@ set(VOLPLAY_RENDERING_FILES
     inc/volplay/rendering/heat_image_generator.h
     inc/volplay/rendering/depth_image_generator.h
     inc/volplay/rendering/blinn_phong_image_generator.h
+    inc/volplay/rendering/fxaa.h
     src/rendering/renderer.cpp
     src/rendering/camera.cpp
     src/rendering/light.cpp
@@ -69,6 +70,7 @@ set(VOLPLAY_RENDERING_FILES
     src/rendering/heat_image_generator.cpp
     src/rendering/depth_image_generator.cpp
     src/rendering/blinn_phong_image_generator.cpp
+    src/rendering/fxaa.cpp
 )
 
 set(VOLPLAY_UTIL_FILES
