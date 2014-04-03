@@ -15,6 +15,8 @@
 #include <volplay/rendering/heat_image_generator.h>
 #include <volplay/rendering/depth_image_generator.h>
 #include <volplay/rendering/blinn_phong_image_generator.h>
+#include <volplay/rendering/fxaa.h>
+#include <volplay/rendering/material.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -25,11 +27,25 @@ TEST_CASE("CPU based raytracing")
     const int imageWidth = 640;
     const int imageHeight = 480;
     
-    vp::SDFNodePtr scene = vp::SDFMake::plane().join(vp::SDFMake::sphere(1).translate(vp::Vector(0,0,0)));
+    vp::rendering::MaterialPtr m1(new vp::rendering::Material());
+    vp::rendering::MaterialPtr m2(new vp::rendering::Material());
+    vp::rendering::MaterialPtr m3(new vp::rendering::Material());
+    
+    m1->setDiffuseColor(vp::Vector(1, 0, 0));
+    m2->setDiffuseColor(vp::Vector(0, 1, 0));
+    m3->setDiffuseColor(vp::Vector(0, 0, 1));
+    
+    //vp::SDFNodePtr scene = vp::SDFMake::plane().join(vp::SDFMake::sphere(1).translate(vp::Vector(0,0,0)));
+    
+    vp::SDFNodePtr scene =
+        vp::SDFMake::plane(vp::Vector::UnitX()).attach("Material", m1) +
+        vp::SDFMake::plane(vp::Vector::UnitY()).attach("Material", m2) +
+        vp::SDFMake::plane(vp::Vector::UnitZ()).attach("Material", m3) +
+        vp::SDFMake::sphere(1).translate(vp::Vector(0.5, 0.5, 0.5));
     
     vp::rendering::CameraPtr cam(new vp::rendering::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
-    cam->setCameraToWorldAsLookAt(vp::Vector(0,0,5), vp::Vector(0,0,0), vp::Vector(0,-1,0));
+    cam->setCameraToWorldAsLookAt(vp::Vector(10,10,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
     
     vp::rendering::RendererPtr r(new vp::rendering::Renderer());
     r->setScene(scene);
@@ -37,7 +53,7 @@ TEST_CASE("CPU based raytracing")
     r->setImageResolution(imageHeight, imageWidth);
     
     vp::SDFNode::TraceOptions to;
-    to.maxIter = 200;
+    to.maxIter = 500;
     r->setPrimaryTraceOptions(to);
     
     vp::rendering::HeatImageGeneratorPtr heat(new vp::rendering::HeatImageGenerator());
@@ -50,6 +66,8 @@ TEST_CASE("CPU based raytracing")
     r->addImageGenerator(phong);
     
     r->render();
+    
+    vp::rendering::FXAAPtr fxaa(new vp::rendering::FXAA());
 
     cv::Mat depthImage;
     depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 20);
@@ -57,6 +75,7 @@ TEST_CASE("CPU based raytracing")
     cv::imshow("Heat Image", heat->image()->toOpenCV());
     cv::imshow("Depth Image",depthImage);
     cv::imshow("Blinn Phong Image",phong->image()->toOpenCV());
+    cv::imshow("Blinn Phong Image FXAA",fxaa->filter(phong->image())->toOpenCV());
     cv::waitKey();
 
 }
