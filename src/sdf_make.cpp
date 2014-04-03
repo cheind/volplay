@@ -30,6 +30,12 @@ namespace volplay {
     }
     
     SDFMake &
+    SDFMake::operator+(const SDFMake &right)
+    {
+        return join(right);
+    }
+    
+    SDFMake &
     SDFMake::intersect(const SDFMake &right)
     {
         _n = SDFIntersectionPtr(new SDFIntersection(_n, right._n));
@@ -37,10 +43,22 @@ namespace volplay {
     }
     
     SDFMake &
+    SDFMake::operator|(const SDFMake &right)
+    {
+        return intersect(right);
+    }
+    
+    SDFMake &
     SDFMake::remove(const SDFMake &right)
     {
         _n = SDFDifferencePtr(new SDFDifference(_n, right._n));
         return *this;
+    }
+    
+    SDFMake &
+    SDFMake::operator-(const SDFMake &right)
+    {
+        return remove(right);
     }
     
     SDFMake &
@@ -86,6 +104,11 @@ namespace volplay {
     SDFMake SDFMake::plane()
     {
         return SDFMake(SDFPlanePtr(new SDFPlane()));
+    }
+    
+    SDFMake SDFMake::plane(const Vector &normal)
+    {
+        return SDFMake(SDFPlanePtr(new SDFPlane(normal)));
     }
     
     
