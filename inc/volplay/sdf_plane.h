@@ -21,6 +21,9 @@ namespace volplay {
         /** Create a new xy-plane. */
         SDFPlane();
         
+        /** Construct from normal. */
+        SDFPlane(const Vector &n);
+        
         /** Evaluate the SDF at given position. */
         virtual SDFResult fullEval(const Vector &x) const;
         
