@@ -14,7 +14,7 @@ namespace volplay {
     namespace rendering {
     
         Light::Light()
-        : _position(0, 0, 100), _ambientColor(0,0,0), _diffuseColor(1,1,1), _specularColor(1,1,1)
+        : _position(100, 100, 100), _ambientColor(0,0,0), _diffuseColor(1,1,1), _specularColor(1,1,1)
         {}
         
         void
