@@ -22,6 +22,12 @@
 
 namespace vp = volplay;
 
+cv::Mat toBgr(const cv::Mat &rgb) {
+    cv::Mat bgr;
+    cv::cvtColor(rgb, bgr, CV_RGB2BGR);
+    return bgr;
+}
+
 TEST_CASE("CPU based raytracing")
 {
     const int imageWidth = 640;
@@ -35,13 +41,16 @@ TEST_CASE("CPU based raytracing")
     m2->setDiffuseColor(vp::Vector(0, 1, 0));
     m3->setDiffuseColor(vp::Vector(0, 0, 1));
     
-    //vp::SDFNodePtr scene = vp::SDFMake::plane().join(vp::SDFMake::sphere(1).translate(vp::Vector(0,0,0)));
+    m1->setSpecularColor(vp::Vector::Zero());
+    m2->setSpecularColor(vp::Vector::Zero());
+    m3->setSpecularColor(vp::Vector::Zero());
+    
     
     vp::SDFNodePtr scene =
         vp::SDFMake::plane(vp::Vector::UnitX()).attach("Material", m1) +
         vp::SDFMake::plane(vp::Vector::UnitY()).attach("Material", m2) +
         vp::SDFMake::plane(vp::Vector::UnitZ()).attach("Material", m3) +
-        vp::SDFMake::sphere(1).translate(vp::Vector(0.5, 0.5, 0.5));
+        vp::SDFMake::sphere(1).translate(vp::Vector(1, 1, 1));
     
     vp::rendering::CameraPtr cam(new vp::rendering::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
@@ -70,12 +79,12 @@ TEST_CASE("CPU based raytracing")
     vp::rendering::FXAAPtr fxaa(new vp::rendering::FXAA());
 
     cv::Mat depthImage;
-    depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 20);
+    depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 255. / 10.);
     
     cv::imshow("Heat Image", heat->image()->toOpenCV());
     cv::imshow("Depth Image",depthImage);
-    cv::imshow("Blinn Phong Image",phong->image()->toOpenCV());
-    cv::imshow("Blinn Phong Image FXAA",fxaa->filter(phong->image())->toOpenCV());
+    cv::imshow("Blinn Phong Image",toBgr(phong->image()->toOpenCV()));
+    cv::imshow("Blinn Phong Image FXAA",toBgr(fxaa->filter(phong->image())->toOpenCV()));
     cv::waitKey();
 
 }
