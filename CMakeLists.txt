@@ -90,7 +90,6 @@ add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_RENDERING_FILES} ${VOLPLAY_U
 
 set(VOLPLAY_TEST_FILES
     tests/main.cpp
-    tests/test_derivative.cpp
     tests/test_sdf_result.cpp
     tests/test_sdf_node.cpp
     tests/test_sdf_sphere.cpp
@@ -100,7 +99,6 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_difference.cpp
     tests/test_sdf_rigid_transform.cpp
     tests/test_sdf_repetition.cpp
-    tests/test_ray_tracer.cpp
     tests/test_camera.cpp
     tests/test_image.cpp
     tests/test_saturate.cpp
