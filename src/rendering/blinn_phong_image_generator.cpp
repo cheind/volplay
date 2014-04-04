@@ -20,7 +20,7 @@ namespace volplay {
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        :_image(new ByteImage()), _clearColor(Vector::Zero()), _light(new Light()), _defaultMaterial(new Material())
+        :_image(new ByteImage()), _light(new Light()), _defaultMaterial(new Material()), _clearColor(Vector::Zero())
         {
         }
         
@@ -30,7 +30,7 @@ namespace volplay {
             _image->create(r->imageHeight(), r->imageWidth(), 3);
             _root = r->scene();
         }
-        
+
         
         void
         BlinnPhongImageGenerator::onUpdateRow(int row,
@@ -53,6 +53,7 @@ namespace volplay {
                 imageRow[c*3+0] = r;
                 imageRow[c*3+1] = g;
                 imageRow[c*3+2] = b;
+                
             }
         }
         
