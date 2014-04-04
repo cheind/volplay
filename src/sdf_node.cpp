@@ -35,7 +35,7 @@ namespace volplay {
         const Vector g = gradient(x, eps);
         const Scalar n = g.squaredNorm();
         if (n > 0) {
-            return g / n;
+            return g / std::sqrt(n);
         } else {
             return g;
         }
