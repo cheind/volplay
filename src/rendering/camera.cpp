@@ -8,7 +8,6 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/rendering/camera.h>
-#include <iostream>
 
 namespace volplay {
     
@@ -75,8 +74,8 @@ namespace volplay {
         Camera::setCameraToWorldAsLookAt(const Vector &eye, const Vector &center, const Vector &up)
         {
             Vector z = (center - eye).normalized();
-            Vector y = up.normalized();
-            Vector x = y.cross(z).normalized();
+            Vector y = -up.normalized(); // Note our up is -y.
+            Vector x = (y.cross(z)).normalized();
             y = z.cross(x);
             
             _camera_to_world = Matrix34::Identity();
@@ -158,7 +157,7 @@ namespace volplay {
         void
         Camera::generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector> &directions)
         {
-            Matrix33 kinv = this->imageToCamera();
+            Matrix33 kinv = this->imageToCamera();  
             directions.resize(imageWidth * imageHeight);
             
             for (int r = 0; r < imageHeight; ++r) {
