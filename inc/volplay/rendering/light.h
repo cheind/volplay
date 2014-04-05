@@ -48,11 +48,26 @@ namespace volplay {
             /** Access diffuse color of light. */
             const Vector &specularColor() const;
             
+            /** Set light attenuation constants. That is how lighting power decreases with distance.
+             *  The components of the vector specified are the coefficients of a quadric function.
+             *  In particular attenuation is calculated as
+             *  
+             *   att = 1 / (c.x() * d^2 + c.y() * d + c.z())
+             */
+            void setAttenuationCoefficients(const Vector &c);
+            
+            /** Access the light attenuation constants. */
+            const Vector &attenuationCoefficients() const;
+            
+            /** Create point light source. */
+            static LightPtr createPointLight(const Vector &pos, const Vector &ambient, const Vector &diffuse, const Vector &specular, const Vector &att);
+            
         private:
             Vector _position;
             Vector _ambientColor;
             Vector _diffuseColor;
             Vector _specularColor;
+            Vector _attenuation;
         };
         
     }

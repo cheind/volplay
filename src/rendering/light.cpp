@@ -14,7 +14,7 @@ namespace volplay {
     namespace rendering {
     
         Light::Light()
-        : _position(100, 100, 100), _ambientColor(1,1,1), _diffuseColor(1,1,1), _specularColor(1,1,1)
+        : _position(20, 20, 20), _ambientColor(1,1,1), _diffuseColor(1,1,1), _specularColor(1,1,1), _attenuation(0,0,1)
         {}
         
         void
@@ -63,6 +63,30 @@ namespace volplay {
         Light::specularColor() const
         {
             return _specularColor;
+        }
+        
+        void
+        Light::setAttenuationCoefficients(const Vector &c)
+        {
+            _attenuation = c;
+        }
+        
+        const Vector &
+        Light::attenuationCoefficients() const
+        {
+            return _attenuation;
+        }
+        
+        LightPtr
+        Light::createPointLight(const Vector &pos, const Vector &ambient, const Vector &diffuse, const Vector &specular, const Vector &att)
+        {
+            LightPtr l(new Light());
+            l->setPosition(pos);
+            l->setAmbientColor(ambient);
+            l->setDiffuseColor(diffuse);
+            l->setSpecularColor(specular);
+            l->setAttenuationCoefficients(att);
+            return l;
         }
         
     }
