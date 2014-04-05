@@ -8,13 +8,14 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/rendering/light.h>
+#include <limits>
 
 namespace volplay {
     
     namespace rendering {
     
         Light::Light()
-        : _position(20, 20, 20), _ambientColor(1,1,1), _diffuseColor(1,1,1), _specularColor(1,1,1), _attenuation(0,0,1)
+        : _position(20, 20, 20), _ambientColor(1,1,1), _diffuseColor(1,1,1), _specularColor(1,1,1), _attenuation(std::numeric_limits<Scalar>::max())
         {}
         
         void
@@ -66,26 +67,26 @@ namespace volplay {
         }
         
         void
-        Light::setAttenuationCoefficients(const Vector &c)
+        Light::setAttenuationRadius(Scalar s)
         {
-            _attenuation = c;
+            _attenuation = s;
         }
         
-        const Vector &
-        Light::attenuationCoefficients() const
+        Scalar
+        Light::attenuationRadius() const
         {
             return _attenuation;
         }
         
         LightPtr
-        Light::createPointLight(const Vector &pos, const Vector &ambient, const Vector &diffuse, const Vector &specular, const Vector &att)
+        Light::createPointLight(const Vector &pos, const Vector &ambient, const Vector &diffuse, const Vector &specular, const Scalar &att)
         {
             LightPtr l(new Light());
             l->setPosition(pos);
             l->setAmbientColor(ambient);
             l->setDiffuseColor(diffuse);
             l->setSpecularColor(specular);
-            l->setAttenuationCoefficients(att);
+            l->setAttenuationRadius(att);
             return l;
         }
         

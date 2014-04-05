@@ -58,8 +58,8 @@ TEST_CASE("CPU based raytracing")
     cam->setCameraToWorldAsLookAt(vp::Vector(10,10,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
     
     std::vector<vpr::LightPtr> lights;
-    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,20,20), vp::Vector::Zero(), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::UnitZ()));
-    lights.push_back(vpr::Light::createPointLight(vp::Vector(0,3,0), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), vp::Vector(0.8,0,0)));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,20,20), vp::Vector::Zero(), vp::Vector::Ones(), vp::Vector::Ones(), 100));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(0,3,0), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 2));
     
     vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);

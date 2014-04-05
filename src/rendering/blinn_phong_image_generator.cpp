@@ -99,20 +99,30 @@ namespace volplay {
             Vector lp = (l->position() - p);
             Vector ldir = lp.normalized();
             
-            const Vector &ac = l->attenuationCoefficients();
-            const Scalar att = Scalar(1) / (lp.squaredNorm() * ac.x() + lp.norm() * ac.y() + ac.z());
+            
+            // Calculate the attenuation factor. Standard OpenGL uses three factors to calculate the
+            // attenuation as
+            //
+            //  att = 1 / (c.x() * d^2 + c.y() * d + c.z())
+            //
+            // We use a simplier equation
+            //
+            //  att = 1 - (d/r)^2
+            //
+            const Scalar attf =  clamp01(lp.norm() / l->attenuationRadius());
+            const Scalar att = Scalar(1) - attf*attf;
             
             // Ambient illumination
-            Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor()) * att;
+            Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor());
             
             // Diffuse illumination
-            Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor()) * att;
+            Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor());
             
             // Specular illumination
             Vector h = (ldir + eye).normalized();
-            Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor()) * att;
+            Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor());
             
-            return iAmbient + iDiffuse + iSpecular;
+            return iAmbient + att * (iDiffuse + iSpecular);
         }
         
     }
