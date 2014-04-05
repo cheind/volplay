@@ -82,6 +82,18 @@ namespace volplay {
         }
         
         void
+        Renderer::setLights(const std::vector<LightPtr> &l)
+        {
+            _lights = l;
+        }
+        
+        const std::vector<LightPtr> &
+        Renderer::lights() const
+        {
+            return _lights;
+        }
+        
+        void
         Renderer::render()
         {
             if (!_camera || !_root || _imageWidth == 0|| _imageHeight == 0) {

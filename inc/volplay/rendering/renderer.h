@@ -39,6 +39,12 @@ namespace volplay {
             /** Access the camera */
             const CameraPtr &camera() const;
             
+            /** Set array of lights */
+            void setLights(const std::vector<LightPtr> &l);
+            
+            /** Access the i-th light source. */
+            const std::vector<LightPtr> &lights() const;
+            
             /** Set the resulting image resolution. */
             void setImageResolution(int imageHeight, int imageWidth);
             
@@ -68,6 +74,7 @@ namespace volplay {
             SDFNode::TraceOptions _primaryTraceOptions;
             
             std::vector<ImageGeneratorPtr> _generators;
+            std::vector<LightPtr> _lights;
         };
         
     }
