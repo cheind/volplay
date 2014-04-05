@@ -13,6 +13,7 @@
 #include <volplay/types.h>
 #include <volplay/fwd.h>
 #include <volplay/rendering/image_generator.h>
+#include <vector>
 
 namespace volplay {
     
@@ -42,9 +43,12 @@ namespace volplay {
             /** Illuminate point. */
             Vector illuminate(const Vector &viewDir, const Vector &p) const;
             
+            /** Illuminate point from a single light source. */
+            Vector illuminateFromLight(const Vector &p, const Vector &normal, const Vector &eye, const MaterialPtr &m, const LightPtr &l) const;
+            
             ByteImagePtr _image;
             SDFNodePtr _root;
-            LightPtr _light;
+            std::vector<LightPtr> _lights;
             MaterialPtr _defaultMaterial;
             Vector _clearColor;
                                     

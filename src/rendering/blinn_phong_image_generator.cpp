@@ -20,7 +20,7 @@ namespace volplay {
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        :_image(new ByteImage()), _light(new Light()), _defaultMaterial(new Material()), _clearColor(Vector::Zero())
+        :_image(new ByteImage()), _defaultMaterial(new Material()), _clearColor(Vector::Zero())
         {
         }
         
@@ -29,6 +29,7 @@ namespace volplay {
         {
             _image->create(r->imageHeight(), r->imageWidth(), 3);
             _root = r->scene();
+            _lights = r->lights();
         }
 
         
@@ -79,21 +80,38 @@ namespace volplay {
 
             SDFResult sdf = _root->fullEval(p);
             MaterialPtr m = sdf.node->attachmentOrDefault<Material>("Material", _defaultMaterial);
-            LightPtr l = _light;
-
-            // Ambient illumination
-            Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor());
-
-            // Diffuse illumination
+            
+            Vector iFinal = Vector::Zero();
+            
             Vector n = _root->normal(p);
-            Vector ldir = (l->position() - p).normalized();
-            Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor());
-
+            Vector eye = -viewDir;
+            
+            for (size_t i = 0; i < _lights.size(); ++i) {
+                iFinal += illuminateFromLight(p, n, eye, m, _lights[i]);
+            }
+            
+            return iFinal;
+        }
+        
+        Vector
+        BlinnPhongImageGenerator::illuminateFromLight(const Vector &p, const Vector &n, const Vector &eye, const MaterialPtr &m, const LightPtr &l) const
+        {
+            Vector lp = (l->position() - p);
+            Vector ldir = lp.normalized();
+            
+            const Vector &ac = l->attenuationCoefficients();
+            const Scalar att = Scalar(1) / (lp.squaredNorm() * ac.x() + lp.norm() * ac.y() + ac.z());
+            
+            // Ambient illumination
+            Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor()) * att;
+            
+            // Diffuse illumination
+            Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor()) * att;
+            
             // Specular illumination
-            Vector edir = -viewDir;
-            Vector h = (ldir + edir).normalized();
-            Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor());
-
+            Vector h = (ldir + eye).normalized();
+            Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor()) * att;
+            
             return iAmbient + iDiffuse + iSpecular;
         }
         
