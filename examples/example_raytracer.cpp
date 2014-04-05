@@ -32,8 +32,9 @@ cv::Mat toBgr(const cv::Mat &rgb) {
 
 TEST_CASE("CPU based raytracing")
 {
-    const int imageWidth = 640;
-    const int imageHeight = 480;
+    const vp::Scalar aspect = vp::Scalar(16)/9;
+    const int imageWidth = 900;
+    const int imageHeight = (int)imageWidth / aspect;
     
     vpr::MaterialPtr m1(new vpr::Material());
     vpr::MaterialPtr m2(new vpr::Material());
@@ -59,7 +60,7 @@ TEST_CASE("CPU based raytracing")
     
     std::vector<vpr::LightPtr> lights;
     lights.push_back(vpr::Light::createPointLight(vp::Vector(20,20,20), vp::Vector::Zero(), vp::Vector::Ones(), vp::Vector::Ones(), 100));
-    lights.push_back(vpr::Light::createPointLight(vp::Vector(0,3,0), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 2));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(0.5,3,0.5), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 2));
     
     vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);
