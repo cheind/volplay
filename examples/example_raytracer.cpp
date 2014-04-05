@@ -17,10 +17,12 @@
 #include <volplay/rendering/blinn_phong_image_generator.h>
 #include <volplay/rendering/fxaa.h>
 #include <volplay/rendering/material.h>
+#include <volplay/rendering/light.h>
 
 #include <opencv2/opencv.hpp>
 
 namespace vp = volplay;
+namespace vpr = volplay::rendering;
 
 cv::Mat toBgr(const cv::Mat &rgb) {
     cv::Mat bgr;
@@ -33,9 +35,9 @@ TEST_CASE("CPU based raytracing")
     const int imageWidth = 640;
     const int imageHeight = 480;
     
-    vp::rendering::MaterialPtr m1(new vp::rendering::Material());
-    vp::rendering::MaterialPtr m2(new vp::rendering::Material());
-    vp::rendering::MaterialPtr m3(new vp::rendering::Material());
+    vpr::MaterialPtr m1(new vpr::Material());
+    vpr::MaterialPtr m2(new vpr::Material());
+    vpr::MaterialPtr m3(new vpr::Material());
     
     m1->setDiffuseColor(vp::Vector(1, 0, 0));
     m2->setDiffuseColor(vp::Vector(0, 1, 0));
@@ -45,38 +47,42 @@ TEST_CASE("CPU based raytracing")
     m2->setSpecularColor(vp::Vector::Zero());
     m3->setSpecularColor(vp::Vector::Zero());
     
-    
     vp::SDFNodePtr scene =
         vp::SDFMake::plane(vp::Vector::UnitX()).attach("Material", m1) +
         vp::SDFMake::plane(vp::Vector::UnitY()).attach("Material", m2) +
         vp::SDFMake::plane(vp::Vector::UnitZ()).attach("Material", m3) +
         vp::SDFMake::sphere(1).translate(vp::Vector(1, 1, 1));
     
-    vp::rendering::CameraPtr cam(new vp::rendering::Camera());
+    vpr::CameraPtr cam(new vpr::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
     cam->setCameraToWorldAsLookAt(vp::Vector(10,10,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
     
-    vp::rendering::RendererPtr r(new vp::rendering::Renderer());
+    std::vector<vpr::LightPtr> lights;
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,20,20), vp::Vector::Zero(), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::UnitZ()));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(0,3,0), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), vp::Vector(0.8,0,0)));
+    
+    vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);
     r->setCamera(cam);
+    r->setLights(lights);
     r->setImageResolution(imageHeight, imageWidth);
     
     vp::SDFNode::TraceOptions to;
     to.maxIter = 500;
     r->setPrimaryTraceOptions(to);
     
-    vp::rendering::HeatImageGeneratorPtr heat(new vp::rendering::HeatImageGenerator());
+    vpr::HeatImageGeneratorPtr heat(new vpr::HeatImageGenerator());
     r->addImageGenerator(heat);
 
-    vp::rendering::DepthImageGeneratorPtr depth(new vp::rendering::DepthImageGenerator());
+    vpr::DepthImageGeneratorPtr depth(new vpr::DepthImageGenerator());
     r->addImageGenerator(depth);
 
-    vp::rendering::BlinnPhongImageGeneratorPtr phong(new vp::rendering::BlinnPhongImageGenerator());
+    vpr::BlinnPhongImageGeneratorPtr phong(new vpr::BlinnPhongImageGenerator());
     r->addImageGenerator(phong);
     
     r->render();
     
-    vp::rendering::FXAAPtr fxaa(new vp::rendering::FXAA());
+    vpr::FXAAPtr fxaa(new vpr::FXAA());
 
     cv::Mat depthImage;
     depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 255. / 10.);
