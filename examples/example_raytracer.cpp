@@ -39,19 +39,26 @@ TEST_CASE("CPU based raytracing")
     m1->setDiffuseColor(vp::Vector(0.1, 0.6, 0.1));
     m1->setAmbientColor(m1->diffuseColor() * vp::Scalar(0.1));
     m1->setSpecularColor(vp::Vector::Ones());
-    m1->setSpecularHardness(vp::Scalar(32));
+    m1->setSpecularHardness(vp::Scalar(128));
+    
+    vpr::MaterialPtr m2(new vpr::Material());
+    m2->setDiffuseColor(vp::Vector(0.6, 0.1, 0.1));
+    m2->setAmbientColor(m2->diffuseColor() * vp::Scalar(0.1));
+    m2->setSpecularColor(vp::Vector::Ones());
+    m2->setSpecularHardness(vp::Scalar(128));
     
     vp::SDFNodePtr scene =
         vp::SDFMake::plane(vp::Vector::UnitY()) +
-        vp::SDFMake::sphere(1).attach("Material", m1).translate(vp::Vector(0, 1.5, 0));
+        vp::SDFMake::sphere(1).attach("Material", m1).translate(vp::Vector(0, 1, 0)) +
+        vp::SDFMake::sphere(1).attach("Material", m2).translate(vp::Vector(3, 1, 0));
     
     vpr::CameraPtr cam(new vpr::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
-    cam->setCameraToWorldAsLookAt(vp::Vector(0,5,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
+    cam->setCameraToWorldAsLookAt(vp::Vector(-5,5,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
     
     std::vector<vpr::LightPtr> lights;
     lights.push_back(vpr::Light::createPointLight(vp::Vector(20,15,20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 50));
-    //lights.push_back(vpr::Light::createPointLight(vp::Vector(0.5,3,0.5), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 5));
+    //lights.push_back(vpr::Light::createPointLight(vp::Vector(-20,15,-20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 50));
     
     vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);
@@ -71,6 +78,7 @@ TEST_CASE("CPU based raytracing")
     r->addImageGenerator(depth);
 
     vpr::BlinnPhongImageGeneratorPtr phong(new vpr::BlinnPhongImageGenerator());
+    phong->setAntialiasingEnabled(true);
     r->addImageGenerator(phong);
     
     r->render();
