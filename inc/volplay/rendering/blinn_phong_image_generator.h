@@ -36,6 +36,14 @@ namespace volplay {
                                      const SDFNode::TraceResult *tr, int cols);
             virtual void onRenderingComplete(const Renderer *r);
             
+            /** Set the shadow hardness. The higher the number the sharper the shadows. 
+             *  Defaults to 32.
+             */
+            void setShadowHardness(Scalar k);
+            
+            /** Access the shadow hardness. */
+            Scalar shadowHardness() const;
+            
             /** Access the generated RGB color image. */
             ByteImagePtr image() const;
             
@@ -60,7 +68,7 @@ namespace volplay {
             MaterialPtr _defaultMaterial;
             Vector _clearColor;
             SDFNode::TraceOptions _to;
-                                    
+            Scalar _shadowHardness;                                    
         };
         
     }
