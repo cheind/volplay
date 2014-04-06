@@ -48,8 +48,8 @@ namespace volplay {
             /** Access diffuse color of light. */
             const Vector &specularColor() const;
             
-            /** Set light attenuation radius. Lighting power will decrease within the radius
-             *  according to some equation. */
+            /** Set light attenuation radius. 
+             *  The given value describes the distance at which 50 percent is lost. */
             void setAttenuationRadius(Scalar s);
             
             /** Access the light attenuation radius. */
