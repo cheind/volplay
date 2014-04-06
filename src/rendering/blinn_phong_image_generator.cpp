@@ -14,6 +14,7 @@
 #include <volplay/rendering/saturate.h>
 #include <volplay/rendering/light.h>
 #include <volplay/rendering/material.h>
+#include <iostream>
 
 namespace volplay {
     
@@ -30,6 +31,7 @@ namespace volplay {
             _image->create(r->imageHeight(), r->imageWidth(), 3);
             _root = r->scene();
             _lights = r->lights();
+            _to = r->primaryTraceOptions();
         }
 
         
@@ -87,19 +89,41 @@ namespace volplay {
             Vector eye = -viewDir;
             
             for (size_t i = 0; i < _lights.size(); ++i) {
-                iFinal += illuminateFromLight(p, n, eye, m, _lights[i]);
+                iFinal += illuminateFromLight(p, n, eye, m, _lights[i], sdf.node);
             }
             
             return iFinal;
         }
         
         Vector
-        BlinnPhongImageGenerator::illuminateFromLight(const Vector &p, const Vector &n, const Vector &eye, const MaterialPtr &m, const LightPtr &l) const
+        BlinnPhongImageGenerator::illuminateFromLight(const Vector &p, const Vector &n, const Vector &eye, const MaterialPtr &m, const LightPtr &l, const SDFNode *node) const
         {
-            Vector lp = (l->position() - p);
-            Vector ldir = lp.normalized();
+            const Vector lp = (l->position() - p);
+            const Scalar lpNorm = lp.norm();
+            const Vector ldir = lp / lpNorm;
             
+            // Ambient illumination
+            const Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor());
             
+            // Diffuse illumination
+            const Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor());
+            
+            // Specular illumination
+            const Vector h = (ldir + eye).normalized();
+            const Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor());
+            
+            // Light attenuation factor
+            const Scalar attenuation = calculateLightAttenuation(lp, l);
+            
+            // Shadow factor
+            const Scalar shadow = calculateSoftShadow(p, ldir, Scalar(0.001), lpNorm, node);
+            
+            return iAmbient + attenuation * shadow * (iDiffuse + iSpecular);
+        }
+        
+        Scalar
+        BlinnPhongImageGenerator::calculateLightAttenuation(const Vector &lightVector, const LightPtr &l) const
+        {
             // Calculate the attenuation factor. Standard OpenGL uses three factors to calculate the
             // attenuation as
             //
@@ -108,21 +132,30 @@ namespace volplay {
             // We use a simplier equation
             //
             //  att = 1 - (d/r)^2
-            //
-            const Scalar attf =  clamp01(lp.norm() / l->attenuationRadius());
-            const Scalar att = Scalar(1) - attf*attf;
             
-            // Ambient illumination
-            Vector iAmbient = m->ambientColor().cwiseProduct(l->ambientColor());
+            const Scalar attf =  clamp01(lightVector.norm() / l->attenuationRadius());
+            return Scalar(1) - attf*attf;
+        }
+        
+        Scalar
+        BlinnPhongImageGenerator::calculateSoftShadow(const Vector &o, const Vector &d, Scalar minT, Scalar maxT, const SDFNode *node) const
+        {
+            Scalar s(1);
+            Scalar t = minT;
+            SDFResult r = _root->fullEval(o + t * d);
             
-            // Diffuse illumination
-            Vector iDiffuse = clamp01(ldir.dot(n)) * m->diffuseColor().cwiseProduct(l->diffuseColor());
+            while (t < maxT && r.sdf > _to.sdfThreshold) {
+                t += r.sdf * _to.stepFact;
+                r = _root->fullEval(o + t * d);
+                s = std::min<Scalar>(s, Scalar(32) * r.sdf / t);
+            }
             
-            // Specular illumination
-            Vector h = (ldir + eye).normalized();
-            Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor());
+            if (std::abs(r.sdf) < _to.sdfThreshold) {
+                return 0;
+            } else {
+                return clamp01(s);
+            }
             
-            return iAmbient + att * (iDiffuse + iSpecular);
         }
         
     }
