@@ -12,6 +12,7 @@
 
 #include <volplay/types.h>
 #include <volplay/fwd.h>
+#include <volplay/rendering/saturate.h>
 
 #ifdef VOLPLAY_WITH_OPENCV
 #include <opencv2/core/core.hpp>
@@ -104,6 +105,14 @@ namespace volplay {
             T *rowElement(T * row, int col)
             {
                 return row + col * _channels;
+            }
+            
+            /** Access element row / col */
+            T *elementClamped(int row, int col)
+            {
+                row = clamp(row, 0, _rows - 1);
+                col = clamp(col, 0, _cols - 1);
+                return rowElement(this->row(row), col);
             }
             
             /** Access element of row mapped as Eigen vector type. */
