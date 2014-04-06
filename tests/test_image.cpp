@@ -43,6 +43,19 @@ TEST_CASE("Image")
     // Mapped type tests
     REQUIRE(i.mappedRowElement<Eigen::Vector2i>(i.row(1), 1).data() == (i.row(0) + 4 + 2));
     
+    // Copy
+    i.create(3, 2, 2);
+    for (int id = 0; id < 3*2*2; ++id) {
+        *(i.row(0) + id) = id;
+    }
+    vpr::Image<int> i2;
+    i.copyTo(i2);
+    REQUIRE(i2.rows() == 3);
+    REQUIRE(i2.cols() == 2);
+    REQUIRE(i2.channels() == 2);
+    REQUIRE(memcmp(i.row(0), i2.row(0), 3*2*2*sizeof(int)) == 0);
+    
+    
 #ifdef VOLPLAY_WITH_OPENCV
     cv::Mat m = i.toOpenCV();
     REQUIRE(m.rows == i.rows());
