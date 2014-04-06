@@ -73,6 +73,7 @@ namespace volplay {
             SDFNode::TraceOptions _to;
             Scalar _gamma;
             bool _shadowsEnabled;
+            FXAAPtr _fxaa;
         };
         
     }

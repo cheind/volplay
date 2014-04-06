@@ -14,19 +14,20 @@
 #include <volplay/rendering/saturate.h>
 #include <volplay/rendering/light.h>
 #include <volplay/rendering/material.h>
-#include <iostream>
+#include <volplay/rendering/fxaa.h>
 
 namespace volplay {
     
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        : _image(new FloatImage())
-        , _saturatedImage(new ByteImage())
+        : _saturatedImage(new ByteImage())
+        , _image(new FloatImage())
         , _defaultMaterial(new Material())
         , _clearColor(Vector::Zero())
         , _gamma(1 / Scalar(2.2))
         , _shadowsEnabled(true)
+        , _fxaa(new FXAA())
         {
         }
         
@@ -70,6 +71,10 @@ namespace volplay {
         BlinnPhongImageGenerator::onRenderingComplete(const Renderer *r)
         {
             typedef Eigen::Map<Vector> InVector;
+            
+            // Antialiase
+            FloatImagePtr fxaaImage = _fxaa->filter(_image);
+            fxaaImage->copyTo(*_image);
             
             // convert to saturated RGB
             for (int r = 0; r < _image->rows(); ++r) {
