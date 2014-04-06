@@ -21,7 +21,7 @@ namespace volplay {
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        :_image(new ByteImage()), _defaultMaterial(new Material()), _clearColor(Vector::Zero()), _shadowHardness(32)
+        :_image(new ByteImage()), _defaultMaterial(new Material()), _clearColor(Vector::Zero()), _shadowsEnabled(true)
         {
         }
         
@@ -73,16 +73,11 @@ namespace volplay {
         }
         
         void
-        BlinnPhongImageGenerator::setShadowHardness(Scalar k)
+        BlinnPhongImageGenerator::setShadowsEnabled(bool enable)
         {
-            _shadowHardness = k;
+            _shadowsEnabled = true;
         }
-        
-        Scalar
-        BlinnPhongImageGenerator::shadowHardness() const
-        {
-            return _shadowHardness;
-        }
+
         
         Vector
         BlinnPhongImageGenerator::illuminate(const Vector &viewDir, const Vector &p) const
@@ -129,7 +124,7 @@ namespace volplay {
             const Scalar attenuation = calculateLightAttenuation(lp, l);
             
             // Shadow factor. Note tracing is done from light to intersection. See function for notes.
-            const Scalar shadow = calculateSoftShadow(l->position(), -ldir, 0, lpNorm, node);
+            const Scalar shadow = _shadowsEnabled ? calculateSoftShadow(l->position(), -ldir, 0, lpNorm, l, node) : Scalar(1);
             
             return iAmbient + attenuation * shadow * (iDiffuse + iSpecular);
         }
@@ -151,7 +146,10 @@ namespace volplay {
         }
         
         Scalar
-        BlinnPhongImageGenerator::calculateSoftShadow(const Vector &o, const Vector &d, Scalar minT, Scalar maxT, const SDFNode *node) const
+        BlinnPhongImageGenerator::calculateSoftShadow(const Vector &o, const Vector &d,
+                                                      Scalar minT, Scalar maxT,
+                                                      const LightPtr &l,
+                                                      const SDFNode *node) const
         {
             // Note the shadow ray is traced from the light source to the intersection point. This is done to avoid offsetting the
             // ray, so that it can escape from the surface (rather difficult to come up with a single good value).
@@ -162,7 +160,7 @@ namespace volplay {
             SDFResult r = _root->fullEval(o + t * d);
             
             while (t < maxT && r.sdf > _to.sdfThreshold) {
-                s = std::min<Scalar>(s, _shadowHardness * r.sdf / (maxT - t));
+                s = std::min<Scalar>(s, l->shadowHardness() * r.sdf / (maxT - t));
                 t += r.sdf * _to.stepFact;
                 r = _root->fullEval(o + t * d);
             }

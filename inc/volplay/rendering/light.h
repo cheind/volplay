@@ -55,6 +55,13 @@ namespace volplay {
             /** Access the light attenuation radius. */
             Scalar attenuationRadius() const;
             
+            /** When rendering shadows this value controls how sharp shadows will be. 
+             *  The larger the constant the sharper the shadows. Defaults to 32. */
+            void setShadowHardness(Scalar s);
+            
+            /** Access shadow hardness. */
+            Scalar shadowHardness() const;
+            
             /** Create point light source. */
             static LightPtr createPointLight(const Vector &pos, const Vector &ambient, const Vector &diffuse, const Vector &specular, const Scalar &att);
             
@@ -64,6 +71,7 @@ namespace volplay {
             Vector _diffuseColor;
             Vector _specularColor;
             Scalar _attenuation;
+            Scalar _shadowHardness;
         };
         
     }

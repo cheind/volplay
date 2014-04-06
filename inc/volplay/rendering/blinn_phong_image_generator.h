@@ -36,13 +36,8 @@ namespace volplay {
                                      const SDFNode::TraceResult *tr, int cols);
             virtual void onRenderingComplete(const Renderer *r);
             
-            /** Set the shadow hardness. The higher the number the sharper the shadows. 
-             *  Defaults to 32.
-             */
-            void setShadowHardness(Scalar k);
-            
-            /** Access the shadow hardness. */
-            Scalar shadowHardness() const;
+            /** Enable / disable shadow calculations. */
+            void setShadowsEnabled(bool enable);
             
             /** Access the generated RGB color image. */
             ByteImagePtr image() const;
@@ -53,13 +48,17 @@ namespace volplay {
             Vector illuminate(const Vector &viewDir, const Vector &p) const;
             
             /** Illuminate point from a single light source. */
-            Vector illuminateFromLight(const Vector &p, const Vector &normal, const Vector &eye, const MaterialPtr &m, const LightPtr &l, const SDFNode *node) const;
+            Vector illuminateFromLight(const Vector &p, const Vector &normal, const Vector &eye,
+                                       const MaterialPtr &m, const LightPtr &l, const SDFNode *node) const;
             
             /** Calcuate light attenuation factor. */
             Scalar calculateLightAttenuation(const Vector &lightVector, const LightPtr &l) const;
             
-            /** Calcualte shadow factor. */
-            Scalar calculateSoftShadow(const Vector &origin, const Vector &dir, Scalar minT, Scalar maxT, const SDFNode *node) const;
+            /** Calculate shadow factor. */
+            Scalar calculateSoftShadow(const Vector &origin, const Vector &dir,
+                                       Scalar minT, Scalar maxT,
+                                       const LightPtr &l,
+                                       const SDFNode *node) const;
             
             
             ByteImagePtr _image;
@@ -68,7 +67,7 @@ namespace volplay {
             MaterialPtr _defaultMaterial;
             Vector _clearColor;
             SDFNode::TraceOptions _to;
-            Scalar _shadowHardness;                                    
+            bool _shadowsEnabled;
         };
         
     }

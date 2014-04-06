@@ -15,7 +15,10 @@ namespace volplay {
     namespace rendering {
     
         Light::Light()
-        : _position(20, 20, 20), _ambientColor(1,1,1), _diffuseColor(1,1,1), _specularColor(1,1,1), _attenuation(std::numeric_limits<Scalar>::max())
+        : _position(20, 20, 20), _ambientColor(1,1,1)
+        , _diffuseColor(1,1,1), _specularColor(1,1,1)
+        , _attenuation(std::numeric_limits<Scalar>::max())
+        , _shadowHardness(32)
         {}
         
         void
@@ -76,6 +79,18 @@ namespace volplay {
         Light::attenuationRadius() const
         {
             return _attenuation;
+        }
+        
+        void
+        Light::setShadowHardness(Scalar s)
+        {
+            _shadowHardness = s;
+        }
+        
+        Scalar
+        Light::shadowHardness() const
+        {
+            return _shadowHardness;
         }
         
         LightPtr
