@@ -64,7 +64,8 @@ namespace volplay {
                                        const SDFNode *node) const;
             
             
-            ByteImagePtr _image;
+            ByteImagePtr _saturatedImage;
+            FloatImagePtr _image;
             SDFNodePtr _root;
             std::vector<LightPtr> _lights;
             MaterialPtr _defaultMaterial;

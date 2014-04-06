@@ -91,6 +91,19 @@ namespace volplay {
                 return _data + _cols * _channels * index;
             }
             
+            /** Access element of row. */
+            T *rowElement(T * row, int col)
+            {
+                return row + col * _channels;
+            }
+            
+            /** Access element of row mapped as Eigen vector type. */
+            template<class EigenType>
+            Eigen::Map<EigenType> mappedRowElement(T * row, int col)
+            {
+                return Eigen::Map<EigenType>(rowElement(row, col));
+            }
+            
 #ifdef VOLPLAY_WITH_OPENCV
             cv::Mat toOpenCV() {
                 return cv::Mat(_rows, _cols, CV_MAKETYPE(cv::DataType<T>::depth, _channels), (char*)_data);

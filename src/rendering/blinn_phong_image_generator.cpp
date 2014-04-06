@@ -21,7 +21,8 @@ namespace volplay {
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        :_image(new ByteImage())
+        : _image(new FloatImage())
+        , _saturatedImage(new ByteImage())
         , _defaultMaterial(new Material())
         , _clearColor(Vector::Zero())
         , _gamma(1 / Scalar(2.2))
@@ -33,6 +34,7 @@ namespace volplay {
         BlinnPhongImageGenerator::onRenderingBegin(const Renderer *r)
         {
             _image->create(r->imageHeight(), r->imageWidth(), 3);
+            _saturatedImage->create(r->imageHeight(), r->imageWidth(), 3);
             _root = r->scene();
             _lights = r->lights();
             _to = r->primaryTraceOptions();
@@ -45,38 +47,53 @@ namespace volplay {
                                         const Vector *directions,
                                         const SDFNode::TraceResult *tr, int cols)
         {
-            unsigned char *imageRow = _image->row(row);
+            typedef Eigen::Map<Vector> MVector;
+            float *imageRow = _image->row(row);
             
             for (int c = 0; c < cols; ++c) {
-                Vector i = _clearColor;
+                
+                MVector i = imageRow + c*3;
+                
+                // Illuminate
+                i = _clearColor;
                 if (tr[c].hit) {
                     Vector p = origin + tr[c].t * directions[c];
                     i = illuminate(directions[c], p);
                 }
                 
+                // Perform gamma correction
                 i = i.array().pow(_gamma);
-                
-                unsigned char r = saturate<unsigned char>(i.x() * Scalar(255));
-                unsigned char g = saturate<unsigned char>(i.y() * Scalar(255));
-                unsigned char b = saturate<unsigned char>(i.z() * Scalar(255));
-
-                imageRow[c*3+0] = r;
-                imageRow[c*3+1] = g;
-                imageRow[c*3+2] = b;
-                
             }
         }
         
         void
         BlinnPhongImageGenerator::onRenderingComplete(const Renderer *r)
         {
-            // Nothing todo
+            typedef Eigen::Map<Vector> InVector;
+            
+            // convert to saturated RGB
+            for (int r = 0; r < _image->rows(); ++r) {
+                float *inRow = _image->row(r);
+                unsigned char *outRow = _saturatedImage->row(r);
+                
+                for (int c = 0; c < _image->cols(); ++c) {
+                    InVector i = inRow + c*3;
+                    
+                    unsigned char r = saturate<unsigned char>(i.x() * Scalar(255));
+                    unsigned char g = saturate<unsigned char>(i.y() * Scalar(255));
+                    unsigned char b = saturate<unsigned char>(i.z() * Scalar(255));
+                    
+                    outRow[c*3+0] = r;
+                    outRow[c*3+1] = g;
+                    outRow[c*3+2] = b;
+                }
+            }
         }
         
         ByteImagePtr
         BlinnPhongImageGenerator::image() const
         {
-            return _image;
+            return _saturatedImage;
         }
         
         void

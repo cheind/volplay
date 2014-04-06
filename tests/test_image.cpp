@@ -12,6 +12,7 @@
 #include <volplay/rendering/image.h>
 
 namespace vpr = volplay::rendering;
+namespace vp = volplay;
 
 TEST_CASE("Image")
 {
@@ -36,6 +37,11 @@ TEST_CASE("Image")
     REQUIRE(old != i.row(0));
     REQUIRE(i.row(1) == (i.row(0) + 4));
     REQUIRE(i.row(2) == (i.row(0) + 8));
+    REQUIRE(i.rowElement(i.row(1), 0) == (i.row(0) + 4));
+    REQUIRE(i.rowElement(i.row(1), 1) == (i.row(0) + 4 + 2));
+    
+    // Mapped type tests
+    REQUIRE(i.mappedRowElement<Eigen::Vector2i>(i.row(1), 1).data() == (i.row(0) + 4 + 2));
     
 #ifdef VOLPLAY_WITH_OPENCV
     cv::Mat m = i.toOpenCV();
