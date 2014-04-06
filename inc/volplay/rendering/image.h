@@ -46,14 +46,14 @@ namespace volplay {
             /** Allocate image memory. */
             void create(int rows, int cols, int channels)
             {
-                const int oldSizeInBytes = _rows * _cols * _channels;
-                const int newSizeInBytes = rows * cols * channels;
+                const int oldSizeInT = _rows * _cols * _channels;
+                const int newSizeInT = rows * cols * channels;
                 
                 _rows = rows;
                 _cols = cols;
                 _channels = channels;
                 
-                if (oldSizeInBytes == newSizeInBytes) {
+                if (oldSizeInT == newSizeInT) {
                     return;
                 }
                 
@@ -63,8 +63,17 @@ namespace volplay {
                 }
                 
                 
-                if (newSizeInBytes > 0) {
-                    _data = new T[newSizeInBytes];
+                if (newSizeInT > 0) {
+                    _data = new T[newSizeInT];
+                }
+            }
+            
+            /** Copy image content */
+            void copyTo(Image<T> &dst) {
+                const int sizeInBytes = _rows * _cols * _channels * sizeof(T);
+                if (sizeInBytes > 0) {
+                    dst.create(rows(), cols(), channels());
+                    memcpy(dst.row(0), row(0), sizeInBytes);
                 }
             }
             
