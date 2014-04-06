@@ -80,7 +80,7 @@ namespace volplay {
             tr->sdf = r.sdf;
             tr->node = r.node;
             tr->iter = nIter;
-            tr->hit = fabs(r.sdf) < opts.sdfThreshold;
+            tr->hit = std::abs(r.sdf) < opts.sdfThreshold;
         }
         
         return t;
