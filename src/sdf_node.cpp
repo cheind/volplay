@@ -42,7 +42,7 @@ namespace volplay {
     }
     
     SDFNode::TraceOptions::TraceOptions()
-    :minT(0), maxT(std::numeric_limits<Scalar>::max()), stepFact(1), sdfThreshold(0.001f), maxIter(500)
+    :minT(0), maxT(std::numeric_limits<Scalar>::max()), stepFact(1), sdfThreshold(0.0001f), maxIter(500)
     {
     }
     
@@ -66,22 +66,21 @@ namespace volplay {
         // underestimate the true distance, but do not overestimate it.
         
         Scalar t = opts.minT;
-        Vector pos = o + t * d;
-        Scalar sdf = eval(pos) * opts.stepFact;
+        SDFResult r = fullEval(o + t * d);
         
         int nIter = 0;
-        while (nIter < opts.maxIter && t < opts.maxT && sdf > opts.sdfThreshold) {
-            t += sdf;
-            pos += sdf * d;
-            sdf = eval(pos) * opts.stepFact;
+        while (nIter < opts.maxIter && t < opts.maxT && r.sdf > opts.sdfThreshold) {
+            t += r.sdf * opts.stepFact;
+            r = fullEval(o + t * d);
             ++nIter;
         }
         
         if (tr) {
             tr->t = t;
-            tr->sdf = sdf;
+            tr->sdf = r.sdf;
+            tr->node = r.node;
             tr->iter = nIter;
-            tr->hit = fabs(sdf) < opts.sdfThreshold;
+            tr->hit = fabs(r.sdf) < opts.sdfThreshold;
         }
         
         return t;

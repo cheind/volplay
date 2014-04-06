@@ -48,16 +48,16 @@ namespace volplay {
         
         /** Contains advanced tracing result infos */
         struct TraceResult {
-            int iter;       ///< Number of iterations applied
-            Scalar t;       ///< Parametric t of ray equation
-            Scalar sdf;     ///< Signed distance at intersection
-            bool hit;       ///< True if abs(sdf) < TraceOptions.sdfThreshold
+            int iter;               ///< Number of iterations applied
+            Scalar t;               ///< Parametric t of ray equation
+            Scalar sdf;             ///< Signed distance at intersection
+            const SDFNode *node;    ///< Closed node
+            bool hit;               ///< True if abs(sdf) < TraceOptions.sdfThreshold
             
             /** Default trace options */
             TraceResult();
         };
 
-        
         /** Trace ray. Uses sphere tracing to find intersection */
         virtual Scalar trace(const Vector &o, const Vector &d, const TraceOptions &opts, TraceResult *tr = 0) const;
         
