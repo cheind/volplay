@@ -48,19 +48,25 @@ TEST_CASE("CPU based raytracing")
     m2->setSpecularColor(vp::Vector::Zero());
     m3->setSpecularColor(vp::Vector::Zero());
     
+    /*
     vp::SDFNodePtr scene =
         vp::SDFMake::plane(vp::Vector::UnitX()).attach("Material", m1) +
         vp::SDFMake::plane(vp::Vector::UnitY()).attach("Material", m2) +
         vp::SDFMake::plane(vp::Vector::UnitZ()).attach("Material", m3) +
         vp::SDFMake::sphere(1).translate(vp::Vector(1, 1, 1));
+     */
+    
+    vp::SDFNodePtr scene =
+        vp::SDFMake::plane(vp::Vector::UnitY()) +
+        vp::SDFMake::sphere(1).translate(vp::Vector(0, 1, 0));
     
     vpr::CameraPtr cam(new vpr::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
-    cam->setCameraToWorldAsLookAt(vp::Vector(10,10,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
+    cam->setCameraToWorldAsLookAt(vp::Vector(-10,4,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
     
     std::vector<vpr::LightPtr> lights;
-    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,20,20), vp::Vector::Zero(), vp::Vector::Ones(), vp::Vector::Ones(), 100));
-    lights.push_back(vpr::Light::createPointLight(vp::Vector(0.5,3,0.5), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 2));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,15,20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 100));
+    //lights.push_back(vpr::Light::createPointLight(vp::Vector(0.5,3,0.5), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 5));
     
     vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);
