@@ -42,6 +42,9 @@ namespace volplay {
             /** Set gamma correction factor. Defaults to 1 / 2.2. */
             void setGamma(Scalar s);
             
+            /** Enable / disable edge antialiasing. */
+            void setAntialiasingEnabled(bool enable);
+            
             /** Access the generated RGB color image. */
             ByteImagePtr image() const;
             
@@ -73,6 +76,7 @@ namespace volplay {
             SDFNode::TraceOptions _to;
             Scalar _gamma;
             bool _shadowsEnabled;
+            bool _fxaaEnabled;
             FXAAPtr _fxaa;
         };
         

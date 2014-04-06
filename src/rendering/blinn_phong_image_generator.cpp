@@ -27,6 +27,7 @@ namespace volplay {
         , _clearColor(Vector::Zero())
         , _gamma(1 / Scalar(2.2))
         , _shadowsEnabled(true)
+        , _fxaaEnabled(true)
         , _fxaa(new FXAA())
         {
         }
@@ -73,8 +74,10 @@ namespace volplay {
             typedef Eigen::Map<Vector> InVector;
             
             // Antialiase
-            FloatImagePtr fxaaImage = _fxaa->filter(_image);
-            fxaaImage->copyTo(*_image);
+            if (_fxaaEnabled) {
+                FloatImagePtr fxaaImage = _fxaa->filter(_image);
+                fxaaImage->copyTo(*_image);
+            }
             
             // convert to saturated RGB
             for (int r = 0; r < _image->rows(); ++r) {
@@ -111,6 +114,12 @@ namespace volplay {
         BlinnPhongImageGenerator::setGamma(Scalar s)
         {
             _gamma = s;
+        }
+        
+        void
+        BlinnPhongImageGenerator::setAntialiasingEnabled(bool enable)
+        {
+            _fxaaEnabled = enable;
         }
 
         
