@@ -20,6 +20,24 @@ namespace volplay {
         {
         }
         
+        inline Vector bilinearSample(Scalar row, Scalar col, const FloatImagePtr &img) {
+            int x = static_cast<int>(col);
+            int y = static_cast<int>(row);
+            
+            Scalar x_ratio = col - x;
+            Scalar y_ratio = row - y;
+            Scalar x_opp = Scalar(1) - x_ratio;
+            Scalar y_opp = Scalar(1) - y_ratio;
+            
+            typedef Eigen::Map<Vector> MVector;
+            MVector a = img->elementClamped(y, x);
+            MVector b = img->elementClamped(y, x+1);
+            MVector c = img->elementClamped(y+1, x);
+            MVector d = img->elementClamped(y+1, x+1);
+            
+            return (a * x_opp + b * x_ratio) * y_opp + (c * x_opp + d * x_ratio) * y_ratio;
+        }
+        
         /** Access a pixel in the image. Repeat border if outside. Returned pixel is normalized. */
         inline Vector pixel(int row, int col, const FloatImagePtr &img) {
             int rows = img->rows();
@@ -33,11 +51,6 @@ namespace volplay {
             return Vector(pixelRow[col*3+0],
                           pixelRow[col*3+1],
                           pixelRow[col*3+2]);
-        }
-        
-        /** Same as above but for floating point values. */
-        inline Vector pixel(Scalar row, Scalar col, const ByteImagePtr &img) {
-            return pixel((int)round(row), (int)round(col), img);
         }
         
         FloatImagePtr
@@ -104,8 +117,8 @@ namespace volplay {
             const Scalar e = Scalar(0)/Scalar(3) - Scalar(0.5);
             const Scalar f = Scalar(3)/Scalar(3) - Scalar(0.5);
                               
-            Vector rgbA = Scalar(0.5) * (pixel(row + c, col + c, img) + pixel(row + d, col + d, img));
-            Vector rgbB = rgbA * Scalar(0.5) + Scalar(0.25) * (pixel(row + e, col + e, img) + pixel(row + f, col + f, img));
+            Vector rgbA = Scalar(0.5) * (bilinearSample(row + c, col + c, img) + bilinearSample(row + d, col + d, img));
+            Vector rgbB = rgbA * Scalar(0.5) + Scalar(0.25) * (bilinearSample(row + e, col + e, img) + bilinearSample(row + f, col + f, img));
             float lumaB = rgbB.dot(luma);
             
             if ((lumaB < lumaMin) || (lumaB > lumaMax)) {
