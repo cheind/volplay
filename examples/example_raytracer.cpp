@@ -15,7 +15,6 @@
 #include <volplay/rendering/heat_image_generator.h>
 #include <volplay/rendering/depth_image_generator.h>
 #include <volplay/rendering/blinn_phong_image_generator.h>
-#include <volplay/rendering/fxaa.h>
 #include <volplay/rendering/material.h>
 #include <volplay/rendering/light.h>
 
@@ -75,8 +74,6 @@ TEST_CASE("CPU based raytracing")
     r->addImageGenerator(phong);
     
     r->render();
-    
-    vpr::FXAAPtr fxaa(new vpr::FXAA());
 
     cv::Mat depthImage;
     depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 255. / 10.);
@@ -84,7 +81,6 @@ TEST_CASE("CPU based raytracing")
     cv::imshow("Heat Image", heat->image()->toOpenCV());
     cv::imshow("Depth Image",depthImage);
     cv::imshow("Blinn Phong Image",toBgr(phong->image()->toOpenCV()));
-    cv::imshow("Blinn Phong Image FXAA",toBgr(fxaa->filter(phong->image())->toOpenCV()));
     
     
     cv::waitKey();
