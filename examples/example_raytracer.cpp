@@ -37,36 +37,22 @@ TEST_CASE("CPU based raytracing")
     const int imageHeight = (int)imageWidth / aspect;
     
     vpr::MaterialPtr m1(new vpr::Material());
-    vpr::MaterialPtr m2(new vpr::Material());
-    vpr::MaterialPtr m3(new vpr::Material());
-    
-    m1->setDiffuseColor(vp::Vector(1, 0, 0));
-    m2->setDiffuseColor(vp::Vector(0, 1, 0));
-    m3->setDiffuseColor(vp::Vector(0, 0, 1));
-    
-    m1->setSpecularColor(vp::Vector::Zero());
-    m2->setSpecularColor(vp::Vector::Zero());
-    m3->setSpecularColor(vp::Vector::Zero());
-    
-    /*
-    vp::SDFNodePtr scene =
-        vp::SDFMake::plane(vp::Vector::UnitX()).attach("Material", m1) +
-        vp::SDFMake::plane(vp::Vector::UnitY()).attach("Material", m2) +
-        vp::SDFMake::plane(vp::Vector::UnitZ()).attach("Material", m3) +
-        vp::SDFMake::sphere(1).translate(vp::Vector(1, 1, 1));
-     */
+    m1->setDiffuseColor(vp::Vector(0.1, 0.6, 0.1));
+    m1->setAmbientColor(m1->diffuseColor() * vp::Scalar(0.1));
+    m1->setSpecularColor(vp::Vector::Ones());
+    m1->setSpecularHardness(vp::Scalar(32));
     
     vp::SDFNodePtr scene =
         vp::SDFMake::plane(vp::Vector::UnitY()) +
-        vp::SDFMake::sphere(1).translate(vp::Vector(0, 1, 0));
+        vp::SDFMake::sphere(1).attach("Material", m1).translate(vp::Vector(0, 1.5, 0));
     
     vpr::CameraPtr cam(new vpr::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));
-    cam->setCameraToWorldAsLookAt(vp::Vector(-10,5,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
+    cam->setCameraToWorldAsLookAt(vp::Vector(0,5,10), vp::Vector(0,0,0), vp::Vector(0,1,0));
     
     std::vector<vpr::LightPtr> lights;
-    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,15,20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 100));
-    //lights.push_back(vpr::Light::createPointLight(vp::Vector(0.5,3,0.5), vp::Vector::Ones(), vp::Vector(0,1,0), vp::Vector(0,1,0), 5));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(20,15,20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 50));
+    //lights.push_back(vpr::Light::createPointLight(vp::Vector(0.5,3,0.5), vp::Vector::Zero(), vp::Vector(0,1,0), vp::Vector(0,1,0), 5));
     
     vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);
@@ -75,7 +61,8 @@ TEST_CASE("CPU based raytracing")
     r->setImageResolution(imageHeight, imageWidth);
     
     vp::SDFNode::TraceOptions to;
-    to.maxIter = 500;
+    to.maxIter = 1000;
+    to.stepFact = vp::Scalar(0.9);
     r->setPrimaryTraceOptions(to);
     
     vpr::HeatImageGeneratorPtr heat(new vpr::HeatImageGenerator());
@@ -98,6 +85,8 @@ TEST_CASE("CPU based raytracing")
     cv::imshow("Depth Image",depthImage);
     cv::imshow("Blinn Phong Image",toBgr(phong->image()->toOpenCV()));
     cv::imshow("Blinn Phong Image FXAA",toBgr(fxaa->filter(phong->image())->toOpenCV()));
+    
+    
     cv::waitKey();
 
 }
