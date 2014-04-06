@@ -16,12 +16,12 @@ namespace volplay {
     namespace rendering {
     
         FXAA::FXAA()
-        :_image(new ByteImage())
+        :_image(new FloatImage())
         {
         }
         
         /** Access a pixel in the image. Repeat border if outside. Returned pixel is normalized. */
-        inline Vector pixel(int row, int col, const ByteImagePtr &img) {
+        inline Vector pixel(int row, int col, const FloatImagePtr &img) {
             int rows = img->rows();
             int cols = img->cols();
             
@@ -29,10 +29,10 @@ namespace volplay {
             row = clamp(row, 0, rows - 1);
             col = clamp(col, 0, cols - 1);
             
-            unsigned char *pixelRow = img->row(row);
-            return Vector(pixelRow[col*3+0] / Scalar(255),
-                          pixelRow[col*3+1] / Scalar(255),
-                          pixelRow[col*3+2] / Scalar(255));
+            float *pixelRow = img->row(row);
+            return Vector(pixelRow[col*3+0],
+                          pixelRow[col*3+1],
+                          pixelRow[col*3+2]);
         }
         
         /** Same as above but for floating point values. */
@@ -40,20 +40,18 @@ namespace volplay {
             return pixel((int)round(row), (int)round(col), img);
         }
         
-        ByteImagePtr
-        FXAA::filter(const ByteImagePtr &src)
+        FloatImagePtr
+        FXAA::filter(const FloatImagePtr &src)
         {
             _image->create(src->rows(), src->cols(), src->channels());
             
             for (int r = 0; r < src->rows(); ++r) {
-                unsigned char *imgRow = _image->row(r);
+                float *imgRow = _image->row(r);
                 
                 for (int c = 0; c < src->cols(); ++c) {
+                    Eigen::Map<Vector> out = imgRow + c*3;
                     Vector p = filterPixel(r, c, src);
-                    
-                    imgRow[c*3+0] = saturate<unsigned char>(p.x() * Scalar(255));
-                    imgRow[c*3+1] = saturate<unsigned char>(p.y() * Scalar(255));
-                    imgRow[c*3+2] = saturate<unsigned char>(p.z() * Scalar(255));
+                    out = p;
                 }
             }
             
@@ -65,7 +63,7 @@ namespace volplay {
 #define SMAX(a, b) std::max<Scalar> ((a), (b))
         
         Vector
-        FXAA::filterPixel(int row, int col, const ByteImagePtr &img) const
+        FXAA::filterPixel(int row, int col, const FloatImagePtr &img) const
         {
             const Vector rgbNW = pixel(row-1, col-1, img);
             const Vector rgbNE = pixel(row-1, col+1, img);

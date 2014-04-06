@@ -28,14 +28,14 @@ namespace volplay {
             FXAA();
             
             /** Perform anti-aliasing on 3-channel RGB. */
-            ByteImagePtr filter(const ByteImagePtr &img);
+            FloatImagePtr filter(const FloatImagePtr &img);
             
         private:
             
             /** Filter a single pixel using FXAA */
-            Vector filterPixel(int row, int col, const ByteImagePtr &img) const;
+            Vector filterPixel(int row, int col, const FloatImagePtr &img) const;
             
-            ByteImagePtr _image;                           
+            FloatImagePtr _image;
         };
         
     }
