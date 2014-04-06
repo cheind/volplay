@@ -21,7 +21,11 @@ namespace volplay {
     namespace rendering {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
-        :_image(new ByteImage()), _defaultMaterial(new Material()), _clearColor(Vector::Zero()), _shadowsEnabled(true)
+        :_image(new ByteImage())
+        , _defaultMaterial(new Material())
+        , _clearColor(Vector::Zero())
+        , _gamma(1 / Scalar(2.2))
+        , _shadowsEnabled(true)
         {
         }
         
@@ -49,6 +53,9 @@ namespace volplay {
                     Vector p = origin + tr[c].t * directions[c];
                     i = illuminate(directions[c], p);
                 }
+                
+                i = i.array().pow(_gamma);
+                
                 unsigned char r = saturate<unsigned char>(i.x() * Scalar(255));
                 unsigned char g = saturate<unsigned char>(i.y() * Scalar(255));
                 unsigned char b = saturate<unsigned char>(i.z() * Scalar(255));
@@ -76,6 +83,12 @@ namespace volplay {
         BlinnPhongImageGenerator::setShadowsEnabled(bool enable)
         {
             _shadowsEnabled = true;
+        }
+        
+        void
+        BlinnPhongImageGenerator::setGamma(Scalar s)
+        {
+            _gamma = s;
         }
 
         
@@ -121,7 +134,7 @@ namespace volplay {
             const Vector iSpecular = std::pow(clamp01(n.dot(h)), m->specularHardness()) * m->specularColor().cwiseProduct(l->specularColor());
             
             // Light attenuation factor
-            const Scalar attenuation = calculateLightAttenuation(lp, l);
+            const Scalar attenuation = calculateLightAttenuation(lpNorm, l);
             
             // Shadow factor. Note tracing is done from light to intersection. See function for notes.
             const Scalar shadow = _shadowsEnabled ? calculateSoftShadow(l->position(), -ldir, 0, lpNorm, l, node) : Scalar(1);
@@ -130,19 +143,22 @@ namespace volplay {
         }
         
         Scalar
-        BlinnPhongImageGenerator::calculateLightAttenuation(const Vector &lightVector, const LightPtr &l) const
+        BlinnPhongImageGenerator::calculateLightAttenuation(const Scalar &d, const LightPtr &l) const
         {
             // Calculate the attenuation factor. Standard OpenGL uses three factors to calculate the
             // attenuation as
             //
             //  att = 1 / (c.x() * d^2 + c.y() * d + c.z())
             //
-            // We use a simplier equation
+            // We use the following equation based on "Learning Modern 3D Graphics Programming"
+            // 
+            //  att = 1 / (1 + k * d^2)
+            //  k = 1 / r^2
             //
-            //  att = 1 - (d/r)^2
+            // Where r is the distance where half of the light intensity is lost.
             
-            const Scalar attf =  clamp01(lightVector.norm() / l->attenuationRadius());
-            return Scalar(1) - attf*attf;
+            const Scalar k =  Scalar(1) / (l->attenuationRadius() * l->attenuationRadius());
+            return clamp01(Scalar(1) / (Scalar(1) + k * d * d));
         }
         
         Scalar

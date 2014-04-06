@@ -39,6 +39,9 @@ namespace volplay {
             /** Enable / disable shadow calculations. */
             void setShadowsEnabled(bool enable);
             
+            /** Set gamma correction factor. Defaults to 1 / 2.2. */
+            void setGamma(Scalar s);
+            
             /** Access the generated RGB color image. */
             ByteImagePtr image() const;
             
@@ -52,7 +55,7 @@ namespace volplay {
                                        const MaterialPtr &m, const LightPtr &l, const SDFNode *node) const;
             
             /** Calcuate light attenuation factor. */
-            Scalar calculateLightAttenuation(const Vector &lightVector, const LightPtr &l) const;
+            Scalar calculateLightAttenuation(const Scalar &d, const LightPtr &l) const;
             
             /** Calculate shadow factor. */
             Scalar calculateSoftShadow(const Vector &origin, const Vector &dir,
@@ -67,6 +70,7 @@ namespace volplay {
             MaterialPtr _defaultMaterial;
             Vector _clearColor;
             SDFNode::TraceOptions _to;
+            Scalar _gamma;
             bool _shadowsEnabled;
         };
         
