@@ -15,7 +15,7 @@ namespace vp = volplay;
 
 TEST_CASE("SDFDifference")
 {
-    vp::SDFDifference d(std::make_shared<vp::SDFSphere>(2), std::make_shared<vp::SDFSphere>(1));
+    vp::SDFDifference d(std::make_shared<vp::SDFSphere>(vp::S(2)), std::make_shared<vp::SDFSphere>(vp::S(1)));
     REQUIRE_CLOSE( d.eval(vp::Vector(0,0,0)), vp::S(1) );
     REQUIRE_CLOSE( d.eval(vp::Vector(1,0,0)), vp::S(0) );
     REQUIRE_CLOSE( d.eval(vp::Vector(1.5,0,0)), vp::S(-0.5) );

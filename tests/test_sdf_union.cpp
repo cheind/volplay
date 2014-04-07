@@ -21,7 +21,7 @@ TEST_CASE("SDFUnion")
     REQUIRE_CLOSE( u.eval(vp::Vector(1,0,0)), vp::S(0) );
     REQUIRE_CLOSE( u.eval(vp::Vector(10,10,10)), vp::Vector(10,10,10).norm() - vp::S(1) );
     
-    vp::SDFUnion u2(std::make_shared<vp::SDFSphere>(1), std::make_shared<vp::SDFSphere>(2));
+    vp::SDFUnion u2(std::make_shared<vp::SDFSphere>(vp::S(1)), std::make_shared<vp::SDFSphere>(vp::S(2)));
     REQUIRE_CLOSE( u2.eval(vp::Vector(0,0,0)), vp::S(-2) );
     REQUIRE_CLOSE( u2.eval(vp::Vector(2,0,0)), vp::S(0) );
     REQUIRE_CLOSE( u2.eval(vp::Vector(10,10,10)), vp::Vector(10,10,10).norm() - vp::S(2) );

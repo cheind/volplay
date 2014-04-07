@@ -84,7 +84,7 @@ namespace volplay {
             const Vector rgbSE = pixel(row+1, col+1, img);
             const Vector rgbM =  pixel(row, col, img);
             
-            const Vector luma = Vector(0.299, 0.587, 0.114);
+            const Vector luma = Vector(Scalar(0.299), Scalar(0.587), Scalar(0.114));
             float lumaNW = rgbNW.dot(luma);
             float lumaNE = rgbNE.dot(luma);
             float lumaSW = rgbSW.dot(luma);

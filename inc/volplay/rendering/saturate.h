@@ -19,16 +19,16 @@ namespace volplay {
 
         /** Simple rounding function. Implemented here since not available in MSVC10. */
         template<class T>
-        T round(T v) 
+        T round(double v) 
         {
-            return v < 0 ? static_cast<T>(ceil(v - T(0.5))) : static_cast<T>(floor(v + T(0.5)));
+            return v < 0 ? static_cast<T>(std::ceil(v - 0.5)) : static_cast<T>(v + T(0.5));
         }
         
         /** Saturate input to destination range. */
         template<class T, class S>
         T saturate(S s) 
         {
-            S r = ::volplay::rendering::round(s);
+            S r = ::volplay::rendering::round<S>(s);
             r = std::min<S>(r, std::numeric_limits<T>::max());
             r = std::max<S>(r, std::numeric_limits<T>::lowest());
             return static_cast<T>(r);

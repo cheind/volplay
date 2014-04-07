@@ -16,7 +16,7 @@ namespace vp = volplay;
 
 TEST_CASE("SDFIntersection")
 {
-    vp::SDFIntersection i(std::make_shared<vp::SDFSphere>(2), std::make_shared<vp::SDFSphere>(0.5));
+    vp::SDFIntersection i(std::make_shared<vp::SDFSphere>(vp::S(2)), std::make_shared<vp::SDFSphere>(vp::S(0.5)));
     REQUIRE_CLOSE( i.eval(vp::Vector(0,0,0)), vp::S(-0.5) );
     REQUIRE_CLOSE( i.eval(vp::Vector(0.5,0,0)), vp::S(0) );
     REQUIRE_CLOSE( i.eval(vp::Vector(10,10,10)), vp::Vector(10,10,10).norm() - vp::S(0.5) );

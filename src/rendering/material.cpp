@@ -14,10 +14,10 @@ namespace volplay {
     namespace rendering {
     
         Material::Material()
-        : _ambientColor(0.1,0.1,0.1)
-        , _diffuseColor(0.6,0.6,0.6)
-        , _specularColor(0.1,0.1,0.1)
-        , _specularHardness(128)
+        : _ambientColor(Scalar(0.1),Scalar(0.1),Scalar(0.1))
+        , _diffuseColor(Scalar(0.6),Scalar(0.6),Scalar(0.6))
+        , _specularColor(Scalar(0.1),Scalar(0.1),Scalar(0.1))
+        , _specularHardness(Scalar(128))
         {}
         
         void

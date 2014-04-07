@@ -72,7 +72,7 @@ TEST_CASE("Ray generation")
 {
     vp::rendering::Camera c;
     vp::AffineTransform t = vp::AffineTransform::Identity();
-    t.rotate(Eigen::AngleAxis<vp::Scalar>(0.5 * M_PI, vp::Vector::UnitX()));
+    t.rotate(Eigen::AngleAxis<vp::Scalar>(vp::S(0.5 * M_PI), vp::Vector::UnitX()));
     
     c.setCameraToImage(vp::Vector2(100, 100), vp::Vector2(320, 240));
     c.setCameraToWorld(t);

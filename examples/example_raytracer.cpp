@@ -33,19 +33,19 @@ TEST_CASE("CPU based raytracing")
 {
     const vp::Scalar aspect = vp::Scalar(16)/9;
     const int imageWidth = 900;
-    const int imageHeight = (int)imageWidth / aspect;
+    const int imageHeight = (int)(vp::Scalar(imageWidth) / aspect);
     
     vpr::MaterialPtr m1(new vpr::Material());
-    m1->setDiffuseColor(vp::Vector(0.1, 0.6, 0.1));
-    m1->setAmbientColor(m1->diffuseColor() * vp::Scalar(0.1));
+    m1->setDiffuseColor(vp::Vector(vp::S(0.1), vp::S(0.6), vp::S(0.1)));
+    m1->setAmbientColor(m1->diffuseColor() * vp::S(0.1));
     m1->setSpecularColor(vp::Vector::Ones());
-    m1->setSpecularHardness(vp::Scalar(128));
+    m1->setSpecularHardness(vp::S(128));
     
     vpr::MaterialPtr m2(new vpr::Material());
-    m2->setDiffuseColor(vp::Vector(0.6, 0.1, 0.1));
-    m2->setAmbientColor(m2->diffuseColor() * vp::Scalar(0.1));
+    m2->setDiffuseColor(vp::Vector(vp::S(0.6), vp::S(0.1), vp::S(0.1)));
+    m2->setAmbientColor(m2->diffuseColor() * vp::S(0.1));
     m2->setSpecularColor(vp::Vector::Ones());
-    m2->setSpecularHardness(vp::Scalar(128));
+    m2->setSpecularHardness(vp::S(128));
     
     vp::SDFNodePtr scene =
         vp::SDFMake::plane(vp::Vector::UnitY()) +
