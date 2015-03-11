@@ -29,6 +29,9 @@ namespace volplay {
     
     /** Default vector type in two dimensions */
     typedef Eigen::Matrix<Scalar, 4, 1> Vector4;
+
+    /** Default index type in three dimensions */
+    typedef Eigen::Matrix<int, 3, 1> Index;
     
     /** Affine transform in three dimensions. */
     typedef Eigen::Transform<Scalar, 3, Eigen::AffineCompact> AffineTransform;

@@ -13,4 +13,7 @@
 #define REQUIRE_CLOSE(left, right) \
     REQUIRE( fabs((left) - (right)) < 0.001 )
 
+#define REQUIRE_CLOSE_VECTOR(left, right) \
+    REQUIRE( ((left) - (right)).squaredNorm() < 0.001 )
+
 #endif

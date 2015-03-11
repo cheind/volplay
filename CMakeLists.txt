@@ -37,7 +37,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_sphere.h
     inc/volplay/sdf_plane.h
     inc/volplay/sdf_make.h
-    src/sdf_node.cpp
+	src/sdf_node.cpp
     src/sdf_node_attachment.cpp
     src/sdf_unary.cpp
     src/sdf_group.cpp
@@ -73,18 +73,27 @@ set(VOLPLAY_RENDERING_FILES
     src/rendering/fxaa.cpp
 )
 
+set(VOLPLAY_SURFACE_FILES
+	inc/volplay/surface/types.h
+    inc/volplay/surface/dual_contouring.h
+	src/surface/dual_contouring.cpp
+)
+
 set(VOLPLAY_UTIL_FILES
     inc/volplay/util/iterator_range.h
+	inc/volplay/util/voxel_grid.h
+	src/util/voxel_grid.cpp
 )
 
 source_group(core FILES ${VOLPLAY_CORE_FILES})
 source_group(rendering FILES ${VOLPLAY_RENDERING_FILES})
 source_group(util FILES ${VOLPLAY_UTIL_FILES})
+source_group(surface FILES ${VOLPLAY_SURFACE_FILES})
 
 include_directories(${EIGEN_INCLUDE_DIR})
 include_directories(inc)
 
-add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_RENDERING_FILES} ${VOLPLAY_UTIL_FILES})
+add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_RENDERING_FILES} ${VOLPLAY_UTIL_FILES} ${VOLPLAY_SURFACE_FILES})
 
 # Setup tests
 
@@ -102,6 +111,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_camera.cpp
     tests/test_image.cpp
     tests/test_saturate.cpp
+	tests/test_voxel_grid.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})
