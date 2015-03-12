@@ -37,7 +37,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_sphere.h
     inc/volplay/sdf_plane.h
     inc/volplay/sdf_make.h
-	src/sdf_node.cpp
+    src/sdf_node.cpp
     src/sdf_node_attachment.cpp
     src/sdf_unary.cpp
     src/sdf_group.cpp
@@ -81,8 +81,8 @@ set(VOLPLAY_SURFACE_FILES
 
 set(VOLPLAY_UTIL_FILES
     inc/volplay/util/iterator_range.h
+	inc/volplay/util/function_output_iterator.h
 	inc/volplay/util/voxel_grid.h
-	src/util/voxel_grid.cpp
 )
 
 source_group(core FILES ${VOLPLAY_CORE_FILES})

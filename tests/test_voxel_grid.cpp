@@ -10,14 +10,15 @@
 #include "catch.hpp"
 #include "float_comparison.hpp"
 #include <volplay/util/voxel_grid.h>
+#include <volplay/util/function_output_iterator.h>
 #include <iostream>
 
 namespace vp = volplay;
-namespace vpu = volplay::util;
+namespace vg = volplay::util::voxelgrid;
 
 TEST_CASE("VoxelGrid-Transforms")
 {
-    vp::AffineTransform t = vpu::VoxelGrid::buildWorldToLocal(vp::Vector(10, 10, 10), vp::Vector(2.f, 4.f, 8.f));
+    vp::AffineTransform t = vg::buildWorldToLocal(vp::Vector(10, 10, 10), vp::Vector(2.f, 4.f, 8.f));
 
     Eigen::MatrixXf ref(3, 4);
     ref << 0.5f, 0, 0, -5.f, 
@@ -25,17 +26,17 @@ TEST_CASE("VoxelGrid-Transforms")
            0, 0, 0.125f, -1.25f;
 
     REQUIRE_CLOSE_VECTOR(ref, t.matrix());
-    REQUIRE_CLOSE_VECTOR(vpu::VoxelGrid::worldToLocal(t, vp::Vector(10, 10, 10)), vp::Vector(0,0,0));
-    REQUIRE_CLOSE_VECTOR(vpu::VoxelGrid::worldToLocal(t, vp::Vector(11, 15, 20)), vp::Vector(0.5f,1.25f,1.25f));
-    REQUIRE_CLOSE_VECTOR(vpu::VoxelGrid::worldToLocal(t, vp::Vector(0, -1, -2)), vp::Vector(-5.f,-2.75f,-1.5f));
-    REQUIRE_CLOSE_VECTOR(vpu::VoxelGrid::worldToVoxel(t, vp::Vector(10, 10, 10)), vp::Index(0,0,0));
-    REQUIRE_CLOSE_VECTOR(vpu::VoxelGrid::worldToVoxel(t, vp::Vector(11, 15, 20)), vp::Index(0,1,1));
-    REQUIRE_CLOSE_VECTOR(vpu::VoxelGrid::worldToVoxel(t, vp::Vector(0, -1, -2)), vp::Index(-5,-3,-2));
+    REQUIRE_CLOSE_VECTOR(vg::worldToLocal(t, vp::Vector(10, 10, 10)), vp::Vector(0,0,0));
+    REQUIRE_CLOSE_VECTOR(vg::worldToLocal(t, vp::Vector(11, 15, 20)), vp::Vector(0.5f,1.25f,1.25f));
+    REQUIRE_CLOSE_VECTOR(vg::worldToLocal(t, vp::Vector(0, -1, -2)), vp::Vector(-5.f,-2.75f,-1.5f));
+    REQUIRE_CLOSE_VECTOR(vg::worldToVoxel(t, vp::Vector(10, 10, 10)), vp::Index(0,0,0));
+    REQUIRE_CLOSE_VECTOR(vg::worldToVoxel(t, vp::Vector(11, 15, 20)), vp::Index(0,1,1));
+    REQUIRE_CLOSE_VECTOR(vg::worldToVoxel(t, vp::Vector(0, -1, -2)), vp::Index(-5,-3,-2));
 }
 
 TEST_CASE("VoxelGrid-Voxel-Properties")
 {
-    vpu::SparseVoxelProperty<int> viprop(-1);
+    vg::SparseVoxelProperty<int> viprop(-1);
 
     REQUIRE(!viprop.isSet(vp::Index(0,0,0)));
     REQUIRE(viprop[vp::Index(0,0,0)] == -1);
@@ -49,7 +50,7 @@ TEST_CASE("VoxelGrid-Voxel-Properties")
 
 TEST_CASE("VoxelGrid-VoxelEdge-Properties")
 {
-    vpu::SparseVoxelEdgeProperty<int> prop(-1);
+    vg::SparseVoxelEdgeProperty<int> prop(-1);
 
     auto e1 = std::make_pair(vp::Index(0,0,0), vp::Index(1,0,0));
     auto e2 = std::make_pair(vp::Index(1,0,0), vp::Index(0,0,0));
@@ -66,4 +67,81 @@ TEST_CASE("VoxelGrid-VoxelEdge-Properties")
     REQUIRE(prop[e3] == 2);
 
     REQUIRE(std::distance(prop.begin(), prop.end()) == 3);
+}
+
+TEST_CASE("VoxelGrid-EdgeQuery-Canonical")
+{
+    int count = 0;
+    vg::SparseVoxelEdgeProperty<bool> prop(false);
+
+    // Just one cube, should give 12 edges
+    vg::edges(vp::util::makeFunctionOutputIterator([&](const vg::VoxelEdge &e)
+    {
+        prop[e] = true;
+        ++count;
+    }));
+
+    REQUIRE(count == 12);
+    REQUIRE(prop.size() == 12);
+
+    for (auto iter = prop.begin(); iter != prop.end(); ++iter)
+    {
+        vg::Voxel v = iter->first.second - iter->first.first;
+        REQUIRE(v.maxCoeff() == 1); 
+        REQUIRE(v.minCoeff() == 0); 
+        REQUIRE(v.sum() == 1);
+    }
+}
+
+TEST_CASE("VoxelGrid-EdgeQuery-Offset")
+{
+    int count = 0;
+    vg::SparseVoxelEdgeProperty<bool> prop(false);
+
+    // Just one cube, should give 12 edges
+    vg::edges(vg::Voxel(5,5,5), vp::util::makeFunctionOutputIterator([&](const vg::VoxelEdge &e)
+    {
+        prop[e] = true;
+        ++count;
+    }));
+
+    REQUIRE(count == 12);
+    REQUIRE(prop.size() == 12);
+
+    for (auto iter = prop.begin(); iter != prop.end(); ++iter)
+    {
+        vg::Voxel v = iter->first.second - iter->first.first;
+        REQUIRE(v.maxCoeff() == 1); 
+        REQUIRE(v.minCoeff() == 0); 
+        REQUIRE(v.sum() == 1);
+        REQUIRE((iter->first.first - vg::Voxel(5,5,5)).minCoeff() == 0);
+    }
+}
+
+TEST_CASE("VoxelGrid-EdgeQuery-InRange")
+{
+    int count = 0;
+    vg::SparseVoxelEdgeProperty<bool> prop(false);
+
+    // Just one cube, should give 12 edges
+    vg::edges(vg::Voxel(5,5,5), vg::Voxel(6,6,6), vp::util::makeFunctionOutputIterator([&](const vg::VoxelEdge &e)
+    {
+        prop[e] = true;
+        ++count;
+    }));
+    
+    REQUIRE(count == 12);
+    REQUIRE(prop.size() == 12);
+    
+    vg::VoxelEdge edges[12];
+    vg::edges(vg::Voxel(5,5,5), edges);
+
+    for (size_t i = 0; i < 12; ++i) {
+        REQUIRE(prop.isSet(edges[i]));
+    }
+
+    vg::edges(vg::Voxel(6,6,6), edges);
+    for (size_t i = 0; i < 12; ++i) {
+        REQUIRE(!prop.isSet(edges[i]));
+    }
 }
