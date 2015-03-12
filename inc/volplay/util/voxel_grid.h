@@ -62,6 +62,11 @@ namespace volplay {
                     return _props.size();
                 }
 
+                void clear()
+                {
+                    _props.clear();
+                }
+
             private:
 
                 HashMap _props;
