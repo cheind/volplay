@@ -34,6 +34,20 @@ TEST_CASE("VoxelGrid-Transforms")
     REQUIRE_CLOSE_VECTOR(vg::worldToVoxel(t, vp::Vector(0, -1, -2)), vp::Index(-5,-3,-2));
 }
 
+
+TEST_CASE("VoxelGrid-Edge-Orientation")
+{
+    REQUIRE(vg::oppositeEdge(vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1, 0, 0))) == 
+            vg::VoxelEdge(vg::Voxel(1,0,0), vg::Voxel(0, 0, 0)));
+
+    REQUIRE(vg::undirectedEdge(vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1, 0, 0))) == 
+            vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1, 0, 0)));
+
+    REQUIRE(vg::undirectedEdge(vg::VoxelEdge(vg::Voxel(0,0,2), vg::Voxel(0, 0, 1))) == 
+            vg::VoxelEdge(vg::Voxel(0,0,1), vg::Voxel(0, 0, 2)));
+
+}
+
 TEST_CASE("VoxelGrid-Voxel-Properties")
 {
     vg::SparseVoxelProperty<int> viprop(-1);
@@ -144,4 +158,28 @@ TEST_CASE("VoxelGrid-EdgeQuery-InRange")
     for (size_t i = 0; i < 12; ++i) {
         REQUIRE(!prop.isSet(edges[i]));
     }
+}
+
+TEST_CASE("VoxelGrid-VoxelQuery-Edge")
+{
+    vg::Voxel v[4];
+    vg::voxels(vg::VoxelEdge(vg::Voxel(5,5,5), vg::Voxel(5,5,6)), v);
+
+    REQUIRE(v[0] == vg::Voxel(5,5,5));
+    REQUIRE(v[1] == vg::Voxel(4,5,5));
+    REQUIRE(v[2] == vg::Voxel(4,4,5));
+    REQUIRE(v[3] == vg::Voxel(5,4,5));
+
+
+    vg::voxels(vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1,0,0)), v);
+    REQUIRE(v[0] == vg::Voxel(0,0,0));
+    REQUIRE(v[1] == vg::Voxel(0,-1,0));
+    REQUIRE(v[2] == vg::Voxel(0,-1,-1));
+    REQUIRE(v[3] == vg::Voxel(0,0,-1));
+
+    vg::voxels(vg::VoxelEdge(vg::Voxel(1,0,0), vg::Voxel(0,0,0)), v);
+    REQUIRE(v[3] == vg::Voxel(0,0,0));
+    REQUIRE(v[2] == vg::Voxel(0,-1,0));
+    REQUIRE(v[1] == vg::Voxel(0,-1,-1));
+    REQUIRE(v[0] == vg::Voxel(0,0,-1));
 }

@@ -146,7 +146,7 @@ namespace volplay {
             class SparseVoxelEdgeProperty : public SparseProperty<VoxelEdge, Value, HashVoxelEdge, EqualVoxelEdge> 
             {
             public:
-                SparseVoxelEdgeProperty(const Value &defaultValue)
+                SparseVoxelEdgeProperty(const Value &defaultValue = Value())
                     : SparseProperty<VoxelEdge, Value, HashVoxelEdge, EqualVoxelEdge>(defaultValue)
                 {}
             };
@@ -175,6 +175,23 @@ namespace volplay {
                     (int)floor(l.z()));
             }
 
+            /** Returns the pair edge oriented in the opposite direction to given edge */
+            inline VoxelEdge oppositeEdge(const VoxelEdge &e)
+            {
+                return VoxelEdge(e.second, e.first);
+            }
+
+            /** Returns the undirected version of an edge. This is defined as the positively
+            oriented edge. */
+            inline VoxelEdge undirectedEdge(const VoxelEdge &e)
+            {
+                // Undirected version of an edge always flows in the positive direction.
+                if ((e.second - e.first).minCoeff() < 0)
+                    return oppositeEdge(e);
+                else
+                    return e;
+            }
+
             /** Voxel edges */
             template<class OutputIterator>
             inline void edges(OutputIterator iter)
@@ -196,7 +213,7 @@ namespace volplay {
                 *iter++ = VoxelEdge(Voxel(1,0,0), Voxel(1,0,1)); 
                 *iter++ = VoxelEdge(Voxel(0,1,0), Voxel(0,1,1)); 
                 *iter++ = VoxelEdge(Voxel(1,1,0), Voxel(1,1,1)); 
-                
+
             }
 
             /** Visit all voxel edges for a single voxel. */
@@ -231,6 +248,44 @@ namespace volplay {
                                 *iter++ = VoxelEdge(Voxel(x, y, z), Voxel(x, y, z + 1));
                         }
                     }
+                }
+            }
+
+            /** Visit the four voxels sharing the given edge in counter-clockwise order. */
+            template<class OutputIterator>
+            inline void voxels(const VoxelEdge &e, OutputIterator iter)
+            {                
+                static Voxel::Index mod3[5] = {0, 1, 2, 0, 1};
+
+                Voxel::Index i;                
+                Voxel v;
+                v.setZero();
+
+                if ((e.second - e.first).maxCoeff(&i) > 0) {
+                    *iter++ = e.first; 
+
+                    v(mod3[i+1]) = 1; v(mod3[i+2]) = 0;
+                    *iter++ = (e.first - v);
+
+                    v(mod3[i+1]) = 1; v(mod3[i+2]) = 1;
+                    *iter++ = (e.first - v);
+
+                    v(mod3[i+1]) = 0; v(mod3[i+2]) = 1;
+                    *iter++ = (e.first - v);
+
+                } else if ((e.second - e.first).minCoeff(&i) < 0) {
+                    const VoxelEdge eu = oppositeEdge(e);
+
+                    v(mod3[i+1]) = 0; v(mod3[i+2]) = 1;
+                    *iter++ = (eu.first - v);    
+
+                    v(mod3[i+1]) = 1; v(mod3[i+2]) = 1;
+                    *iter++ = (eu.first - v);
+
+                    v(mod3[i+1]) = 1; v(mod3[i+2]) = 0;
+                    *iter++ = (eu.first - v);
+
+                    *iter++ = eu.first; 
                 }
             }
 

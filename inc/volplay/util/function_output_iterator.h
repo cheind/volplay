@@ -51,6 +51,13 @@ namespace volplay {
                 return FunctionOutputIterator<UnaryFunction>(f);
         }
 
+        /** Construct FunctionOutputIterator from function instance. */
+        template <class UnaryFunction>
+        inline FunctionOutputIterator<UnaryFunction>
+        oiter(const UnaryFunction& f = UnaryFunction()) {
+                return FunctionOutputIterator<UnaryFunction>(f);
+        }
+
     }
 }
 
