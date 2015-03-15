@@ -14,6 +14,7 @@
 #include <volplay/fwd.h>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace volplay {
     namespace util {
@@ -27,12 +28,12 @@ namespace volplay {
 
             /** Base class for sparse properties. */
             template<class Key, class Value, class Hasher, class Equal>
-            class SparseProperty {
+            class SparseMap {
             public:
                 typedef std::unordered_map<Key, Value, Hasher, Equal> HashMap;
 
                 /** Create with default value that is returned when property value is not set. */
-                SparseProperty(const Value &defaultValue = Value())
+                SparseMap(const Value &defaultValue = Value())
                     :_defaultValue(defaultValue)
                 {}
 
@@ -73,6 +74,49 @@ namespace volplay {
                 Value _defaultValue;
             };
 
+            /** Base class for sparse sets. */
+            template<class Key, class Hasher, class Equal>
+            class SparseSet {
+            public:
+                typedef std::unordered_set<Key, Hasher, Equal> HashSet;
+
+                SparseSet()
+                {}
+
+                bool isSet(const Key &key) const
+                {
+                    return _set.find(key) != _set.end();
+                }
+
+                void set(const Key &key)
+                {
+                    _set.insert(key);
+                }
+
+                typename HashSet::const_iterator begin() const
+                {
+                    return _set.begin();
+                }
+
+                typename HashSet::const_iterator end() const
+                {
+                    return _set.end();
+                }
+
+                size_t size() const
+                {
+                    return _set.size();
+                }
+
+                void clear()
+                {
+                    _set.clear();
+                }
+
+            private:
+                HashSet _set;                
+            };
+
             /** Helper function to combine multiple hash values. 
             This is in accordance with boost::hash_combine. */
             template<typename T> 
@@ -105,12 +149,17 @@ namespace volplay {
 
             /** Sparse property assigned to voxels. */
             template<class Value>
-            class SparseVoxelProperty : public SparseProperty<Voxel, Value, HashVoxel, EqualVoxel> 
+            class SparseVoxelProperty : public SparseMap<Voxel, Value, HashVoxel, EqualVoxel> 
             {
             public:
                 SparseVoxelProperty(const Value &defaultValue)
-                    : SparseProperty<Voxel, Value, HashVoxel, EqualVoxel>(defaultValue)
+                    : SparseMap<Voxel, Value, HashVoxel, EqualVoxel>(defaultValue)
                 {}
+            };
+
+            /** Sparse set of voxels. */
+            class SparseVoxelSet : public SparseSet<Voxel, HashVoxel, EqualVoxel> 
+            {
             };
 
             /** Hasher for VoxelEdge */
@@ -141,14 +190,19 @@ namespace volplay {
                 }
             };
 
-            /** Sparse property assigned to voxels. */
+            /** Sparse map of voxel edges to some associated value. */
             template<class Value>
-            class SparseVoxelEdgeProperty : public SparseProperty<VoxelEdge, Value, HashVoxelEdge, EqualVoxelEdge> 
+            class SparseVoxelEdgeProperty : public SparseMap<VoxelEdge, Value, HashVoxelEdge, EqualVoxelEdge> 
             {
             public:
                 SparseVoxelEdgeProperty(const Value &defaultValue = Value())
-                    : SparseProperty<VoxelEdge, Value, HashVoxelEdge, EqualVoxelEdge>(defaultValue)
+                    : SparseMap<VoxelEdge, Value, HashVoxelEdge, EqualVoxelEdge>(defaultValue)
                 {}
+            };
+
+            /** Sparse set of voxel edges. */
+            class SparseVoxelEdgeSet : public SparseSet<VoxelEdge, HashVoxelEdge, EqualVoxelEdge> 
+            {            
             };
 
             /** Build a transformation that maps from world coordinates to voxel grid coordinates. */

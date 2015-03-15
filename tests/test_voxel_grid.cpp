@@ -83,6 +83,25 @@ TEST_CASE("VoxelGrid-VoxelEdge-Properties")
     REQUIRE(std::distance(prop.begin(), prop.end()) == 3);
 }
 
+TEST_CASE("VoxelGrid-SparseSets")
+{
+    vg::SparseVoxelSet vs;
+    vg::SparseVoxelEdgeSet es;
+
+    REQUIRE(!vs.isSet(vp::Index(0,0,0)));
+    vs.set(vp::Index(0,0,0));
+    REQUIRE(vs.isSet(vp::Index(0,0,0)));
+    REQUIRE(vs.size() == 1);
+
+    REQUIRE(!es.isSet(vg::VoxelEdge(vp::Index(0,0,0), vp::Index(0,0,1))));
+    es.set(vg::VoxelEdge(vp::Index(0,0,0), vp::Index(0,0,1)));
+    REQUIRE(es.isSet(vg::VoxelEdge(vp::Index(0,0,0), vp::Index(0,0,1))));
+    REQUIRE(!es.isSet(vg::VoxelEdge(vp::Index(0,0,1), vp::Index(0,0,0))));
+    REQUIRE(es.size() == 1);
+
+
+}
+
 TEST_CASE("VoxelGrid-EdgeQuery-Canonical")
 {
     int count = 0;
