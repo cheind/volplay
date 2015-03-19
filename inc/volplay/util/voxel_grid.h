@@ -48,6 +48,16 @@ namespace volplay {
                     return _props.find(key) != _props.end();
                 }
 
+                typename HashMap::iterator begin()
+                {
+                    return _props.begin();
+                }
+
+                typename HashMap::iterator end()
+                {
+                    return _props.end();
+                }
+
                 typename HashMap::const_iterator begin() const
                 {
                     return _props.begin();

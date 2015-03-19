@@ -76,7 +76,9 @@ set(VOLPLAY_RENDERING_FILES
 set(VOLPLAY_SURFACE_FILES
 	inc/volplay/surface/types.h
     inc/volplay/surface/dual_contouring.h
+	inc/volplay/surface/off_export.h
 	src/surface/dual_contouring.cpp
+	src/surface/off_export.cpp
 )
 
 set(VOLPLAY_UTIL_FILES
@@ -129,7 +131,8 @@ set(VOLPLAY_EXAMPLE_FILES
 if(OpenCV_FOUND)
     set(VOLPLAY_EXAMPLE_FILES
         ${VOLPLAY_EXAMPLE_FILES}
-        examples/example_raytracer.cpp
+        examples/example_raytracer.cpp		
+		examples/example_surface_export.cpp
     )
 endif()
 

@@ -22,8 +22,12 @@ namespace volplay {
             Surface extraction using Dual Contouring.
 
             Based on the work of
+
             Ju, Tao, et al. "Dual contouring of hermite data." 
             ACM Transactions on Graphics (TOG). Vol. 21. No. 3. ACM, 2002. 
+
+            Schaefer, Scott, Joe Warren, and Rice UniversityE. 
+            "Dual Contouring: $ The Secret SauceC." (2002).
         */
         class DualContouring {
         public:

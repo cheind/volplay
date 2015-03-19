@@ -67,6 +67,11 @@ namespace volplay {
         typedef std::shared_ptr<ByteImage> ByteImagePtr;
         typedef std::shared_ptr<FloatImage> FloatImagePtr;
     }
+
+    namespace surface {
+        class DualContouring;
+        class OFFExport;
+    }
     
 }
 

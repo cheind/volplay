@@ -98,8 +98,6 @@ TEST_CASE("VoxelGrid-SparseSets")
     REQUIRE(es.isSet(vg::VoxelEdge(vp::Index(0,0,0), vp::Index(0,0,1))));
     REQUIRE(!es.isSet(vg::VoxelEdge(vp::Index(0,0,1), vp::Index(0,0,0))));
     REQUIRE(es.size() == 1);
-
-
 }
 
 TEST_CASE("VoxelGrid-EdgeQuery-Canonical")

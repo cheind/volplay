@@ -19,8 +19,11 @@ namespace volplay {
 
         /** Surface defined by vertices and faces that index vertices. */
         struct IndexedSurface {
-            Eigen::Matrix<Scalar, 3, Eigen::Dynamic> vertices;
-            Eigen::MatrixXi faces;            
+            typedef Eigen::Matrix<Scalar, 3, Eigen::Dynamic> VertexMatrix;
+            typedef Eigen::MatrixXi FaceMatrix;
+
+            VertexMatrix vertices;
+            FaceMatrix faces;            
         };
 
     }    
