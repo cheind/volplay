@@ -50,12 +50,17 @@ namespace volplay {
             vg::SparseVoxelEdgeProperty<Hermite> eHermite;
             vg::edges(vg::worldToVoxel(toVG, lower), vg::worldToVoxel(toVG, upper), util::oiter([&](const vg::VoxelEdge &eUndirected) {
                
-                const Scalar sdf[2] = {
-                    scene->eval(toWorld * eUndirected.first.cast<float>()),
-                    scene->eval(toWorld * eUndirected.second.cast<float>())
+                Vector verts[2] = {
+                    Vector(toWorld * eUndirected.first.cast<float>()),
+                    Vector(toWorld * eUndirected.second.cast<float>())
                 };
 
-                const int sgn[2] = {
+                Scalar sdf[2] = {
+                    scene->eval(verts[0]),
+                    scene->eval(verts[1])
+                };
+
+                int sgn[2] = {
                     sign(sdf[0]),
                     sign(sdf[1])
                 };
@@ -64,8 +69,27 @@ namespace volplay {
                     return;
 
                 // Orient edge so intersection points outward.
-                const util::voxelgrid::VoxelEdge e = (sgn[0] < sgn[1]) ? eUndirected : util::voxelgrid::oppositeEdge(eUndirected);
-                eHermite[e] = Hermite();
+                util::voxelgrid::VoxelEdge e;
+                if (sgn[0] < sgn[1]) {
+                    e = eUndirected;
+                } else {
+                    e = util::voxelgrid::flipEdge(eUndirected);
+                    std::swap(verts[0], verts[1]);
+                    std::swap(sdf[0], sdf[1]);
+                    std::swap(sgn[0], sgn[1]);
+                }
+                
+                // Determine hermite data. Simply use secant method here with one iteration
+                Hermite &h = eHermite[e];
+                const Vector::Index d = util::voxelgrid::edgeAxis(e);
+                Vector::Scalar w = verts[1](d) - sdf[1]  * ((verts[1](d) - verts[0](d)) / (sdf[1] - sdf[0]));
+
+                //std::cout << e.first.transpose() << " | " << e.second.transpose() << " | " << w << std::endl;
+
+                h.p = verts[0];
+                h.p(d) = w;
+                h.n = scene->normal(h.p);
+
                 // Mark surrounding voxels
                 util::voxelgrid::voxels(e, util::oiter([&](const util::voxelgrid::Voxel &v) { 
                     voxels.set(v);                        
@@ -81,8 +105,41 @@ namespace volplay {
             vg::SparseVoxelProperty<size_t> voxelToIndex(0);
             size_t count = 0;
             for (auto iter = voxels.begin(); iter != voxels.end(); ++iter, ++count) {
+
+                // Just use voxel mid-point:
+                //surface.vertices.col(count) = (toWorld * iter->cast<float>()) + resolution * 0.5f;
+
+                // Solve for plane intersection
+                vg::VoxelEdge edges[12];
+                vg::edges(*iter, edges);
+                
+                vg::Voxel::Index nActive = 0;
+                for (int i = 0; i < 12; ++i) {
+                    if (eHermite.isSet(edges[i]) || eHermite.isSet(vg::flipEdge(edges[i])))
+                        ++nActive;
+                }
+
+                Eigen::MatrixXf A(nActive, 3);
+                Eigen::VectorXf b(nActive);
+
+                nActive = 0;
+                for (int i = 0; i < 12; ++i) {
+                    if (eHermite.isSet(edges[i])) {
+                        const Hermite &h = eHermite[edges[i]];
+                        A.row(nActive) = h.n.transpose();
+                        b(nActive) = h.n.dot(h.p);
+                        ++nActive;
+                    } else if (eHermite.isSet(vg::flipEdge(edges[i]))) {
+                        const Hermite &h = eHermite[vg::flipEdge(edges[i])];
+                        A.row(nActive) = h.n.transpose();
+                        b(nActive) = h.n.dot(h.p);
+                        ++nActive;
+                    }
+                }
+
+                surface.vertices.col(count) = A.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
                 voxelToIndex[*iter] = count;
-                surface.vertices.col(count) = (toWorld * iter->cast<float>()) + resolution * 0.5f;
+                
             }
 
              std::cout << "vertices done." << std::endl;
