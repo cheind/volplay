@@ -37,7 +37,7 @@ TEST_CASE("VoxelGrid-Transforms")
 
 TEST_CASE("VoxelGrid-Edge-Orientation")
 {
-    REQUIRE(vg::oppositeEdge(vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1, 0, 0))) == 
+    REQUIRE(vg::flipEdge(vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1, 0, 0))) == 
             vg::VoxelEdge(vg::Voxel(1,0,0), vg::Voxel(0, 0, 0)));
 
     REQUIRE(vg::undirectedEdge(vg::VoxelEdge(vg::Voxel(0,0,0), vg::Voxel(1, 0, 0))) == 

@@ -240,7 +240,7 @@ namespace volplay {
             }
 
             /** Returns the pair edge oriented in the opposite direction to given edge */
-            inline VoxelEdge oppositeEdge(const VoxelEdge &e)
+            inline VoxelEdge flipEdge(const VoxelEdge &e)
             {
                 return VoxelEdge(e.second, e.first);
             }
@@ -251,9 +251,18 @@ namespace volplay {
             {
                 // Undirected version of an edge always flows in the positive direction.
                 if ((e.second - e.first).minCoeff() < 0)
-                    return oppositeEdge(e);
+                    return flipEdge(e);
                 else
                     return e;
+            }
+
+
+            /** Returns the axis index this edge is located at */
+            inline Voxel::Index edgeAxis(const VoxelEdge &e)
+            {
+                Voxel::Index idx;
+                (e.second - e.first).array().abs().maxCoeff(&idx);
+                return idx;
             }
 
             /** Voxel edges */
@@ -338,7 +347,7 @@ namespace volplay {
                     *iter++ = (e.first - v);
 
                 } else if ((e.second - e.first).minCoeff(&i) < 0) {
-                    const VoxelEdge eu = oppositeEdge(e);
+                    const VoxelEdge eu = flipEdge(e);
 
                     v(mod3[i+1]) = 0; v(mod3[i+2]) = 1;
                     *iter++ = (eu.first - v);    
