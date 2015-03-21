@@ -48,6 +48,12 @@ namespace volplay {
         
         /** Make a new plane. */
         static SDFMake plane(const Vector &normal);
+
+        /** Make a new unit box centered around origin. */
+        static SDFMake box();
+        
+        /** Make a new box centered around origin. */
+        static SDFMake box(const Vector &halfExt);
         
     private:
         SDFNodePtr _n;

@@ -10,6 +10,7 @@
 #include <volplay/sdf_make.h>
 #include <volplay/sdf_sphere.h>
 #include <volplay/sdf_plane.h>
+#include <volplay/sdf_box.h>
 #include <volplay/sdf_union.h>
 #include <volplay/sdf_intersection.h>
 #include <volplay/sdf_difference.h>
@@ -109,6 +110,16 @@ namespace volplay {
     SDFMake SDFMake::plane(const Vector &normal)
     {
         return SDFMake(SDFPlanePtr(new SDFPlane(normal)));
+    }
+
+    SDFMake SDFMake::box()
+    {
+        return SDFMake(SDFBoxPtr(new SDFBox()));
+    }
+    
+    SDFMake SDFMake::box(const Vector &halfExt)
+    {
+        return SDFMake(SDFBoxPtr(new SDFBox(halfExt)));
     }
     
     
