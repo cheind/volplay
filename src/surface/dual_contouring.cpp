@@ -80,20 +80,23 @@ namespace volplay {
                 }
                 
                 // Determine hermite data. Simply use secant method here with one iteration
+                Scalar t = 1.f - sdf[1]  * ((1.f) / (sdf[1] - sdf[0]));
+                if (t == 1.f) // Exclude intersections on corners of other voxels.
+                    return;
+                
                 Hermite &h = eHermite[e];
                 const Vector::Index d = util::voxelgrid::edgeAxis(e);
-                Vector::Scalar w = verts[1](d) - sdf[1]  * ((verts[1](d) - verts[0](d)) / (sdf[1] - sdf[0]));
-
-                //std::cout << e.first.transpose() << " | " << e.second.transpose() << " | " << w << std::endl;
-
+                
                 h.p = verts[0];
-                h.p(d) = w;
+                h.p(d) = verts[1](d) - sdf[1]  * ((verts[1](d) - verts[0](d)) / (sdf[1] - sdf[0]));
                 h.n = scene->normal(h.p);
 
                 // Mark surrounding voxels
                 util::voxelgrid::voxels(e, util::oiter([&](const util::voxelgrid::Voxel &v) { 
                     voxels.set(v);                        
                 }));
+
+                
 
             }));
 
@@ -113,31 +116,45 @@ namespace volplay {
                 vg::VoxelEdge edges[12];
                 vg::edges(*iter, edges);
                 
+                Vector m = Vector::Zero(3);
                 vg::Voxel::Index nActive = 0;
                 for (int i = 0; i < 12; ++i) {
-                    if (eHermite.isSet(edges[i]) || eHermite.isSet(vg::flipEdge(edges[i])))
+                    if (eHermite.isSet(edges[i])) {
+                        m += eHermite[edges[i]].p;
                         ++nActive;
+                    } else if (eHermite.isSet(vg::flipEdge(edges[i]))) {
+                        m += eHermite[vg::flipEdge(edges[i])].p;
+                        ++nActive;
+                    }
                 }
+                m /= Scalar(nActive);
 
                 Eigen::MatrixXf A(nActive, 3);
                 Eigen::VectorXf b(nActive);
 
-                nActive = 0;
+                Eigen::AlignedBox3f ab(toWorld * (iter->cast<float>()), toWorld * (iter->cast<float>()) + resolution);
+                
+                nActive = 0;                
                 for (int i = 0; i < 12; ++i) {
                     if (eHermite.isSet(edges[i])) {
                         const Hermite &h = eHermite[edges[i]];
                         A.row(nActive) = h.n.transpose();
-                        b(nActive) = h.n.dot(h.p);
+                        b(nActive) = h.n.dot(h.p - m);
                         ++nActive;
+
                     } else if (eHermite.isSet(vg::flipEdge(edges[i]))) {
                         const Hermite &h = eHermite[vg::flipEdge(edges[i])];
                         A.row(nActive) = h.n.transpose();
-                        b(nActive) = h.n.dot(h.p);
+                        b(nActive) = h.n.dot(h.p - m);
                         ++nActive;
                     }
                 }
 
-                surface.vertices.col(count) = A.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
+                Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+                svd.setThreshold(Scalar(0.1) / svd.singularValues()(0));
+                Vector x = svd.solve(b) + m;
+
+                surface.vertices.col(count) = x;
                 voxelToIndex[*iter] = count;
                 
             }
@@ -145,6 +162,7 @@ namespace volplay {
              std::cout << "vertices done." << std::endl;
 
             // 3. Build topology
+             /*
             surface.faces.resize(4, eHermite.size());
             count = 0;  
             for (auto iter = eHermite.begin(); iter != eHermite.end(); ++iter, ++count) {
@@ -156,6 +174,25 @@ namespace volplay {
                 surface.faces(3, count) = voxelToIndex[v[3]];
             }
             std::cout << "faces done." << std::endl;
+            */
+
+            surface.faces.resize(3, eHermite.size() * 2);
+            count = 0;  
+            for (auto iter = eHermite.begin(); iter != eHermite.end(); ++iter) {
+                vg::Voxel v[4];
+                util::voxelgrid::voxels(iter->first, v);
+
+                surface.faces(0, count) = voxelToIndex[v[0]];
+                surface.faces(1, count) = voxelToIndex[v[1]];
+                surface.faces(2, count) = voxelToIndex[v[2]];
+                count += 1;
+                surface.faces(0, count) = voxelToIndex[v[0]];
+                surface.faces(1, count) = voxelToIndex[v[2]];
+                surface.faces(2, count) = voxelToIndex[v[3]];
+                count += 1;                
+            }
+            std::cout << "faces done." << std::endl;
+
 
 
             return surface;
