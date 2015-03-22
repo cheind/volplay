@@ -68,7 +68,7 @@ namespace volplay {
             
             
             ByteImagePtr _saturatedImage;
-            FloatImagePtr _image;
+            ScalarImagePtr _image;
             SDFNodePtr _root;
             std::vector<LightPtr> _lights;
             MaterialPtr _defaultMaterial;

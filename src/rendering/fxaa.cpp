@@ -16,11 +16,11 @@ namespace volplay {
     namespace rendering {
     
         FXAA::FXAA()
-        :_image(new FloatImage())
+        :_image(new ScalarImage())
         {
         }
         
-        inline Vector bilinearSample(Scalar row, Scalar col, const FloatImagePtr &img) {
+        inline Vector bilinearSample(Scalar row, Scalar col, const ScalarImagePtr &img) {
             int x = static_cast<int>(col);
             int y = static_cast<int>(row);
             
@@ -39,7 +39,7 @@ namespace volplay {
         }
         
         /** Access a pixel in the image. Repeat border if outside. Returned pixel is normalized. */
-        inline Vector pixel(int row, int col, const FloatImagePtr &img) {
+        inline Vector pixel(int row, int col, const ScalarImagePtr &img) {
             int rows = img->rows();
             int cols = img->cols();
             
@@ -47,19 +47,19 @@ namespace volplay {
             row = clamp(row, 0, rows - 1);
             col = clamp(col, 0, cols - 1);
             
-            float *pixelRow = img->row(row);
+            Scalar *pixelRow = img->row(row);
             return Vector(pixelRow[col*3+0],
                           pixelRow[col*3+1],
                           pixelRow[col*3+2]);
         }
         
-        FloatImagePtr
-        FXAA::filter(const FloatImagePtr &src)
+        ScalarImagePtr
+        FXAA::filter(const ScalarImagePtr &src)
         {
             _image->create(src->rows(), src->cols(), src->channels());
             
             for (int r = 0; r < src->rows(); ++r) {
-                float *imgRow = _image->row(r);
+                Scalar *imgRow = _image->row(r);
                 
                 for (int c = 0; c < src->cols(); ++c) {
                     Eigen::Map<Vector> out = imgRow + c*3;
@@ -76,7 +76,7 @@ namespace volplay {
 #define SMAX(a, b) std::max<Scalar> ((a), (b))
         
         Vector
-        FXAA::filterPixel(int row, int col, const FloatImagePtr &img) const
+        FXAA::filterPixel(int row, int col, const ScalarImagePtr &img) const
         {
             const Vector rgbNW = pixel(row-1, col-1, img);
             const Vector rgbNE = pixel(row-1, col+1, img);
@@ -85,14 +85,14 @@ namespace volplay {
             const Vector rgbM =  pixel(row, col, img);
             
             const Vector luma = Vector(Scalar(0.299), Scalar(0.587), Scalar(0.114));
-            float lumaNW = rgbNW.dot(luma);
-            float lumaNE = rgbNE.dot(luma);
-            float lumaSW = rgbSW.dot(luma);
-            float lumaSE = rgbSE.dot(luma);
-            float lumaM = rgbM.dot(luma);
+            Scalar lumaNW = rgbNW.dot(luma);
+            Scalar lumaNE = rgbNE.dot(luma);
+            Scalar lumaSW = rgbSW.dot(luma);
+            Scalar lumaSE = rgbSE.dot(luma);
+            Scalar lumaM = rgbM.dot(luma);
             
-            float lumaMin = SMIN(lumaNW, SMIN(lumaNE, SMIN(lumaSW, SMIN(lumaSE, lumaM))));
-            float lumaMax = SMAX(lumaNW, SMAX(lumaNE, SMAX(lumaSW, SMAX(lumaSE, lumaM))));
+            Scalar lumaMin = SMIN(lumaNW, SMIN(lumaNE, SMIN(lumaSW, SMIN(lumaSE, lumaM))));
+            Scalar lumaMax = SMAX(lumaNW, SMAX(lumaNE, SMAX(lumaSW, SMAX(lumaSE, lumaM))));
             
             // FXAA params - fixed here for now.
             const Scalar fxaa_reduce_mul = Scalar(1) / Scalar(32);
@@ -105,8 +105,8 @@ namespace volplay {
             dir.x() = -((lumaNW + lumaNE) - (lumaSW + lumaSE));
             dir.y() = ((lumaNW + lumaSW) - (lumaNE + lumaSE));
             
-            float dirRed = SMAX((lumaNW + lumaNE + lumaSW + lumaSE) * (Scalar(0.25) * fxaa_reduce_mul), fxaa_reduce_min);
-            float invDirMin = Scalar(1) / (SMIN(abs(dir.x()), abs(dir.y())) + dirRed);
+            Scalar dirRed = SMAX((lumaNW + lumaNE + lumaSW + lumaSE) * (Scalar(0.25) * fxaa_reduce_mul), fxaa_reduce_min);
+            Scalar invDirMin = Scalar(1) / (SMIN(abs(dir.x()), abs(dir.y())) + dirRed);
             
             dir *= invDirMin;
             dir.x() = clamp(dir.x(), -fxaa_span_max, fxaa_span_max);
@@ -119,7 +119,7 @@ namespace volplay {
                               
             Vector rgbA = Scalar(0.5) * (bilinearSample(row + c, col + c, img) + bilinearSample(row + d, col + d, img));
             Vector rgbB = rgbA * Scalar(0.5) + Scalar(0.25) * (bilinearSample(row + e, col + e, img) + bilinearSample(row + f, col + f, img));
-            float lumaB = rgbB.dot(luma);
+            Scalar lumaB = rgbB.dot(luma);
             
             if ((lumaB < lumaMin) || (lumaB > lumaMax)) {
                 return rgbA;

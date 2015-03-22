@@ -11,6 +11,7 @@
 #define VOLPLAY_FWD
 
 #include <memory>
+#include <volplay/types.h>
 
 namespace volplay {
     
@@ -66,8 +67,10 @@ namespace volplay {
         template<class T> class Image;
         typedef Image<unsigned char> ByteImage;
         typedef Image<float> FloatImage;
+        typedef Image<Scalar> ScalarImage;
         typedef std::shared_ptr<ByteImage> ByteImagePtr;
         typedef std::shared_ptr<FloatImage> FloatImagePtr;
+        typedef std::shared_ptr<ScalarImage> ScalarImagePtr;
     }
 
     namespace surface {
