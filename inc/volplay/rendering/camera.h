@@ -12,6 +12,7 @@
 
 #include <volplay/types.h>
 #include <volplay/fwd.h>
+#include <Eigen/StdVector>
 #include <vector>
 
 namespace volplay {
@@ -76,10 +77,11 @@ namespace volplay {
             void generateCameraRay(const Vector2 &imagePoint, Vector &direction);
             
             /** Generate normalized ray directions through given image points in camera space. */
-            void generateCameraRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions);
+            void generateCameraRays(const std::vector<Vector2, Eigen::aligned_allocator<Vector2> > &imagePoints, 
+                                    std::vector<Vector, Eigen::aligned_allocator<Vector> > &directions);
             
             /** Generate normalized ray directions through given image points in camera space. */
-            void generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector> &directions);
+            void generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector, Eigen::aligned_allocator<Vector> > &directions);
             
         private:
             Matrix33 _k;

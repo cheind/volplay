@@ -37,7 +37,7 @@ namespace volplay {
             unsigned char *imageRow = _image->row(row);
             
             for (int c =0; c < cols; ++c) {
-                imageRow[c] = saturate<unsigned char>(((Scalar)tr[c].iter / _maxIter) * 255.f);
+                imageRow[c] = saturate<unsigned char>(((Scalar)tr[c].iter / _maxIter) * Scalar(255));
             }
         }
         

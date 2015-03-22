@@ -93,7 +93,7 @@ TEST_CASE("Ray generation")
     REQUIRE_CLOSE(r(1), -1);
     REQUIRE_CLOSE(r(2), 0);
     
-    std::vector<vp::Vector> dirs;
+    std::vector<vp::Vector, Eigen::aligned_allocator<vp::Vector> > dirs;
     c.generateCameraRays(6, 12, dirs);
     
     c.generateCameraRay(vp::Vector2(0,0), r);

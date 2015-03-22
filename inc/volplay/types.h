@@ -38,9 +38,5 @@ namespace volplay {
     typedef Eigen::Transform<Scalar, 3, Eigen::AffineCompact> AffineTransform;     
 }
 
-// The following definitions provide std::vector specializations
-// for specific Eigen types. Needed for alignment reasons.
-EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(volplay::Vector);
-EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(volplay::Vector2);
 
 #endif

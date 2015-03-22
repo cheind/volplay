@@ -144,7 +144,8 @@ namespace volplay {
         }
         
         void
-        Camera::generateCameraRays(const std::vector<Vector2> &imagePoints, std::vector<Vector> &directions)
+        Camera::generateCameraRays(const std::vector<Vector2, Eigen::aligned_allocator<Vector2> > &imagePoints, 
+                                   std::vector<Vector, Eigen::aligned_allocator<Vector> > &directions)
         {
             Matrix33 kinv = this->imageToCamera();
             directions.resize(imagePoints.size());
@@ -155,7 +156,7 @@ namespace volplay {
         }
         
         void
-        Camera::generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector> &directions)
+        Camera::generateCameraRays(int imageHeight, int imageWidth, std::vector<Vector, Eigen::aligned_allocator<Vector> > &directions)
         {
             Matrix33 kinv = this->imageToCamera();  
             directions.resize(imageWidth * imageHeight);

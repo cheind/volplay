@@ -101,16 +101,16 @@ namespace volplay {
             }
             
             // Prepare primary rays
-            std::vector<Vector> rays;
+            std::vector<Vector, Eigen::aligned_allocator<Vector> > rays;
             _camera->generateCameraRays(_imageHeight, _imageWidth, rays);
-            
+           
             std::vector<SDFNode::TraceResult> traceResults(rays.size());
             AffineTransform::LinearPart t = _camera->cameraToWorldTransform().linear();
             
             // Convert to world rays and trace
             const Vector origin = _camera->originInWorld();
             for (size_t i = 0; i < rays.size(); ++i) {
-                rays[i] = t * rays[i];
+                rays[i] = Vector(t * rays[i]); // Note: explict Vector() needed here since introduction of aligned allocators.
                 _root->trace(origin, rays[i], _primaryTraceOptions, &traceResults[i]);
             }
             
@@ -122,7 +122,7 @@ namespace volplay {
             for (gi = gBegin; gi != gEnd; ++gi) {
                 (*gi)->onRenderingBegin(this);
             }
-            
+
             // For each row invoke generators
             for (int row = 0; row < _imageHeight; ++row) {
                 
