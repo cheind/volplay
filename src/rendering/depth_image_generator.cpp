@@ -18,7 +18,7 @@ namespace volplay {
     namespace rendering {
     
         DepthImageGenerator::DepthImageGenerator()
-        :_invValue(0.f), _image(new FloatImage())
+        :_invValue(Scalar(0)), _image(new ScalarImage())
         {}
         
         void
@@ -35,7 +35,7 @@ namespace volplay {
                                          const Vector *directions,
                                          const SDFNode::TraceResult *tr, int cols)
         {
-            float *imageRow = _image->row(row);
+            Scalar *imageRow = _image->row(row);
             
             for (int c = 0; c < cols; ++c) {
                 if (tr[c].hit) {
@@ -53,14 +53,14 @@ namespace volplay {
             // Nothing todo            
         }
         
-        FloatImagePtr
+        ScalarImagePtr
         DepthImageGenerator::image() const
         {
             return _image;
         }
 
         void
-        DepthImageGenerator::setInvalidDepthValue(float v)
+        DepthImageGenerator::setInvalidDepthValue(Scalar v)
         {
             _invValue = v;
         }

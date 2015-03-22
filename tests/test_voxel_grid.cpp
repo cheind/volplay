@@ -20,7 +20,7 @@ TEST_CASE("VoxelGrid-Transforms")
 {
     vp::AffineTransform t = vg::buildWorldToLocal(vp::Vector(10, 10, 10), vp::Vector(2.f, 4.f, 8.f));
 
-    Eigen::MatrixXf ref(3, 4);
+    Eigen::Matrix<vp::Scalar, Eigen::Dynamic, Eigen::Dynamic> ref(3, 4);
     ref << 0.5f, 0, 0, -5.f, 
            0, 0.25f, 0, -2.5f,
            0, 0, 0.125f, -1.25f;

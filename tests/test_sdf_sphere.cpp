@@ -24,8 +24,8 @@ TEST_CASE("SDFSphere")
     for (vp::S alpha = 0; alpha < vp::S(2 * 3.14); alpha += vp::S(0.2)) {
         for (vp::S beta = 0; beta < vp::S(3.14); beta += vp::S(0.2)) {
             
-            REQUIRE_CLOSE( s.eval(vp::Vector(cosf(alpha)*sinf(beta),sinf(alpha)*sinf(beta),cosf(beta))), vp::S(0) );
-            REQUIRE_CLOSE( s2.eval(vp::Vector(vp::S(2)*cosf(alpha)*sinf(beta),vp::S(2)*sinf(alpha)*sinf(beta),vp::S(2)*cosf(beta))), vp::S(0) );
+            REQUIRE_CLOSE( s.eval(vp::Vector(cos(alpha)*sin(beta),sin(alpha)*sin(beta),cos(beta))), vp::S(0) );
+            REQUIRE_CLOSE( s2.eval(vp::Vector(vp::S(2)*cos(alpha)*sin(beta),vp::S(2)*sin(alpha)*sin(beta),vp::S(2)*cos(beta))), vp::S(0) );
         }
     }
     
