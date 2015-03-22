@@ -12,7 +12,6 @@
 
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
-#include <Eigen/StdVector>
 
 namespace volplay {
     
@@ -35,12 +34,8 @@ namespace volplay {
     typedef Eigen::Matrix<int, 3, 1> Index;
     
     /** Affine transform in three dimensions. */
-    typedef Eigen::Transform<Scalar, 3, Eigen::AffineCompact> AffineTransform;     
+    typedef Eigen::Transform<Scalar, 3, Eigen::AffineCompact> AffineTransform;
+    
 }
-
-// The following definitions provide std::vector specializations
-// for specific Eigen types. Needed for alignment reasons.
-EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(volplay::Vector);
-EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(volplay::Vector2);
 
 #endif

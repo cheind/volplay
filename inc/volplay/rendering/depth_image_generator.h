@@ -39,15 +39,16 @@ namespace volplay {
             virtual void onRenderingComplete(const Renderer *r);
             
             /** Access the generated heat image. */
-            ScalarImagePtr image() const;
+            FloatImagePtr image() const;
 
             /** Set the floating point value representing invalid depth measurements. 
-             *  By default this is zero. */
-            void setInvalidDepthValue(Scalar value);
+             *  By default this is zero.
+             */
+            void setInvalidDepthValue(float value);
             
         private:
-            Scalar _invValue;
-            ScalarImagePtr _image;
+            float _invValue;
+            FloatImagePtr _image;
             SDFNode::TraceOptions _to;
             AffineTransform _worldToCamera;
         };

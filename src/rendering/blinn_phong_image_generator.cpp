@@ -22,7 +22,7 @@ namespace volplay {
     
         BlinnPhongImageGenerator::BlinnPhongImageGenerator()
         : _saturatedImage(new ByteImage())
-        , _image(new ScalarImage())
+        , _image(new FloatImage())
         , _defaultMaterial(new Material())
         , _clearColor(Vector::Zero())
         , _gamma(1 / Scalar(2.2))
@@ -50,7 +50,7 @@ namespace volplay {
                                         const SDFNode::TraceResult *tr, int cols)
         {
             typedef Eigen::Map<Vector> MVector;
-            Scalar *imageRow = _image->row(row);
+            float *imageRow = _image->row(row);
             
             for (int c = 0; c < cols; ++c) {
                 
@@ -75,13 +75,13 @@ namespace volplay {
             
             // Antialiase
             if (_fxaaEnabled) {
-                ScalarImagePtr fxaaImage = _fxaa->filter(_image);
+                FloatImagePtr fxaaImage = _fxaa->filter(_image);
                 fxaaImage->copyTo(*_image);
             }
             
             // convert to saturated RGB
             for (int r = 0; r < _image->rows(); ++r) {
-                Scalar *inRow = _image->row(r);
+                float *inRow = _image->row(r);
                 unsigned char *outRow = _saturatedImage->row(r);
                 
                 for (int c = 0; c < _image->cols(); ++c) {

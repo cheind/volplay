@@ -19,9 +19,9 @@ namespace volplay {
     namespace surface {
 
         /** 
-            Surface extraction using Dual Contouring. 
+            Surface extraction using Dual Contouring.
 
-            This implementation is based on uniform grids. Based on the work of
+            Based on the work of
 
             Ju, Tao, et al. "Dual contouring of hermite data." 
             ACM Transactions on Graphics (TOG). Vol. 21. No. 3. ACM, 2002. 
