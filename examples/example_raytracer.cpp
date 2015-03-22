@@ -32,7 +32,7 @@ cv::Mat toBgr(const cv::Mat &rgb) {
 TEST_CASE("CPU based raytracing")
 {
     const vp::Scalar aspect = vp::Scalar(16)/9;
-    const int imageWidth = 900;
+    const int imageWidth = 720;
     const int imageHeight = (int)(vp::Scalar(imageWidth) / aspect);
     
     vpr::MaterialPtr m1(new vpr::Material());
@@ -58,7 +58,7 @@ TEST_CASE("CPU based raytracing")
     
     std::vector<vpr::LightPtr> lights;
     lights.push_back(vpr::Light::createPointLight(vp::Vector(20,15,20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 50));
-    //lights.push_back(vpr::Light::createPointLight(vp::Vector(-20,15,-20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 50));
+    lights.push_back(vpr::Light::createPointLight(vp::Vector(-20,15,-20), vp::Vector::Ones(), vp::Vector::Ones(), vp::Vector::Ones(), 50));
     
     vpr::RendererPtr r(new vpr::Renderer());
     r->setScene(scene);
@@ -83,8 +83,11 @@ TEST_CASE("CPU based raytracing")
     
     r->render();
 
-    cv::Mat depthImage;
-    depth->image()->toOpenCV().convertTo(depthImage, CV_8UC1, 255. / 10.);
+    cv::Mat depthImage, depthImageFloat;
+    depthImageFloat = depth->image()->toOpenCV();
+    double minDepth, maxDepth;
+    cv::minMaxLoc(depthImageFloat, &minDepth, &maxDepth);
+    depthImageFloat.convertTo(depthImage, CV_8UC1, 255 / maxDepth);
     
     cv::imshow("Heat Image", heat->image()->toOpenCV());
     cv::imshow("Depth Image",depthImage);
