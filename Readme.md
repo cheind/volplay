@@ -3,6 +3,7 @@
 volplay is a library for creating, manipulating and interacting with volumetric data.Focus of this library is clean, reference code and not performance. All computations carried out on CPU with minimal focus on parallelism. Written in C++11.
 
 ## Creating and Manipulating Signed Distance Fields
+
 A signed distance field in volplay is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. A helper class `volplay::SDFMake` is provided to simplify the creation of nodes. Here are some examples
 
 ```cpp
@@ -20,6 +21,21 @@ vp::SDFNodePtr scene = vp::SDFMake::sphere(1) +
 Here the `sphere()` method creates an `volplay::SDFSphere` node, the `translate()` method creates an `volplay::SDFRidigTransform` intermediate node and `+` operator creates an intermediate node of type `volplay::SDFUnion`. This results in the following scene graph hierarchy.
 
 ![Image](etc/images/samplediagram.png?raw=true)
+
+## Ray-tracing Signed Distance Fields
+
+The namespace `volplay::rendering` provides methods to directly visualize the signed distance field by ray-tracing it. Besides the signed distance field itself, rendering can make use of material properties of individual nodes. The ray-tracing pipeline is implemented in `volplay::rendering::Renderer` and involves the following other entities: 
+ - A scene `volplay::SDFNode` to be rendered. Each node can be attributed with materials `volplay::rendering::Material`
+ - A camera `volplay::rendering::Camera` defining the viewpoint and lens parameters.
+ - A set of lights `volplay::rendering::Lights`.
+ - A set of image generators `volplay::rendering::ImageGenerator` encapsulating the types of images to be generated.
+
+The example [example_raytracer.cpp](examples/example_raytracer.cpp) demonstrates rendering of two spheres resting on a plane.
+When executed the following set of images is generated. From left to right: Blinn-Phong shaded image with shadows and materials applied, depth image of scene and heat image of scene showing hotspots of raytracing.
+
+![BlinnPhong shaded image](etc/images/raytrace.png?raw=true)
+
+
 
 
 # References
