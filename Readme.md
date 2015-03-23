@@ -28,7 +28,7 @@ The namespace `volplay::rendering` provides methods to directly visualize the si
  - A scene `volplay::SDFNode` to be rendered. Each node can be attributed with materials `volplay::rendering::Material`
  - A camera `volplay::rendering::Camera` defining the viewpoint and lens parameters.
  - A set of lights `volplay::rendering::Lights`.
- - A set of image generators `volplay::rendering::ImageGenerator` defining the type of images to be generated.
+ - A set of image generators `volplay::rendering::ImageGenerator` encapsulating the types of images to be generated.
 
 The example [example_raytracer.cpp](examples/example_raytracer.cpp) demonstrates rendering of two spheres resting on a plane.
 When executed the following set of images is generated. From left to right: Blinn-Phong shaded image with shadows and materials applied, depth image of scene and heat image of scene showing hotspots of raytracing.
