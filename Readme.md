@@ -35,7 +35,39 @@ When executed the following set of images is generated. From left to right: Blin
 
 ![BlinnPhong shaded image](etc/images/raytrace.png?raw=true)
 
+## Surface Reconstruction from Signed Distance Fields
 
+The namespace `volplay::surface` provides methods to explicitly generate a polygonal mesh from an iso-surface in a signed distance field. Currently an implementation of Dual Contouring is available. Results can be exported in .OFF format. Here is an example
+
+```cpp
+#include <volplay/sdf_sphere.h>
+#include <volplay/sdf_plane.h>
+#include <volplay/sdf_make.h>
+#include <volplay/surface/dual_contouring.h>
+#include <volplay/surface/off_export.h>
+
+...
+
+namespace vp = volplay;
+namespace vps = volplay::surface;
+
+vp::SDFNodePtr scene = vp::SDFMake::sphere(1).translate(vp::Vector(0.01f, 0.01f, 0.01f)) +
+                       vp::SDFMake::sphere(1).translate(vp::Vector(0.8f, 0.8f, 0.8f)) -
+                       vp::SDFMake::plane(vp::Vector(0,0,1));
+
+vps::DualContouring dc;
+vps::IndexedSurface surface = dc.extractSurface(
+                       scene, 
+                       vp::Vector(-2,-2,-2), vp::Vector(2,2,2), 
+                       vp::Vector::Constant(0.05f));
+
+vps::OFFExport off; 
+off.exportSurface("surface.off", surface);
+```
+
+This produces the surface below. One of the big benefits of Dual Contouring  is that it naturally preserves sharp features.
+
+![Dual Contouring](etc/images/dualcontouring.png?raw=true)
 
 
 # References
