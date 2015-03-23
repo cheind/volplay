@@ -37,7 +37,7 @@ When executed the following set of images is generated. From left to right: Blin
 
 ## Surface Reconstruction from Signed Distance Fields
 
-The namespace `volplay::surface` provides methods to explicitly generate a polygonal mesh from an iso-surface in a signed distance field. Currently an implementation of Dual Contouring is available. Results can be exported in .OFF format. Here is an example
+The namespace `volplay::surface` provides methods to explicitly generate a polygonal mesh from an iso-surface in a signed distance field. Currently an implementation of Dual Contouring `volplay::surface::DualContouring` is available. Results can be exported in .OFF format. Here is an example
 
 ```cpp
 #include <volplay/sdf_sphere.h>
