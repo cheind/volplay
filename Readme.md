@@ -7,7 +7,6 @@ A signed distance field in volplay is represented by a hierarchy of `volplay::SD
 
 ```cpp
 #include <volplay/sdf_sphere.h>
-#include <volplay/sdf_plane.h>
 #include <volplay/sdf_make.h>
 
 ...
