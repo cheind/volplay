@@ -1,6 +1,27 @@
 # volplay
 
-volplay is a library for creating, manipulating and interacting with volumetric data.
+volplay is a library for creating, manipulating and interacting with volumetric data.Focus of this library is clean, reference code and not performance. All computations carried out on CPU with minimal focus on parallelism. Written in C++11.
+
+## Creating and Manipulating Signed Distance Fields
+A signed distance field in volplay is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. A helper class `volplay::SDFMake` is provided to simplify the creation of nodes. Here are some examples
+
+```cpp
+#include <volplay/sdf_sphere.h>
+#include <volplay/sdf_plane.h>
+#include <volplay/sdf_make.h>
+
+...
+
+namespace vp = volplay;
+
+vp::SDFNodePtr scene = vp::SDFMake::sphere(1) +
+                       vp::SDFMake::sphere(1).translate(vp::Vector(0.8f, 0.8f, 0.8f));
+```
+
+Here the `sphere()` method creates an `volplay::SDFSphere` node, the `translate()` method creates an `volplay::SDFRidigTransform` intermediate node and `+` operator creates an intermediate node of type `volplay::SDFUnion`. This results in the following scene graph hierarchy.
+
+![Image](etc/images/samplediagram.png?raw=true)
+
 
 # References
 
