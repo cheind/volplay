@@ -99,8 +99,8 @@ namespace volplay {
             // 2. Solve for each voxel 
 
             surface.vertices.resize(3, voxels.size());
-            vg::SparseVoxelProperty<size_t> voxelToIndex(0);
-            size_t count = 0;
+			vg::SparseVoxelProperty<vg::Voxel::Index> voxelToIndex(0);
+			vg::Voxel::Index count = 0;
             for (auto iter = voxels.begin(); iter != voxels.end(); ++iter, ++count) {
 
                 // Just use voxel mid-point:

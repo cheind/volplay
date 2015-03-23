@@ -25,7 +25,11 @@ namespace vpr = volplay::rendering;
 
 cv::Mat toBgr(const cv::Mat &rgb) {
     cv::Mat bgr;
-    cv::cvtColor(rgb, bgr, CV_RGB2BGR);
+#if CV_VERSION_MAJOR >= 3
+    cv::cvtColor(rgb, bgr, cv::COLOR_RGB2BGR);
+#else
+	cv::cvtColor(rgb, bgr, CV_RGB2BGR);
+#endif
     return bgr;
 }
 
