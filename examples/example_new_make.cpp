@@ -99,6 +99,63 @@ namespace volplay {
 			Vector _res;
 		};
 
+		class NodeOpts {
+		public:
+			NodeOpts()
+			{}
+
+			NodeOpts(SDFNodePtr n)
+				:_n(n)
+			{}
+
+			NodeOpts &node(SDFNodePtr n) {
+				_n = n;
+				return *this;
+			}
+
+
+		private:
+			friend class SDFMaker;
+
+			SDFNodePtr _n;
+		};
+
+
+		class TransformOpts {
+		public:
+			TransformOpts()
+			{
+				_t.setIdentity();
+			}
+
+			TransformOpts &transform(const AffineTransform &t) {
+				_t = t;
+				return *this;
+			}
+
+			TransformOpts &matrix(const AffineTransform::MatrixType &m) {
+				_t.matrix() = m;				
+				return *this;
+			}
+
+			template<class RotationType>
+			TransformOpts &rotate(const RotationType &r) {
+				_t.rotate(r);
+				return *this;
+			}
+
+			template<class TranslationType>
+			TransformOpts &translate(const TranslationType &t) {
+				_t.translate(t);
+				return *this;
+			}
+
+		private:
+			friend class SDFMaker;
+
+			AffineTransform _t;
+		};
+
 		class SDFMaker {
 		public:
 
@@ -124,6 +181,13 @@ namespace volplay {
 				return *this;
 			}
 
+			SDFMaker &node(NodeOpts opts) {			
+				logIf(!opts._n, "Cannot add null-node.");
+				if (opts._n)
+					add(opts._n);
+				return *this;
+			}
+
 			SDFMaker &plane(PlaneOpts opts = PlaneOpts()) {
 				SDFPlanePtr n = std::make_shared<SDFPlane>(opts._normal);
 				add(n);
@@ -136,12 +200,9 @@ namespace volplay {
 				return *this;
 			}
 
-			SDFMaker &transform(const Vector t) {
-
-				AffineTransform at = AffineTransform::Identity();
-				at.translate(t);
-
-				SDFRigidTransformPtr n = std::make_shared<SDFRigidTransform>(at);
+			SDFMaker &transform(TransformOpts opts = TransformOpts()) {
+				
+				SDFRigidTransformPtr n = std::make_shared<SDFRigidTransform>(opts._t);
 				add(n);
 
 				return *this;
@@ -228,10 +289,12 @@ TEST_CASE("New Make")
 {
 	namespace vm = volplay::make;
 	volplay::SDFNodePtr scene = vm::create()
-		.differenceOf()
-			.sphere(vm::SphereOpts().radius(0.5))
-			.repetition(/*vm::RepetitionOpts().resX(0.3).resZ(0.3)*/)
-				.sphere(vm::SphereOpts().radius(0.2))
+		.repetition(vm::RepetitionOpts().resX(1).resY(1).resZ(1))
+			.differenceOf()
+				.sphere(vm::SphereOpts().radius(0.5))
+				.transform(vm::TransformOpts().translate(volplay::Vector(0.5, 0.5, 0.5)))
+					.sphere(vm::SphereOpts().radius(0.5))
+				.end()
 			.end()
 		.end();
 
