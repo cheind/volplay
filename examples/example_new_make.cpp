@@ -288,7 +288,7 @@ namespace volplay {
 TEST_CASE("New Make")
 {
 	namespace vm = volplay::make;
-	volplay::SDFNodePtr scene = vm::create()
+	volplay::SDFNodePtr scene1 = vm::create()
 		.repetition(vm::RepetitionOpts().resX(1).resY(1).resZ(1))
 			.differenceOf()
 				.sphere(vm::SphereOpts().radius(0.5))
@@ -298,8 +298,14 @@ TEST_CASE("New Make")
 			.end()
 		.end();
 
+	volplay::SDFNodePtr scene = vm::create()
+		.differenceOf()
+			.node(vm::NodeOpts().node(scene1)).end()
+			.plane()
+		.end();
+		
 	volplay::surface::DualContouring dc;
-	volplay::surface::IndexedSurface surface = dc.extractSurface(scene, volplay::Vector(-2, -2, -2), volplay::Vector(2, 2, 2), volplay::Vector::Constant(0.05f));
+	volplay::surface::IndexedSurface surface = dc.extractSurface(scene, volplay::Vector(-2, -2, -2), volplay::Vector(2, 2, 2), volplay::Vector::Constant(0.025f));
 	volplay::surface::OFFExport off;
 	off.exportSurface("mysurface.off", surface);
 
