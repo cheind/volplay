@@ -18,12 +18,14 @@
 
 namespace volplay {
     namespace util {
+
+		/** Methods to work on uniform voxel grids. */
         namespace voxelgrid {
 
-            /** A voxel is represented by its minimum corner index. */
+            /** A voxel is represented by its minimum corner bucket index. */
             typedef Index Voxel;
 
-            /** A directed voxel edge is represented by a ordered pair of voxels. */
+            /** A voxel edge is represented by a ordered pair of voxels. */
             typedef std::pair<Voxel, Voxel> VoxelEdge;
 
             /** Base class for sparse properties. */
@@ -37,42 +39,50 @@ namespace volplay {
                     :_defaultValue(defaultValue)
                 {}
 
+				/** Access element. If the element at key does not exist, it is created with default value passed at construction. */
                 Value &operator[](const Key &key)
                 {
                     // This will not overwrite values if key is already present.
                     return _props.insert(std::make_pair(key, _defaultValue)).first->second;
                 }
 
+				/** Test if key is already in map. */
                 bool isSet(const Key &key) const
                 {
                     return _props.find(key) != _props.end();
                 }
 
+				/** Iterator to beginning of sparse map */
                 typename HashMap::iterator begin()
                 {
                     return _props.begin();
                 }
 
+				/** Iterator to end of sparse map */
                 typename HashMap::iterator end()
                 {
                     return _props.end();
                 }
 
+				/** Iterator to beginning of sparse map */
                 typename HashMap::const_iterator begin() const
                 {
                     return _props.begin();
                 }
 
+				/** Iterator to end of sparse map */
                 typename HashMap::const_iterator end() const
                 {
                     return _props.end();
                 }
 
+				/** Number of elements in map */
                 size_t size() const
                 {
                     return _props.size();
                 }
 
+				/** Reset to empty state */
                 void clear()
                 {
                     _props.clear();
@@ -93,31 +103,37 @@ namespace volplay {
                 SparseSet()
                 {}
 
+				/** Test if key is present in set */
                 bool isSet(const Key &key) const
                 {
                     return _set.find(key) != _set.end();
                 }
 
+				/** Set key */
                 void set(const Key &key)
                 {
                     _set.insert(key);
                 }
 
+				/** Iterator to beginning of sparse map */
                 typename HashSet::const_iterator begin() const
                 {
                     return _set.begin();
                 }
 
+				/** Iterator to end of sparse map */
                 typename HashSet::const_iterator end() const
                 {
                     return _set.end();
                 }
 
+				/** Number of elements in set */
                 size_t size() const
                 {
                     return _set.size();
                 }
 
+				/** Reset to empty state */
                 void clear()
                 {
                     _set.clear();
@@ -128,7 +144,8 @@ namespace volplay {
             };
 
             /** Helper function to combine multiple hash values. 
-            This is in accordance with boost::hash_combine. */
+				This is in accordance with boost::hash_combine. 
+			*/
             template<typename T> 
             void hashCombine(size_t & seed, T const& v)
             {
@@ -152,8 +169,8 @@ namespace volplay {
                 inline bool operator()(const Voxel &a, const Voxel &b) const
                 {
                     return a.x() == b.x() &&
-                        a.y() == b.y() &&
-                        a.z() == b.z();
+						   a.y() == b.y() &&
+                           a.z() == b.z();
                 }
             };
 
@@ -234,9 +251,9 @@ namespace volplay {
             inline Voxel worldToVoxel(const AffineTransform &wl, const Vector &x)
             {
                 Vector l = worldToLocal(wl, x);
-                return Voxel((int)floor(l.x()),
-                    (int)floor(l.y()),
-                    (int)floor(l.z()));
+                return Voxel((Voxel::Scalar)floor(l.x()),
+							 (Voxel::Scalar)floor(l.y()),
+							 (Voxel::Scalar)floor(l.z()));
             }
 
             /** Returns the pair edge oriented in the opposite direction to given edge */
@@ -245,8 +262,8 @@ namespace volplay {
                 return VoxelEdge(e.second, e.first);
             }
 
-            /** Returns the undirected version of an edge. This is defined as the positively
-            oriented edge. */
+            /** Returns the undirected version of an edge. 
+				This is defined as the positively oriented edge. */
             inline VoxelEdge undirectedEdge(const VoxelEdge &e)
             {
                 // Undirected version of an edge always flows in the positive direction.
@@ -256,8 +273,7 @@ namespace volplay {
                     return e;
             }
 
-
-            /** Returns the axis index this edge is located at */
+            /** Returns the axis index this edge runs along. */
             inline Voxel::Index edgeAxis(const VoxelEdge &e)
             {
                 Voxel::Index idx;
@@ -286,7 +302,6 @@ namespace volplay {
                 *iter++ = VoxelEdge(Voxel(1,0,0), Voxel(1,0,1)); 
                 *iter++ = VoxelEdge(Voxel(0,1,0), Voxel(0,1,1)); 
                 *iter++ = VoxelEdge(Voxel(1,1,0), Voxel(1,1,1)); 
-
             }
 
             /** Visit all voxel edges for a single voxel. */
