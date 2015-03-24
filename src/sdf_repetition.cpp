@@ -39,14 +39,13 @@ namespace volplay {
     {
         SDFNodePtr n = node();
         
-        assert(n);
-        
         const Vector halfCell = _cellSizes / 2;
-        const Vector modX(
-            fmod(fabs(x(0)) + halfCell(0), _cellSizes(0)) - halfCell(0),
-            fmod(fabs(x(1)) + halfCell(1), _cellSizes(1)) - halfCell(1),
-            fmod(fabs(x(2)) + halfCell(2), _cellSizes(2)) - halfCell(2)
-        );
+		
+		const Vector modX(
+			std::isfinite(_cellSizes(0)) ? (fmod(fabs(x(0)) + halfCell(0), _cellSizes(0)) - halfCell(0)) : x(0),
+			std::isfinite(_cellSizes(1)) ? (fmod(fabs(x(1)) + halfCell(1), _cellSizes(1)) - halfCell(1)) : x(1),
+			std::isfinite(_cellSizes(2)) ? (fmod(fabs(x(2)) + halfCell(2), _cellSizes(2)) - halfCell(2)) : x(2)
+		);
         
         return n->fullEval(modX);
     }
