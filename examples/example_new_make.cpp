@@ -29,72 +29,30 @@ namespace volplay {
 	namespace make {
 
 		class MakeRoot;
-		template<class Previous> class MakeSphere;
-		template<class Previous> class MakeJoin;
-		template<class Previous> class MakeTransform;
+		class MakeSphere;
+		class MakeJoin;
+		class MakeTransform;
 		
 		template<class Derived>
 		class MakeBase {
 		public:
-
 			typedef MakeBase<Derived> MakeBaseType;
 
-			MakeSphere< MakeBaseType > sphere() {
-				deferredAttachNode();
-				return MakeSphere< MakeBaseType >(_root);
-			}
-
-			MakeJoin< MakeBaseType > join() {
-				deferredAttachNode();
-				return MakeJoin< MakeBaseType >(_root);
-			}
-
-			MakeTransform< MakeBaseType > transform() {
-				deferredAttachNode();
-				return MakeTransform< MakeBaseType >(_root);
-			}
-
-			Derived &end() {
-				// Attach current node before walking up the tree
-				deferredAttachNode(); 
-				_root->bubbleUp();
-
-				return *static_cast<Derived*>(this);
-			}
-
-			operator SDFNodePtr()
-			{
-				deferredAttachNode();
-				return _root->node();
-			}		
-
+			MakeSphere sphere();
+			MakeJoin join();
+			MakeTransform transform();
+			Derived &end();
+			operator SDFNodePtr();
 		protected:
-
-			MakeBase(MakeRoot *r)
-				:_root(r), _isAttached(false)
-			{}
-
-			void deferredAttachNode() {
-				if (!_isAttached) {
-					_root->addNode(static_cast<Derived*>(this)->createNode());
-					_isAttached = true;
-				}
-			}
-
-			void log(char * format, ...) const
-			{
-				va_list argptr;
-				va_start(argptr, format);					
-				vfprintf(stderr, format, argptr);
-				va_end(argptr);				
-			}
+			MakeBase(MakeRoot *r);
+			void deferredAttachNode();
+			void log(char * format, ...) const;
 
 			MakeRoot *_root;
 			bool _isAttached;
 		};
 
-		template<class Previous>
-		class MakeSphere : public MakeBase< MakeSphere<Previous> >
+		class MakeSphere : public MakeBase< MakeSphere >
 		{
 		public:
 
@@ -117,8 +75,7 @@ namespace volplay {
 			float _radius;
 		};
 
-		template<class Previous>
-		class MakeJoin : public MakeBase< MakeJoin<Previous> >
+		class MakeJoin : public MakeBase< MakeJoin >
 		{
 		public:
 
@@ -132,8 +89,7 @@ namespace volplay {
 			}
 		};
 
-		template<class Previous>
-		class MakeTransform : public MakeBase< MakeTransform<Previous> >
+		class MakeTransform : public MakeBase< MakeTransform >
 		{
 		public:
 
@@ -143,24 +99,24 @@ namespace volplay {
 				_t.setIdentity();
 			}
 
-			MakeTransform<Previous> &transform(const AffineTransform &t) {
+			MakeTransform &transform(const AffineTransform &t) {
 				_t = t;
 				return *this;
 			}
 
-			MakeTransform<Previous> &matrix(const AffineTransform::MatrixType &m) {
+			MakeTransform &matrix(const AffineTransform::MatrixType &m) {
 				_t.matrix() = m;
 				return *this;
 			}
 
 			template<class RotationType>
-			MakeTransform<Previous> &rotate(const RotationType &r) {
+			MakeTransform &rotate(const RotationType &r) {
 				_t.rotate(r);
 				return *this;
 			}
 
 			template<class TranslationType>
-			MakeTransform<Previous> &translate(const TranslationType &t) {
+			MakeTransform &translate(const TranslationType &t) {
 				_t.translate(t);
 				return *this;
 			}
@@ -226,6 +182,63 @@ namespace volplay {
 
 			std::deque<SDFNodePtr> _nodes;
 		};
+
+        // Implementation of MakeBase
+
+        template<class Derived>
+        MakeSphere MakeBase<Derived>::sphere() {
+	        deferredAttachNode();
+			return MakeSphere(_root);
+        }
+
+        template<class Derived>
+		MakeJoin MakeBase<Derived>::join() {
+			deferredAttachNode();
+			return MakeJoin(_root);
+		}
+
+		template<class Derived> 
+        MakeTransform MakeBase<Derived>::transform() {
+			deferredAttachNode();
+			return MakeTransform(_root);
+		}
+
+        template<class Derived> 
+		Derived &MakeBase<Derived>::end() {
+			// Attach current node before walking up the tree
+			deferredAttachNode(); 
+			_root->bubbleUp();
+			return *static_cast<Derived*>(this);
+		}
+
+        template<class Derived> 
+		MakeBase<Derived>::operator SDFNodePtr()
+		{
+			deferredAttachNode();
+			return _root->node();
+		}		
+
+        template<class Derived> 
+		MakeBase<Derived>::MakeBase(MakeRoot *r)
+			:_root(r), _isAttached(false)
+		{}
+
+        template<class Derived> 
+		void MakeBase<Derived>::deferredAttachNode() {
+			if (!_isAttached) {
+				_root->addNode(static_cast<Derived*>(this)->createNode());
+				_isAttached = true;
+			}
+		}
+
+        template<class Derived>
+		void MakeBase<Derived>::log(char * format, ...) const
+		{
+			va_list argptr;
+			va_start(argptr, format);					
+			vfprintf(stderr, format, argptr);
+			va_end(argptr);				
+		}
 
 		MakeRoot create()
 		{
