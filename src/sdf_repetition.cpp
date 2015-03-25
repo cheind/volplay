@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_repetition.h>
+#include <limits>
 
 namespace volplay {
     
@@ -35,6 +36,14 @@ namespace volplay {
     {
         _cellSizes = cellSizes;
     }
+
+    /** Compatibility isfinite for MSVC10 */
+    template<typename T> bool isfinite(T arg)
+    {
+        return arg == arg && 
+               arg != std::numeric_limits<T>::infinity() &&
+               arg != -std::numeric_limits<T>::infinity();
+    }
     
     SDFResult
     SDFRepetition::fullEval(const Vector &x) const
@@ -42,9 +51,9 @@ namespace volplay {
         const Vector halfCell = _cellSizes / 2;
 		
 		const Vector modX(
-			std::isfinite(_cellSizes(0)) ? (fmod(fabs(x(0)) + halfCell(0), _cellSizes(0)) - halfCell(0)) : x(0),
-			std::isfinite(_cellSizes(1)) ? (fmod(fabs(x(1)) + halfCell(1), _cellSizes(1)) - halfCell(1)) : x(1),
-			std::isfinite(_cellSizes(2)) ? (fmod(fabs(x(2)) + halfCell(2), _cellSizes(2)) - halfCell(2)) : x(2)
+			isfinite(_cellSizes(0)) ? (fmod(fabs(x(0)) + halfCell(0), _cellSizes(0)) - halfCell(0)) : x(0),
+			isfinite(_cellSizes(1)) ? (fmod(fabs(x(1)) + halfCell(1), _cellSizes(1)) - halfCell(1)) : x(1),
+			isfinite(_cellSizes(2)) ? (fmod(fabs(x(2)) + halfCell(2), _cellSizes(2)) - halfCell(2)) : x(2)
 		);
         
         return SDFUnion::fullEval(modX);
