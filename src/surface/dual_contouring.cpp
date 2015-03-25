@@ -80,7 +80,6 @@ namespace volplay {
                 }
                 
                 // Determine hermite data. Simply use secant method here with one iteration
-                const Vector::Index d = util::voxelgrid::edgeAxis(e);
                 Vector v = verts[1] - verts[0];
                 Scalar t = 1.f - sdf[1]  * ((1.f) / (sdf[1] - sdf[0]));
                 if (t == Scalar(1)) // Exclude intersections on corners of other voxels.

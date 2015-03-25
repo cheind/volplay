@@ -28,7 +28,7 @@ namespace volplay {
                 return false;
 
             // Header
-            fprintf(f, "OFF %i %i %i\n", s.vertices.cols(), s.faces.cols(), 0);
+            fprintf(f, "OFF %ld %ld %ld\n", s.vertices.cols(), s.faces.cols(), long(0));
 
             // Vertices
             for (IndexedSurface::VertexMatrix::Index i = 0; i < s.vertices.cols(); ++i) {
@@ -38,11 +38,11 @@ namespace volplay {
             // Faces. Either quads or triangles are supported.
             if (s.faces.rows() == 4) {
                 for (IndexedSurface::FaceMatrix::Index i = 0; i < s.faces.cols(); ++i) {
-                    fprintf(f, "4 %i %i %i %i\n", s.faces(0, i), s.faces(1, i), s.faces(2, i), s.faces(3, i));
+                    fprintf(f, "4 %ld %ld %ld %ld\n", s.faces(0, i), s.faces(1, i), s.faces(2, i), s.faces(3, i));
                 }
             } else if (s.faces.rows() == 3) {
                 for (IndexedSurface::FaceMatrix::Index i = 0; i < s.faces.cols(); ++i) {
-                    fprintf(f, "3 %i %i %i\n", s.faces(0, i), s.faces(1, i), s.faces(2, i));
+                    fprintf(f, "3 %ld %ld %ld\n", s.faces(0, i), s.faces(1, i), s.faces(2, i));
                 }
             }
 

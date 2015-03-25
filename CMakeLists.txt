@@ -138,6 +138,7 @@ if(OpenCV_FOUND)
         ${VOLPLAY_EXAMPLE_FILES}
         examples/example_raytracer.cpp		
 		examples/example_surface_export.cpp
+	examples/example_new_make.cpp
     )
 endif()
 
