@@ -18,6 +18,8 @@
 #include <volplay/sdf_rigid_transform.h>
 #include <string>
 #include <iostream>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include <volplay/surface/dual_contouring.h>
 #include <volplay/surface/off_export.h>
@@ -280,6 +282,222 @@ namespace volplay {
 			return SDFMaker(true);
 		}
 
+		struct NoParent {
+			void addNode(SDFNodePtr n){};
+			SDFNodePtr createNode() const {};
+		};
+
+		class MakeRoot;
+		template<class Previous> class MakeSphere;
+		template<class Previous> class MakeJoin;
+		template<class Previous> class MakeTransform;
+		
+		template<class Derived>
+		class MakeBase {
+		public:
+
+			typedef MakeBase<Derived> MakeBaseType;
+
+			MakeSphere< MakeBaseType > sphere() {
+				deferredAttachNode();
+				return MakeSphere< MakeBaseType >(_root);
+			}
+
+			MakeJoin< MakeBaseType > join() {
+				deferredAttachNode();
+				return MakeJoin< MakeBaseType >(_root);
+			}
+
+			MakeTransform< MakeBaseType > transform() {
+				deferredAttachNode();
+				return MakeTransform< MakeBaseType >(_root);
+			}
+
+			Derived &end() {
+				// Attach current node before walking up the tree
+				deferredAttachNode(); 
+				_root->bubbleUp();
+
+				return *static_cast<Derived*>(this);
+			}
+
+			operator SDFNodePtr()
+			{
+				deferredAttachNode();
+				return _root->node();
+			}		
+
+		protected:
+
+			MakeBase(MakeRoot *r)
+				:_root(r), _isAttached(false)
+			{}
+
+			void deferredAttachNode() {
+				if (!_isAttached) {
+					_root->addNode(static_cast<Derived*>(this)->createNode());
+					_isAttached = true;
+				}
+			}
+
+			void log(char * format, ...) const
+			{
+				va_list argptr;
+				va_start(argptr, format);					
+				vfprintf(stderr, format, argptr);
+				va_end(argptr);				
+			}
+
+			MakeRoot *_root;
+			bool _isAttached;
+		};
+
+		template<class Previous>
+		class MakeSphere : public MakeBase< MakeSphere<Previous> >
+		{
+		public:
+
+			explicit MakeSphere(MakeRoot *r)
+				: MakeBaseType(r), _radius(1)
+			{}
+
+			MakeSphere &radius(float r)
+			{
+				_radius = r;
+				return *this;
+			}
+
+			SDFNodePtr createNode() const
+			{
+				return std::make_shared<SDFSphere>(_radius);
+			}
+
+		private:
+			float _radius;
+		};
+
+		template<class Previous>
+		class MakeJoin : public MakeBase< MakeJoin<Previous> >
+		{
+		public:
+
+			explicit MakeJoin(MakeRoot *r)
+				: MakeBaseType(r)
+			{}
+
+			SDFNodePtr createNode() const
+			{
+				return std::make_shared<SDFUnion>();
+			}
+		};
+
+		template<class Previous>
+		class MakeTransform : public MakeBase< MakeTransform<Previous> >
+		{
+		public:
+
+			explicit MakeTransform(MakeRoot *r)
+				: MakeBaseType(r)
+			{
+				_t.setIdentity();
+			}
+
+			MakeTransform<Previous> &transform(const AffineTransform &t) {
+				_t = t;
+				return *this;
+			}
+
+			MakeTransform<Previous> &matrix(const AffineTransform::MatrixType &m) {
+				_t.matrix() = m;
+				return *this;
+			}
+
+			template<class RotationType>
+			MakeTransform<Previous> &rotate(const RotationType &r) {
+				_t.rotate(r);
+				return *this;
+			}
+
+			template<class TranslationType>
+			MakeTransform<Previous> &translate(const TranslationType &t) {
+				_t.translate(t);
+				return *this;
+			}
+
+			SDFNodePtr createNode() const
+			{
+				return std::make_shared<SDFRigidTransform>(_t);
+			}
+
+		private:
+			AffineTransform _t;
+		};
+		
+		class MakeRoot : public MakeBase< MakeRoot >
+		{
+		public:
+			MakeRoot(bool verbose)
+				: MakeBaseType(this)
+			{}
+
+			SDFNodePtr node() const
+			{
+				return _nodes.back();
+			}
+
+			void addNode(SDFNodePtr n)
+			{
+				if (!n)
+					return;
+
+				const bool needsPush = (bool)(asGroup(n) || asUnary(n));
+
+				if (_nodes.empty()) {
+					// Top node is always pushed					
+					_nodes.push_front(n);
+				}
+				else if (SDFGroupPtr g = asGroup(_nodes.front())) {
+					g->add(n);
+					if (needsPush)
+						_nodes.push_front(n);
+				}
+				else if (SDFUnaryPtr u = asUnary(_nodes.front())) {
+					u->setNode(n);
+					if (needsPush)
+						_nodes.push_front(n);
+				}
+			}
+
+			void bubbleUp() {
+				if (_nodes.size() <= 1) {
+					return;
+				}
+
+				do {
+					_nodes.erase(_nodes.begin());
+				} while (_nodes.size() > 1 && !(asGroup(_nodes.front()) || asUnary(_nodes.front())));
+			}
+
+			SDFNodePtr createNode() const
+			{
+				return SDFNodePtr();
+			}
+
+		private:
+
+			SDFGroupPtr asGroup(SDFNodePtr n)
+			{
+				return std::dynamic_pointer_cast<SDFGroup>(n);
+			}
+
+			SDFUnaryPtr asUnary(SDFNodePtr n)
+			{
+				return std::dynamic_pointer_cast<SDFUnary>(n);
+			}
+
+			std::deque<SDFNodePtr> _nodes;
+		};
+
 	}
 }
 
@@ -287,6 +505,7 @@ namespace volplay {
 
 TEST_CASE("New Make")
 {
+	/*
 	namespace vm = volplay::make;
 	volplay::SDFNodePtr scene1 = vm::create()
 		.repetition(vm::RepetitionOpts().resX(1).resY(1).resZ(1))
@@ -300,7 +519,7 @@ TEST_CASE("New Make")
 
 	volplay::SDFNodePtr scene = vm::create()
 		.differenceOf()
-			.node(vm::NodeOpts().node(scene1)).end()
+			.node(vm::NodeOpts().node(scene1)).end() // this is ugly. end is necessary as scene1 is a repetition.
 			.plane()
 		.end();
 		
@@ -308,6 +527,20 @@ TEST_CASE("New Make")
 	volplay::surface::IndexedSurface surface = dc.extractSurface(scene, volplay::Vector(-2, -2, -2), volplay::Vector(2, 2, 2), volplay::Vector::Constant(0.025f));
 	volplay::surface::OFFExport off;
 	off.exportSurface("mysurface.off", surface);
+	*/
+	
+	namespace vm = volplay::make;
+	vm::MakeRoot ms(true);
+	volplay::SDFNodePtr s = ms.join()
+		.sphere().radius(0.5)
+		.transform().translate(volplay::Vector::Constant(0.5))
+			.sphere().radius(0.5)
+		.end()
+	.end();
 
+	volplay::surface::DualContouring dc;
+	volplay::surface::IndexedSurface surface = dc.extractSurface(s, volplay::Vector(-2, -2, -2), volplay::Vector(2, 2, 2), volplay::Vector::Constant(0.25f));
+	volplay::surface::OFFExport off;
+	off.exportSurface("mysurface.off", surface);
 
 }
