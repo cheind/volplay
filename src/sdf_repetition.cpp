@@ -20,8 +20,10 @@ namespace volplay {
     {}
     
     SDFRepetition::SDFRepetition(const Vector &cellSizes, const SDFNodePtr &n)
-    : SDFUnary(n), _cellSizes(cellSizes)
-    {}
+    : _cellSizes(cellSizes)
+    {
+		this->add(n);
+	}
     
     const Vector &
     SDFRepetition::cellSizes() const {
@@ -36,9 +38,7 @@ namespace volplay {
     
     SDFResult
     SDFRepetition::fullEval(const Vector &x) const
-    {
-        SDFNodePtr n = node();
-        
+    {      
         const Vector halfCell = _cellSizes / 2;
 		
 		const Vector modX(
@@ -47,7 +47,7 @@ namespace volplay {
 			std::isfinite(_cellSizes(2)) ? (fmod(fabs(x(2)) + halfCell(2), _cellSizes(2)) - halfCell(2)) : x(2)
 		);
         
-        return n->fullEval(modX);
+        return SDFUnion::fullEval(modX);
     }
     
 }

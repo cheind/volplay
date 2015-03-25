@@ -12,12 +12,12 @@
 
 #include <volplay/types.h>
 #include <volplay/fwd.h>
-#include <volplay/sdf_unary.h>
+#include <volplay/sdf_union.h>
 
 namespace volplay {
 
     /** Represents a rigid body transformation node. */
-    class SDFRigidTransform : public SDFUnary {
+    class SDFRigidTransform : public SDFUnion {
     public:
         /** Empty transform initializer. Sets transform to identity. */
         SDFRigidTransform();

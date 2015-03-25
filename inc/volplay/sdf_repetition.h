@@ -11,12 +11,12 @@
 #define VOLPLAY_SDF_REPETITION
 
 #include <volplay/types.h>
-#include <volplay/sdf_unary.h>
+#include <volplay/sdf_union.h>
 
 namespace volplay {
 
     /** Repeats a node along one or more coordinate axis. */
-    class SDFRepetition : public SDFUnary {
+    class SDFRepetition : public SDFUnion {
     public:
         /** Create an empty repetition node. */
         SDFRepetition();
@@ -24,7 +24,7 @@ namespace volplay {
         /** Create repetition node with cell sizes. */
         SDFRepetition(const Vector &cellSizes);
         
-        /** Create repetition node with cell sizes and affected node. */
+        /** Create repetition node with cell sizes and a single affected node. */
         SDFRepetition(const Vector &cellSizes, const SDFNodePtr &n);
         
         /** Access the cell sizes. */

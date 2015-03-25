@@ -43,6 +43,9 @@ namespace volplay {
         /** Returns the number of children in this group */
         SDFNodeArray::size_type size() const;
 
+		/* Test if this node is able to group other nodes. */
+		virtual bool isGroup() const;
+
     private:
         SDFNodeArray _nodes;
     };

@@ -101,6 +101,9 @@ namespace volplay {
                 return d;
             }
         }
+
+		/* Test if this node is able to group other nodes. */
+		virtual bool isGroup() const;
         
     private:
         std::unordered_map<std::string, SDFNodeAttachmentPtr> _attachments;

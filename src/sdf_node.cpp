@@ -92,6 +92,12 @@ namespace volplay {
     {
         _attachments[key] = attachment;
     }
+
+	bool
+	SDFNode::isGroup() const
+	{
+		return false;
+	}
     
     
     

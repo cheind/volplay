@@ -31,7 +31,6 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_result.h
     inc/volplay/sdf_node.h
     inc/volplay/sdf_node_attachment.h
-    inc/volplay/sdf_unary.h
     inc/volplay/sdf_group.h
     inc/volplay/sdf_union.h
     inc/volplay/sdf_intersection.h
@@ -44,7 +43,6 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_make.h
     src/sdf_node.cpp
     src/sdf_node_attachment.cpp
-    src/sdf_unary.cpp
     src/sdf_group.cpp
     src/sdf_union.cpp
     src/sdf_intersection.cpp

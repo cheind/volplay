@@ -42,5 +42,11 @@ namespace volplay {
     {
         return _nodes.size();
     }
+
+	bool
+	SDFGroup::isGroup() const
+	{
+		return true;
+	}
     
 }
