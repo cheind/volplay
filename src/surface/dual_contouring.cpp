@@ -123,7 +123,7 @@ namespace volplay {
                 }
                 m /= Scalar(nActive);
 
-                Eigen::Matrix<Scalar, Eigen::Dynamic, 3> A(nActive, 3);
+				Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> A(nActive, 3);
                 Eigen::Matrix<Scalar, Eigen::Dynamic, 1> b(nActive);
                
                 nActive = 0;                
@@ -142,7 +142,7 @@ namespace volplay {
                     }
                 }
 
-                Eigen::JacobiSVD< Eigen::Matrix<Scalar, Eigen::Dynamic, 3> > svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+                Eigen::JacobiSVD< Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> > svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
                 svd.setThreshold(Scalar(0.1) / svd.singularValues()(0));
                 Vector x = svd.solve(b) + m;
 
