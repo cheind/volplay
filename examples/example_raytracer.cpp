@@ -51,10 +51,16 @@ TEST_CASE("CPU based raytracing")
     m2->setSpecularColor(vp::Vector::Ones());
     m2->setSpecularHardness(vp::S(128));
     
-    vp::SDFNodePtr scene =
-        vp::SDFMake::plane(vp::Vector::UnitY()) +
-        vp::SDFMake::sphere(1).attach("Material", m1).translate(vp::Vector(0, 1, 0)) +
-        vp::SDFMake::sphere(1).attach("Material", m2).translate(vp::Vector(3, 1, 0));
+    vp::SDFNodePtr scene = vp::make::create()
+        .join()
+            .plane().normal(vp::Vector::UnitY())
+            .transform().translate(vp::Vector(0, 1, 0))
+                .sphere().radius(1).attach("Material", m1)
+            .end()
+            .transform().translate(vp::Vector(3, 1, 0))
+                .sphere().radius(1).attach("Material", m2)
+            .end()
+        .end();
     
     vpr::CameraPtr cam(new vpr::Camera());
     cam->setCameraToImage(imageHeight, imageWidth, vp::Scalar(0.40));

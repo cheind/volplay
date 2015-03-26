@@ -118,6 +118,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_difference.cpp
     tests/test_sdf_rigid_transform.cpp
     tests/test_sdf_repetition.cpp
+	tests/test_sdf_make.cpp
     tests/test_camera.cpp
     tests/test_image.cpp
     tests/test_saturate.cpp
@@ -134,14 +135,13 @@ target_link_libraries(volplay_tests volplay)
 
 set(VOLPLAY_EXAMPLE_FILES
     examples/main.cpp
+	examples/example_surface_export.cpp
 )
 
 if(OpenCV_FOUND)
     set(VOLPLAY_EXAMPLE_FILES
         ${VOLPLAY_EXAMPLE_FILES}
-        examples/example_raytracer.cpp		
-		examples/example_surface_export.cpp
-	examples/example_new_make.cpp
+        examples/example_raytracer.cpp				
     )
 endif()
 

@@ -94,6 +94,12 @@ namespace volplay {
         _attachments[key] = attachment;
     }
 
+    void
+    SDFNode::setAttachments(const AttachmentMap &other)
+    {
+        _attachments = other;
+    }
+
 	bool
 	SDFNode::isGroup() const
 	{

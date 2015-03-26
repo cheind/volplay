@@ -18,10 +18,16 @@ namespace vp = volplay;
 
 TEST_CASE("SDFResult")
 {
-    vp::SDFNodePtr s0 = vp::SDFMake::sphere(1);
-    vp::SDFNodePtr s1 = vp::SDFMake::sphere(1);
-    
-    vp::SDFNodePtr u = vp::SDFMake::wrap(s0).join(vp::SDFMake::wrap(s1).translate(vp::Vector(5, 0, 0)));;
+    vp::SDFNodePtr s0;
+    vp::SDFNodePtr s1;
+
+    vp::SDFNodePtr u = vp::make::create()
+        .join()
+            .sphere().storeNodePtr(&s0)
+            .transform().translate(vp::Vector(5, 0, 0))
+                .sphere().storeNodePtr(&s1)
+            .end()
+        .end();
     
     REQUIRE(u->fullEval(vp::Vector(0,0,0)).node == s0.get());
     REQUIRE(u->fullEval(vp::Vector(5,0,0)).node == s1.get());

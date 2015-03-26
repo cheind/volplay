@@ -20,6 +20,9 @@ namespace volplay {
     /** A leaf node in the SDF (signed distance function) scene graph. */
     class SDFNode {
     public:
+        /** Map for attachments */
+        typedef std::unordered_map<std::string, SDFNodeAttachmentPtr> AttachmentMap;
+
         /** Evaluate the SDF at given position. Only returns the signed distance. */
         virtual Scalar eval(const Vector &x) const;
         
@@ -60,6 +63,9 @@ namespace volplay {
 
         /** Trace ray. Uses sphere tracing to find intersection */
         virtual Scalar trace(const Vector &o, const Vector &d, const TraceOptions &opts, TraceResult *tr = 0) const;
+
+        /** Set attachments */
+        void setAttachments(const AttachmentMap &other);
         
         /** Set node attachment */
         void setAttachment(const std::string &key, const SDFNodeAttachmentPtr &attachment);
@@ -112,7 +118,7 @@ namespace volplay {
 		virtual void acceptChildren(SDFNodeVisitor &nv);
         
     private:
-        std::unordered_map<std::string, SDFNodeAttachmentPtr> _attachments;
+        AttachmentMap _attachments;
     };
 
 }
