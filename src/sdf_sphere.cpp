@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_sphere.h>
+#include <volplay/sdf_node_visitor.h>
 
 namespace volplay {
     
@@ -25,5 +26,10 @@ namespace volplay {
         SDFResult r = {this, x.norm() - _radius};
         return r;
     }
+
+	void SDFSphere::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+	}
     
 }

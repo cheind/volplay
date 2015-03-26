@@ -9,6 +9,7 @@
 
 #include <volplay/sdf_union.h>
 #include <volplay/util/iterator_range.h>
+#include <volplay/sdf_node_visitor.h>
 
 namespace volplay {
     
@@ -36,6 +37,14 @@ namespace volplay {
         
         return r;
     }
+
+	void
+	SDFUnion::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+		for (auto iter = begin(); iter != end(); ++iter)
+			(*iter)->accept(nv);
+	}
     
     
 }

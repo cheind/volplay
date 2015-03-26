@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_node.h>
+#include <volplay/sdf_node_visitor.h>
 #include <limits>
 
 namespace volplay {
@@ -96,8 +97,14 @@ namespace volplay {
 	bool
 	SDFNode::isGroup() const
 	{
-		return false;
+			return false;
 	}
+	
+	void SDFNode::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+	}
+	
     
     
     

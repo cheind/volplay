@@ -9,6 +9,7 @@
 
 #include <volplay/sdf_difference.h>
 #include <volplay/util/iterator_range.h>
+#include <volplay/sdf_node_visitor.h>
 
 namespace volplay {
     
@@ -36,5 +37,12 @@ namespace volplay {
         
         return r;
     }
+
+	void SDFDifference::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+		for (auto iter = begin(); iter != end(); ++iter)
+			(*iter)->accept(nv);
+	}
     
 }

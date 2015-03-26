@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_rigid_transform.h>
+#include <volplay/sdf_node_visitor.h>
 
 namespace volplay {
     
@@ -50,5 +51,12 @@ namespace volplay {
         return SDFUnion::fullEval(_worldToLocal * x);
     }
     
+	void 
+	SDFRigidTransform::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+		for (auto iter = begin(); iter != end(); ++iter)
+			(*iter)->accept(nv);
+	}
     
 }

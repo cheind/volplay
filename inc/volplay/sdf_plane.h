@@ -26,6 +26,9 @@ namespace volplay {
         
         /** Evaluate the SDF at given position. */
         virtual SDFResult fullEval(const Vector &x) const;
+
+		/* Accept a node visitor. */
+		virtual void accept(SDFNodeVisitor &nv);
         
     private:
         Vector _normal;

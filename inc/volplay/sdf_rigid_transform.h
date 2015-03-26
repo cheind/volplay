@@ -39,6 +39,9 @@ namespace volplay {
         
         /** Set a new transform */
         void setLocalToWorld(const AffineTransform &t);
+
+		/* Accept a node visitor. */
+		virtual void accept(SDFNodeVisitor &nv);
         
     private:
         AffineTransform _worldToLocal;

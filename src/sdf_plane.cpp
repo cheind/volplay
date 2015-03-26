@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_plane.h>
+#include <volplay/sdf_node_visitor.h>
 
 namespace volplay {
     
@@ -25,5 +26,11 @@ namespace volplay {
         SDFResult r = {this, x.dot(_normal) + _w};
         return r;
     }
+
+	void 
+	SDFPlane::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+	}
     
 }

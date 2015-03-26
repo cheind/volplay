@@ -46,6 +46,7 @@ namespace volplay {
 		/* Test if this node is able to group other nodes. */
 		virtual bool isGroup() const;
 
+		
     private:
         SDFNodeArray _nodes;
     };

@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_repetition.h>
+#include <volplay/sdf_node_visitor.h>
 #include <limits>
 
 namespace volplay {
@@ -58,5 +59,13 @@ namespace volplay {
         
         return SDFUnion::fullEval(modX);
     }
+
+	void
+	SDFRepetition::accept(SDFNodeVisitor &nv)
+	{
+		nv.visit(this);
+		for (auto iter = begin(); iter != end(); ++iter)
+			(*iter)->accept(nv);
+	}
     
 }

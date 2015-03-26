@@ -30,6 +30,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/types.h
     inc/volplay/sdf_result.h
     inc/volplay/sdf_node.h
+	inc/volplay/sdf_node_visitor.h
     inc/volplay/sdf_node_attachment.h
     inc/volplay/sdf_group.h
     inc/volplay/sdf_union.h
@@ -43,6 +44,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_make.h
     src/sdf_node.cpp
     src/sdf_node_attachment.cpp
+	src/sdf_node_visitor.cpp
     src/sdf_group.cpp
     src/sdf_union.cpp
     src/sdf_intersection.cpp
@@ -107,6 +109,7 @@ set(VOLPLAY_TEST_FILES
     tests/main.cpp
     tests/test_sdf_result.cpp
     tests/test_sdf_node.cpp
+    tests/test_sdf_node_visitor.cpp
     tests/test_sdf_sphere.cpp
     tests/test_sdf_box.cpp
     tests/test_sdf_plane.cpp
