@@ -100,10 +100,19 @@ namespace volplay {
 			return false;
 	}
 	
-	void SDFNode::accept(SDFNodeVisitor &nv)
+	void 
+    SDFNode::accept(SDFNodeVisitor &nv)
 	{
 		nv.visit(this);
 	}
+
+    void 
+    SDFNode::acceptChildren(SDFNodeVisitor &nv)
+    {
+        // Nothing todo.
+    }
+
+
 	
     
     

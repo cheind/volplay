@@ -23,16 +23,30 @@ namespace vp = volplay;
 
 class CountVisitor : public vp::SDFNodeVisitor {
 public:
-	int countSphere = 0;
-	int countPlane = 0;
-	int countBox = 0;
-	int countNode = 0;
-	int countGroup = 0;
-	int countUnion = 0;
-	int countDifference = 0;
-	int countIntersection = 0;
-	int countRep = 0;
-	int countTransform = 0;
+	int countSphere;
+	int countPlane;
+	int countBox;
+	int countNode;
+	int countGroup;
+	int countUnion;
+	int countDifference;
+	int countIntersection;
+	int countRep;
+	int countTransform;
+
+    CountVisitor()
+    {
+        countSphere = 0;
+        countPlane = 0;
+        countBox = 0;
+        countNode = 0;
+        countGroup = 0;
+        countUnion = 0;
+        countDifference = 0;
+        countIntersection = 0;
+        countRep = 0;
+        countTransform = 0;
+    }
 
 	virtual void visit(vp::SDFNode *n) {
 		++countNode;

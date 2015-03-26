@@ -46,6 +46,9 @@ namespace volplay {
 		/* Test if this node is able to group other nodes. */
 		virtual bool isGroup() const;
 
+         /* Accept a node visitor. Visitation starts at child nodes. */
+        virtual void acceptChildren(SDFNodeVisitor &nv);
+
 		
     private:
         SDFNodeArray _nodes;

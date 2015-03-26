@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/sdf_group.h>
+#include <volplay/sdf_node_visitor.h>
 
 namespace volplay {
     
@@ -49,4 +50,10 @@ namespace volplay {
 		return true;
 	}
     
+    void 
+    SDFGroup::acceptChildren(SDFNodeVisitor &nv)
+    {
+		for (auto iter = begin(); iter != end(); ++iter)
+			(*iter)->accept(nv);
+    }
 }

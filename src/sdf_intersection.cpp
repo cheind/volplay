@@ -41,8 +41,7 @@ namespace volplay {
 	void SDFIntersection::accept(SDFNodeVisitor &nv)
 	{
 		nv.visit(this);
-		for (auto iter = begin(); iter != end(); ++iter)
-			(*iter)->accept(nv);
+        acceptChildren(nv);
 	}
     
 }

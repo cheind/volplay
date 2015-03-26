@@ -105,8 +105,11 @@ namespace volplay {
 		/* Test if this node is able to group other nodes. */
 		virtual bool isGroup() const;
 
-		/* Accept a node visitor. */
+		/* Accept a node visitor. Visitation starts at this node. */
 		virtual void accept(SDFNodeVisitor &nv);
+
+        /* Accept a node visitor. Visitation starts at child nodes. */
+		virtual void acceptChildren(SDFNodeVisitor &nv);
         
     private:
         std::unordered_map<std::string, SDFNodeAttachmentPtr> _attachments;
