@@ -51,7 +51,7 @@ TEST_CASE("CPU based raytracing")
     m2->setSpecularColor(vp::Vector::Ones());
     m2->setSpecularHardness(vp::S(128));
     
-    vp::SDFNodePtr scene = vp::make::create()
+    vp::SDFNodePtr scene = vp::make()
         .join()
             .plane().normal(vp::Vector::UnitY())
             .transform().translate(vp::Vector(0, 1, 0))

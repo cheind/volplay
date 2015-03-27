@@ -58,7 +58,7 @@ public:
 
 TEST_CASE("SDFMake - Hierarchy")
 {
-    vp::SDFNodePtr u = vp::make::create()
+    vp::SDFNodePtr u = vp::make()
         .join()
             .transform().translate(vp::Vector(5, 0, 0))
                 .repetition()
@@ -90,7 +90,7 @@ TEST_CASE("SDFMake - StorePtr")
     vp::SDFNodePtr s0;
     vp::SDFNodePtr s1;
 
-    vp::SDFNodePtr u = vp::make::create()
+    vp::SDFNodePtr u = vp::make()
         .join()
             .sphere().storeNodePtr(&s0)
             .transform().translate(vp::Vector(5, 0, 0))

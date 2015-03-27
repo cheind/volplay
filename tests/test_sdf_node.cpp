@@ -62,7 +62,7 @@ TEST_CASE("SDFNode::normal")
     REQUIRE_CLOSE( (s.normal(vp::Vector(0,0,0)) - vp::Vector(0,0,0)).norm(), 0 );
     
     // Test with planes
-    vp::SDFNodePtr planes = vp::make::create()
+    vp::SDFNodePtr planes = vp::make()
         .join()
             .plane().normal(vp::Vector::UnitX())
             .plane().normal(vp::Vector::UnitY())
