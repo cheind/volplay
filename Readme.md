@@ -1,10 +1,10 @@
 # volplay
 
-*volplay* is a library for creating, manipulating and interacting with volumetric data. Focus of this library is clean, reference code. All computations carried out on CPU with minimal focus on parallelism.
+_volplay_ is a library for creating, manipulating and interacting with volumetric data. Focus of this library is clean, reference code. All computations carried out on CPU with minimal focus on parallelism.
 
 ## Creating and Manipulating Signed Distance Fields
 
-A signed distance field in *volplay* is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. 
+A signed distance field in _volplay_ is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. 
 
 To start creating a signed distance field use `volplay::make()`.
 
