@@ -1,10 +1,10 @@
 # volplay
 
-volplay is a library for creating, manipulating and interacting with volumetric data. Focus of this library is clean, reference code. All computations carried out on CPU with minimal focus on parallelism.
+*volplay* is a library for creating, manipulating and interacting with volumetric data. Focus of this library is clean, reference code. All computations carried out on CPU with minimal focus on parallelism.
 
 ## Creating and Manipulating Signed Distance Fields
 
-A signed distance field in volplay is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. 
+A signed distance field in *volplay* is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. 
 
 To start creating a signed distance field use `volplay::make()`.
 
@@ -42,13 +42,7 @@ When executed the following set of images is generated. From left to right: Blin
 The namespace `volplay::surface` provides methods to explicitly generate a polygonal mesh from an iso-surface in a signed distance field. Currently an implementation of Dual Contouring `volplay::surface::DualContouring` is available. Results can be exported in .OFF format. Here is an example
 
 ```cpp
-#include <volplay/sdf_sphere.h>
-#include <volplay/sdf_plane.h>
-#include <volplay/sdf_make.h>
-#include <volplay/surface/dual_contouring.h>
-#include <volplay/surface/off_export.h>
-
-...
+#include <volplay/volplay.h>
 
 namespace vp = volplay;
 namespace vps = volplay::surface;
