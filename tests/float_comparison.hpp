@@ -10,8 +10,11 @@
 #ifndef VOLPLAY_TESTS_FLOAT_COMPARISON
 #define VOLPLAY_TESTS_FLOAT_COMPARISON
 
+#define REQUIRE_CLOSE_PREC(left, right, prec) \
+    REQUIRE( fabs((left) - (right)) < (prec) )
+
 #define REQUIRE_CLOSE(left, right) \
-    REQUIRE( fabs((left) - (right)) < 0.001 )
+    REQUIRE_CLOSE_PREC(left, right, 0.001)    
 
 #define REQUIRE_CLOSE_VECTOR(left, right) \
     REQUIRE( ((left) - (right)).squaredNorm() < 0.001 )

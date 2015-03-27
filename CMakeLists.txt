@@ -28,6 +28,7 @@ endif ()
 set(VOLPLAY_CORE_FILES
     inc/volplay/fwd.h
     inc/volplay/types.h
+	inc/volplay/volplay.h
     inc/volplay/sdf_result.h
     inc/volplay/sdf_node.h
 	inc/volplay/sdf_node_visitor.h
@@ -123,6 +124,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_image.cpp
     tests/test_saturate.cpp
     tests/test_voxel_grid.cpp
+	tests/test_dual_contouring.cpp
 )
 
 source_group(tests FILES ${VOLPLAY_TEST_FILES})
