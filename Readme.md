@@ -11,13 +11,13 @@ To start creating a signed distance field use `volplay::make()`.
 ```cpp
 namespace vp = volplay;
 
- vp::SDFNodePtr u = vp::make()
-    .join()
-        .sphere().radius(0.5)
-        .transform().translate(vp::Vector(5, 0, 0))
-            .sphere().radius(0.2)
-        .end()
-    .end();
+vp::SDFNodePtr u = vp::make()
+.join()
+    .sphere().radius(0.5)
+    .transform().translate(vp::Vector(5, 0, 0))
+        .sphere().radius(0.2)
+    .end()
+.end();
 ```
 
 Here the `join()` member method creates a new `volplay::SDFUnion`. Its children are an `volplay::SDFSphere` node with radius 0.5 and a transformed `volplay::SDFSphere` with radius 0.2. The complete graph is shown below. The domain specific language chosen comes quite close to a natural language one would prefer to create hierarchies.
