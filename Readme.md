@@ -1,6 +1,6 @@
 # volplay
 
-volplay is a library for creating, manipulating and interacting with volumetric data.Focus of this library is clean, reference code and not performance. All computations carried out on CPU with minimal focus on parallelism. Written in C++11.
+volplay is a library for creating, manipulating and interacting with volumetric data. Focus of this library is clean, reference code. All computations carried out on CPU with minimal focus on parallelism.
 
 ## Creating and Manipulating Signed Distance Fields
 
