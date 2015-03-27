@@ -4,21 +4,23 @@ volplay is a library for creating, manipulating and interacting with volumetric 
 
 ## Creating and Manipulating Signed Distance Fields
 
-A signed distance field in volplay is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. A helper class `volplay::SDFMake` is provided to simplify the creation of nodes. Here are some examples
+A signed distance field in volplay is represented by a hierarchy of `volplay::SDFNode`. Leaf nodes represent primitives such as spheres, boxes and planes. Intermediate nodes encapsulate functions on other nodes such as intersection, union, difference, repetition and transformation. 
+
+To start creating a signed distance field use `volplay::make()`.
 
 ```cpp
-#include <volplay/sdf_sphere.h>
-#include <volplay/sdf_make.h>
-
-...
-
 namespace vp = volplay;
 
-vp::SDFNodePtr scene = vp::SDFMake::sphere(1) +
-                       vp::SDFMake::sphere(1).translate(vp::Vector(0.8f, 0.8f, 0.8f));
+ vp::SDFNodePtr u = vp::make()
+    .join()
+        .sphere().radius(0.5)
+        .transform().translate(vp::Vector(5, 0, 0))
+            .sphere().radius(0.2)
+        .end()
+    .end();
 ```
 
-Here the `sphere()` method creates an `volplay::SDFSphere` node, the `translate()` method creates an `volplay::SDFRidigTransform` intermediate node and `+` operator creates an intermediate node of type `volplay::SDFUnion`. This results in the following scene graph hierarchy.
+Here the `join()` member method creates a new `volplay::SDFUnion`. Its children are an `volplay::SDFSphere` node with radius 0.5 and a transformed `volplay::SDFSphere` with radius 0.2. The complete graph is shown below. The domain specific language chosen comes quite close to a natural language one would prefer to create hierarchies.
 
 ![Image](etc/images/samplediagram.png?raw=true)
 
