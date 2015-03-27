@@ -9,6 +9,8 @@ A signed distance field in _volplay_ is represented by a hierarchy of `volplay::
 To start creating a signed distance field use `volplay::make()`.
 
 ```cpp
+#include <volplay/volplay.h>
+
 namespace vp = volplay;
 
 vp::SDFNodePtr u = vp::make()
