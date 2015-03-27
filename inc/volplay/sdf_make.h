@@ -354,7 +354,59 @@ namespace volplay {
         }
     }
 
-    /** Start creating a new scene. */
+    /** 
+        Start creating a new scene. 
+
+        The make mechansim in volplay is based on a domain specific language (DSL)
+        that should mimic a very natural way of defining scenes as shown below.
+
+            vp::SDFNodePtr u = vp::make()
+                .join()
+                    .sphere().radius(0.5)
+                    .transform().translate(vp::Vector(5, 0, 0))
+                        .sphere().radius(0.2)
+                    .end()
+                .end();
+        
+        volplay::make returns a custom object that provides methods to create
+        basic scene entities. Once you call one of it methods, another object
+        is returned that provides all properties of that particular entity
+        plus methods to create nested entities or entities on the same hierarchy 
+        level.
+
+        Some entities are considered groups in that they can have child
+        entities. Once you are creating such an entity, all further entities
+        created will be direct or indirect children of that particular node.
+        To bubble up in the hierarchy, use the end() method.
+
+        Note that the related SDFNode objects are created once you complete
+        an entity (either by creating another entity on the same hierarchy or
+        calling end()). This means you can modify properties of entities as long
+        as the entity is not enforced to create the SDFNode. 
+        
+            vp::SDFNodePtr u = vp::make()
+                .join()
+                    .transform().translate(...).rotate(...).translate(...)
+                        .sphere() // at this point the SDFRigidTransform node is created
+                                  // and finalized.
+                    .end()
+                .end();
+        
+        Delayed creation of the node can also come in handy when the type of the SDFNode to 
+        be created is dependent on a property.
+
+        To add support for a new SDFNode in the make syntax, let's say for a SDFNode called
+        SDFBlend proceed as follows: 
+            - Implement the new SDFBlend as usual. 
+            - Create a MakeBlend class in volplay::detail by inherting from MakeBase
+                - add forward declaration to MakeBlend at top of this file.
+                - implement SDFBlend related properties in MakeBlend.
+                - implement MakeBlend::createNode() method that returns a SDFBlend object
+            - At MakeBase add a blend() method that returns a MakeBlend object.
+
+        When implemented the above methods its best to take a look at already implemented
+        classes for detail.
+    */
     detail::MakeRoot make();
 
 }
