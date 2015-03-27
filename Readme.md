@@ -51,9 +51,16 @@ The namespace `volplay::surface` provides methods to explicitly generate a polyg
 namespace vp = volplay;
 namespace vps = volplay::surface;
 
-vp::SDFNodePtr scene = vp::SDFMake::sphere(1).translate(vp::Vector(0.01f, 0.01f, 0.01f)) +
-                       vp::SDFMake::sphere(1).translate(vp::Vector(0.8f, 0.8f, 0.8f)) -
-                       vp::SDFMake::plane(vp::Vector(0,0,1));
+vp::SDFNodePtr scene = vp::make()
+    .difference()
+        .join()
+            .sphere().radius(1)
+            .transform().translate(vp::Vector(0.8f, 0.8f, 0.8f))
+                .sphere().radius(1)
+            .end()
+        .end()
+        .plane().normal(vp::Vector::UnitZ())
+    .end();
 
 vps::DualContouring dc;
 vps::IndexedSurface surface = dc.extractSurface(
