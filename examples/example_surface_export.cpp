@@ -8,15 +8,10 @@
 
 #include "catch.hpp"
 
-#include <volplay/sdf_sphere.h>
-#include <volplay/sdf_plane.h>
-#include <volplay/sdf_make.h>
-#include <volplay/surface/dual_contouring.h>
-#include <volplay/surface/off_export.h>
+#include <volplay/volplay.h>
 
 namespace vp = volplay;
 namespace vps = volplay::surface;
-
 
 TEST_CASE("surface_export")
 {

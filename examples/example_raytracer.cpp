@@ -7,17 +7,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include "catch.hpp"
-#include <volplay/sdf_sphere.h>
-#include <volplay/sdf_make.h>
-#include <volplay/rendering/camera.h>
-#include <volplay/rendering/image.h>
-#include <volplay/rendering/renderer.h>
-#include <volplay/rendering/heat_image_generator.h>
-#include <volplay/rendering/depth_image_generator.h>
-#include <volplay/rendering/blinn_phong_image_generator.h>
-#include <volplay/rendering/material.h>
-#include <volplay/rendering/light.h>
-
+#include <volplay/volplay.h>
 #include <opencv2/opencv.hpp>
 
 namespace vp = volplay;
