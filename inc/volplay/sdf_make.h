@@ -28,6 +28,7 @@ namespace volplay {
         class MakeTransform;
         class MakeRepetition;
         class MakeDisplacement;
+        class MakeNode;
             
 
         /** Base class for making. */
@@ -35,6 +36,9 @@ namespace volplay {
         class MakeBase {
         public:
             typedef MakeBase<Derived> MakeBaseType;
+
+            /** Include an already defined node. */
+            MakeNode wrap();
 
             /** Create a new SDFSphere */
             MakeSphere sphere();
@@ -108,6 +112,22 @@ namespace volplay {
             SDFGroupPtr asGroup(SDFNodePtr n);
 
             std::deque<SDFNodePtr> _nodes;
+        };
+
+        /** Handles inclusion of already existing nodes */
+        class MakeNode : public MakeBase< MakeNode >
+        {
+        public:
+            /** Constructor */
+            explicit MakeNode(MakeRoot *r);
+
+            /** Include the given node pointer. */
+            MakeNode &node(SDFNodePtr n);
+
+            /** Create node */
+            SDFNodePtr createNode() const;
+        private:
+            SDFNodePtr _n;
         };
 
         /** Handles creating and manipulating a SDFSphere */
@@ -282,6 +302,12 @@ namespace volplay {
         MakeBase<Derived>::MakeBase(MakeRoot *r)
             :_root(r), _isAttached(false), _storePtr(0)
         {}
+
+        template<class Derived>
+        MakeNode MakeBase<Derived>::wrap() {
+            deferredAttachNode();
+            return MakeNode(_root);
+        }
 
         template<class Derived>
         MakeSphere MakeBase<Derived>::sphere() {

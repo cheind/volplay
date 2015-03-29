@@ -86,7 +86,7 @@ namespace volplay {
 
 
         // Intersection
-            
+
         MakeIntersection::MakeIntersection(MakeRoot *r)
             : MakeBaseType(r)
         {}
@@ -97,7 +97,7 @@ namespace volplay {
         }
 
         // Difference
-            
+
         MakeDifference::MakeDifference(MakeRoot *r)
             : MakeBaseType(r)
         {}
@@ -144,7 +144,7 @@ namespace volplay {
         // Box
 
         MakeBox::MakeBox(MakeRoot *r)
-                : MakeBaseType(r), _hl(Vector(S(0.5), S(0.5), S(0.5)))
+            : MakeBaseType(r), _hl(Vector(S(0.5), S(0.5), S(0.5)))
         {}
 
         MakeBox &MakeBox::halfLengths(const Vector &hl)
@@ -224,25 +224,42 @@ namespace volplay {
 
         // SDF Displacement
 
-       MakeDisplacement::MakeDisplacement(MakeRoot *r)
-           :MakeBaseType(r)
-       {}
+        MakeDisplacement::MakeDisplacement(MakeRoot *r)
+            :MakeBaseType(r)
+        {}
 
-       MakeDisplacement &MakeDisplacement::fnc(const ScalarFnc &f)
-       {
-           _fnc = f;
-           return *this;
-       }
+        MakeDisplacement &MakeDisplacement::fnc(const ScalarFnc &f)
+        {
+            _fnc = f;
+            return *this;
+        }
 
-       SDFNodePtr MakeDisplacement::createNode() const
-       {
-           return std::make_shared<SDFDisplacement>(_fnc);
-       }
+        SDFNodePtr MakeDisplacement::createNode() const
+        {
+            return std::make_shared<SDFDisplacement>(_fnc);
+        }
+
+        // Node
+
+        MakeNode::MakeNode(MakeRoot *r)
+            :MakeBaseType(r)
+        {}
+
+        MakeNode &MakeNode::node(SDFNodePtr n)
+        {
+            _n = n;
+            return *this;
+        }
+
+        SDFNodePtr MakeNode::createNode() const
+        {
+            return _n;
+        }
     }
 
     detail::MakeRoot make()
     {
         return detail::MakeRoot();
     }
-    
+
 }
