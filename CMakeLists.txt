@@ -94,15 +94,24 @@ set(VOLPLAY_UTIL_FILES
 	inc/volplay/util/voxel_grid.h
 )
 
+set(VOLPLAY_MATH_FILES
+    inc/volplay/math/sign.h
+)
+
 source_group(core FILES ${VOLPLAY_CORE_FILES})
 source_group(rendering FILES ${VOLPLAY_RENDERING_FILES})
 source_group(util FILES ${VOLPLAY_UTIL_FILES})
 source_group(surface FILES ${VOLPLAY_SURFACE_FILES})
+source_group(math FILES ${VOLPLAY_MATH_FILES})
 
 include_directories(${EIGEN_INCLUDE_DIR})
 include_directories(inc)
 
-add_library(volplay ${VOLPLAY_CORE_FILES} ${VOLPLAY_RENDERING_FILES} ${VOLPLAY_UTIL_FILES} ${VOLPLAY_SURFACE_FILES})
+add_library(volplay ${VOLPLAY_CORE_FILES} 
+					${VOLPLAY_RENDERING_FILES} 
+					${VOLPLAY_UTIL_FILES} 
+					${VOLPLAY_SURFACE_FILES}
+					${VOLPLAY_MATH_FILES})
 
 # Setup tests
 

@@ -11,6 +11,7 @@
 #include <volplay/sdf_node.h>
 #include <volplay/util/function_output_iterator.h>
 #include <volplay/util/voxel_grid.h>
+#include <volplay/math/sign.h>
 #include <iostream>
 
 namespace volplay {
@@ -26,9 +27,7 @@ namespace volplay {
             {}
         };
 
-        template <typename T> int sign(T val) {
-            return (T(0) < val) - (val < T(0));
-        }
+
 
         DualContouring::DualContouring()
         {}
@@ -61,8 +60,8 @@ namespace volplay {
                 };
 
                 int sgn[2] = {
-                    sign(sdf[0]),
-                    sign(sdf[1])
+                    math::sign(sdf[0]),
+                    math::sign(sdf[1])
                 };
 
                 if ((sgn[0] - sgn[1]) == 0)
