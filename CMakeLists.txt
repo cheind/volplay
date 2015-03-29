@@ -130,6 +130,7 @@ set(VOLPLAY_TEST_FILES
     tests/test_sdf_difference.cpp
     tests/test_sdf_rigid_transform.cpp
     tests/test_sdf_repetition.cpp
+	tests/test_sdf_displacement.cpp
 	tests/test_sdf_make.cpp
     tests/test_camera.cpp
     tests/test_image.cpp

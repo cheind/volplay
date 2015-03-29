@@ -13,33 +13,29 @@
 #include <volplay/types.h>
 #include <volplay/fwd.h>
 #include <volplay/sdf_union.h>
-#include <functional>
 
 namespace volplay {
 
     /** Computes a scalar displacement value and adds it to the SDF. */
     class SDFDisplacement : public SDFUnion {
     public:
-        /** Type of the displacement function. */
-        typedef std::function<Scalar(const Vector&)> DisplacementFnc;
-
         /** Empty transform initializer. */
         SDFDisplacement();
         
         /** Initialize from transform */
-        SDFDisplacement(const DisplacementFnc &fnc);
+        SDFDisplacement(const ScalarFnc &fnc);
         
         /** Evaluate the SDF at given position. */
         virtual SDFResult fullEval(const Vector &x) const;
         
         /** Set displacement function */
-        void setDisplacementFunction(const DisplacementFnc &fnc);
+        void setDisplacementFunction(const ScalarFnc &fnc);
 
 		/* Accept a node visitor. */
 		virtual void accept(SDFNodeVisitor &nv);
         
     private:
-        DisplacementFnc _dfnc;
+        ScalarFnc _dfnc;
     };
 
 }

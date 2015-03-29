@@ -15,7 +15,7 @@ namespace volplay {
     SDFDisplacement::SDFDisplacement()
     {}
         
-    SDFDisplacement::SDFDisplacement(const DisplacementFnc &fnc)
+    SDFDisplacement::SDFDisplacement(const ScalarFnc &fnc)
         :_dfnc(fnc)
     {}
         
@@ -29,7 +29,7 @@ namespace volplay {
         return r;
     }
         
-    void SDFDisplacement::setDisplacementFunction(const DisplacementFnc &fnc)
+    void SDFDisplacement::setDisplacementFunction(const ScalarFnc &fnc)
     {
         _dfnc = fnc;
     }

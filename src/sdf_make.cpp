@@ -16,6 +16,7 @@
 #include <volplay/sdf_difference.h>
 #include <volplay/sdf_repetition.h>
 #include <volplay/sdf_rigid_transform.h>
+#include <volplay/sdf_displacement.h>
 #include <deque>
 
 #ifdef _MSC_VER
@@ -220,6 +221,23 @@ namespace volplay {
         {
             return std::make_shared<SDFRepetition>(_cellSizes);
         }
+
+        // SDF Displacement
+
+       MakeDisplacement::MakeDisplacement(MakeRoot *r)
+           :MakeBaseType(r)
+       {}
+
+       MakeDisplacement &MakeDisplacement::fnc(const ScalarFnc &f)
+       {
+           _fnc = f;
+           return *this;
+       }
+
+       SDFNodePtr MakeDisplacement::createNode() const
+       {
+           return std::make_shared<SDFDisplacement>(_fnc);
+       }
     }
 
     detail::MakeRoot make()

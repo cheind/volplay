@@ -13,6 +13,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 #include <Eigen/StdVector>
+#include <functional>
 
 namespace volplay {
     
@@ -35,7 +36,10 @@ namespace volplay {
     typedef Eigen::Matrix<int, 3, 1> Index;
     
     /** Affine transform in three dimensions. */
-    typedef Eigen::Transform<Scalar, 3, Eigen::AffineCompact> AffineTransform;     
+    typedef Eigen::Transform<Scalar, 3, Eigen::AffineCompact> AffineTransform;    
+
+    /** Function prototype for scalar-valued functions acting on 3D points. */
+    typedef std::function<Scalar(const Vector&)> ScalarFnc;
 }
 
 

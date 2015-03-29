@@ -27,6 +27,7 @@ namespace volplay {
         class MakeDifference;
         class MakeTransform;
         class MakeRepetition;
+        class MakeDisplacement;
             
 
         /** Base class for making. */
@@ -58,6 +59,9 @@ namespace volplay {
 
             /** Create a new SDFRepetition */
             MakeRepetition repetition();
+
+            /** Create a new SDFDisplacement */
+            MakeDisplacement displacement();
 
             /** Add a new attachment */
             Derived &attach(const std::string &key, SDFNodeAttachmentPtr attachment);
@@ -255,6 +259,23 @@ namespace volplay {
             Vector _cellSizes;
         };
 
+        /** Handles creating and manipulating a SDFDisplacement */
+        class MakeDisplacement : public MakeBase< MakeDisplacement >
+        {
+        public:
+            /** Constructor. Initializes a displacement with constant zero displacement. */
+            explicit MakeDisplacement(MakeRoot *r);
+
+            /** Set the function that will perform the displacement. */
+            MakeDisplacement &fnc(const ScalarFnc &fnc);
+
+            /** Create node */
+            SDFNodePtr createNode() const;
+
+        private:
+            ScalarFnc _fnc;            
+        };
+
         // Implementation of MakeBase
 
         template<class Derived> 
@@ -308,6 +329,12 @@ namespace volplay {
         MakeRepetition MakeBase<Derived>::repetition() {
             deferredAttachNode();
             return MakeRepetition(_root);
+        }
+
+        template<class Derived> 
+        MakeDisplacement MakeBase<Derived>::displacement() {
+            deferredAttachNode();
+            return MakeDisplacement(_root);
         }
 
         template<class Derived> 

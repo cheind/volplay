@@ -25,6 +25,7 @@ public:
         Union,
         Transform,
         Repetition,
+        Displacement,
         Sphere,
         Box
     };
@@ -54,6 +55,10 @@ public:
     virtual void visit(vp::SDFRepetition *n) {
         visited.push_back(Repetition);
 	}
+
+    virtual void visit(vp::SDFDisplacement *n) {
+        visited.push_back(Displacement);
+	}
 };
 
 TEST_CASE("SDFMake - Hierarchy")
@@ -64,6 +69,9 @@ TEST_CASE("SDFMake - Hierarchy")
                 .repetition()
                     .box().lengths(vp::Vector(1))
                     .box()
+                .end()
+                .displacement()
+                    .sphere()
                 .end()
             .end()
             .sphere()
@@ -78,6 +86,8 @@ TEST_CASE("SDFMake - Hierarchy")
     shouldBe.push_back(DFSVisitor::Repetition);
     shouldBe.push_back(DFSVisitor::Box);    
     shouldBe.push_back(DFSVisitor::Box);    
+    shouldBe.push_back(DFSVisitor::Displacement);
+    shouldBe.push_back(DFSVisitor::Sphere);
     shouldBe.push_back(DFSVisitor::Sphere);
     
     REQUIRE( shouldBe == v.visited );
