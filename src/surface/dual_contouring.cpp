@@ -21,15 +21,10 @@ namespace volplay {
     
     namespace surface {
 
-        struct Hermite {
-            Vector p;
-            Vector n;
-
-            Hermite()
-                :p(3), n(3)
-            {}
-        };
-
+        DualContouring::Hermite::Hermite()
+            :p(3), n(3), needFlip(false)
+        {}
+        
         DualContouring::DualContouring()
             : _lower(Vector::Constant(S(-1))),
               _upper(Vector::Constant(S(1))),
@@ -80,11 +75,11 @@ namespace volplay {
             
             vg::SparseVoxelSet voxels;
             vg::SparseVoxelEdgeProperty<Hermite> eHermite;
-            vg::edges(vg::worldToVoxel(toVG, _lower), vg::worldToVoxel(toVG, _upper), util::oiter([&](const vg::VoxelEdge &eUndirected) {
+            vg::edges(vg::worldToVoxel(toVG, _lower), vg::worldToVoxel(toVG, _upper), util::oiter([&](const vg::VoxelEdge &e) {
                
                 Vector verts[2] = {
-                    Vector(toWorld * eUndirected.first.cast<Scalar>()),
-                    Vector(toWorld * eUndirected.second.cast<Scalar>())
+                    Vector(toWorld * e.first.cast<Scalar>()),
+                    Vector(toWorld * e.second.cast<Scalar>())
                 };
 
                 Scalar sdf[2] = {
@@ -100,16 +95,12 @@ namespace volplay {
                 if ((sgn[0] - sgn[1]) == 0)
                     return;
 
-                // Orient edge so intersection points outward.
-                util::voxelgrid::VoxelEdge e;
-                if (sgn[0] < sgn[1]) {
-                    e = eUndirected;
-                } else {
-                    e = util::voxelgrid::flipEdge(eUndirected);
+                bool needFlip = false;
+                if (sgn[0] >= sgn[1]) {                    
                     std::swap(verts[0], verts[1]);
                     std::swap(sdf[0], sdf[1]);
-                    std::swap(sgn[0], sgn[1]);
-                }
+                    needFlip = true;
+                } 
                 
                 // Determine hermite data. Simply use secant method here with one iteration
                 Vector v = verts[1] - verts[0];
@@ -118,6 +109,7 @@ namespace volplay {
                     return;
                 
                 Hermite &h = eHermite[e];
+                h.needFlip = needFlip;
                 h.p = verts[0] + t * v;
                 h.n = scene->normal(h.p);
 
@@ -147,9 +139,6 @@ namespace volplay {
                     if (eHermite.isSet(edges[i])) {
                         m += eHermite[edges[i]].p;
                         ++nActive;
-                    } else if (eHermite.isSet(vg::flipEdge(edges[i]))) {
-                        m += eHermite[vg::flipEdge(edges[i])].p;
-                        ++nActive;
                     }
                 }
                 m /= Scalar(nActive);
@@ -164,13 +153,7 @@ namespace volplay {
                         A.row(nActive) = h.n.transpose();
                         b(nActive) = h.n.dot(h.p - m);
                         ++nActive;
-
-                    } else if (eHermite.isSet(vg::flipEdge(edges[i]))) {
-                        const Hermite &h = eHermite[vg::flipEdge(edges[i])];
-                        A.row(nActive) = h.n.transpose();
-                        b(nActive) = h.n.dot(h.p - m);
-                        ++nActive;
-                    }
+                    } 
                 }
 
                 Eigen::JacobiSVD< Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> > svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -189,8 +172,8 @@ namespace volplay {
             surface.faces.resize(3, eHermite.size() * 2);
             count = 0;  
             for (auto iter = eHermite.begin(); iter != eHermite.end(); ++iter) {
-                vg::Voxel v[4];
-                util::voxelgrid::voxels(iter->first, v);
+                vg::Voxel v[4];                
+                util::voxelgrid::voxels((iter->second.needFlip ? vg::flipEdge(iter->first) : iter->first), v);
 
                 surface.faces(0, count) = voxelToIndex[v[0]];
                 surface.faces(1, count) = voxelToIndex[v[1]];

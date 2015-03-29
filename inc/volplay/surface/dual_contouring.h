@@ -49,6 +49,17 @@ namespace volplay {
             IndexedSurface compute(SDFNodePtr scene);
         
         private:
+
+            /** Data associated with edges crossed by surface. */
+            struct Hermite {
+                Vector p;
+                Vector n;
+                bool needFlip;
+
+                Hermite();
+            };
+
+
             Vector _lower, _upper, _resolution;
             Scalar _iso;
         };
