@@ -84,7 +84,7 @@ TEST_CASE("DualContouring Sphere with Offset")
         vp::Vector n = a.cross(b).normalized();
 
         if (n.allFinite()) {  // TODO, seems like we also have some degenerate faces. 
-                              // Maybe when intersection is on corner, then all 4 vertices are on that corner.      
+                              // Probably when intersection is on corner, then all 4 vertices are on that corner.      
             vp::Vector c = surface.vertices.col(t(1)) + surface.vertices.col(t(2)) + surface.vertices.col(t(0));
             c /= vp::S(3);
 
