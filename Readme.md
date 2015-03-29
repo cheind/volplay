@@ -61,10 +61,10 @@ vp::SDFNodePtr scene = vp::make()
     .end();
 
 vps::DualContouring dc;
-vps::IndexedSurface surface = dc.extractSurface(
-                       scene, 
-                       vp::Vector(-2,-2,-2), vp::Vector(2,2,2), 
-                       vp::Vector::Constant(0.05f));
+dc.setLowerBounds(vp::Vector(-2,-2,-2));
+dc.setUpperBounds(vp::Vector(2,2,2));
+dc.setResolution(vp::Vector::Constant(vp::S(0.05)));
+vps::IndexedSurface surface = dc.compute(scene);
 
 vps::OFFExport off; 
 off.exportSurface("surface.off", surface);
