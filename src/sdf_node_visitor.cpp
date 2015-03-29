@@ -18,6 +18,7 @@
 #include <volplay/sdf_difference.h>
 #include <volplay/sdf_rigid_transform.h>
 #include <volplay/sdf_repetition.h>
+#include <volplay/sdf_displacement.h>
 
 namespace volplay {
     
@@ -63,12 +64,17 @@ namespace volplay {
 
 	void SDFNodeVisitor::visit(SDFRigidTransform *n)
 	{
-		visit(static_cast<SDFGroup*>(n));
+		visit(static_cast<SDFUnion*>(n));
 	}
 
 	void SDFNodeVisitor::visit(SDFRepetition *n)
 	{
-		visit(static_cast<SDFGroup*>(n));
+		visit(static_cast<SDFUnion*>(n));
+	}
+
+    void SDFNodeVisitor::visit(SDFDisplacement *n)
+	{
+		visit(static_cast<SDFUnion*>(n));
 	}
 	    
 }

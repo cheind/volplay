@@ -54,6 +54,9 @@ namespace volplay {
 
 		/* Visit node */
 		virtual void visit(SDFRepetition *n);	
+
+        /* Visit node */
+		virtual void visit(SDFDisplacement *n);	
     };
 
 }

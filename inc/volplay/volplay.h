@@ -18,7 +18,9 @@
 #include <volplay/sdf_difference.h>
 #include <volplay/sdf_repetition.h>
 #include <volplay/sdf_rigid_transform.h>
+#include <volplay/sdf_displacement.h>
 #include <volplay/sdf_make.h>
+#include <volplay/sdf_node_visitor.h>
 
 #include <volplay/rendering/camera.h>
 #include <volplay/rendering/image.h>

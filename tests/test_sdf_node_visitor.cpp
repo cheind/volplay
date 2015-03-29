@@ -9,15 +9,7 @@
 
 #include "catch.hpp"
 #include "float_comparison.hpp"
-#include <volplay/sdf_sphere.h>
-#include <volplay/sdf_plane.h>
-#include <volplay/sdf_box.h>
-#include <volplay/sdf_union.h>
-#include <volplay/sdf_node_visitor.h>
-#include <volplay/sdf_intersection.h>
-#include <volplay/sdf_difference.h>
-#include <volplay/sdf_repetition.h>
-#include <volplay/sdf_rigid_transform.h>
+#include <volplay/volplay.h>
 
 namespace vp = volplay;
 
@@ -33,6 +25,7 @@ public:
 	int countIntersection;
 	int countRep;
 	int countTransform;
+    int countDisplacement;
 
     CountVisitor()
     {
@@ -46,6 +39,7 @@ public:
         countIntersection = 0;
         countRep = 0;
         countTransform = 0;
+        countDisplacement = 0;
     }
 
 	virtual void visit(vp::SDFNode *n) {
@@ -98,6 +92,11 @@ public:
 		vp::SDFNodeVisitor::visit(n);
 	}
 
+    virtual void visit(vp::SDFDisplacement *n) {
+		++countDisplacement;
+		vp::SDFNodeVisitor::visit(n);
+	}
+
 };
 
 TEST_CASE("SDFNodeVisitor")
@@ -134,20 +133,24 @@ TEST_CASE("SDFNodeVisitor")
 	t->add(std::make_shared<vp::SDFBox>());
 	i->add(t);
 
+    vp::SDFDisplacementPtr disp(new vp::SDFDisplacement());
+	scene->add(disp);
+
 	CountVisitor cv;
 
 	scene->accept(cv);
 
-	REQUIRE(cv.countNode == 21);
-	REQUIRE(cv.countGroup == 6);	
+	REQUIRE(cv.countNode == 22);
+	REQUIRE(cv.countGroup == 7);	
 	REQUIRE(cv.countBox == 5);
 	REQUIRE(cv.countSphere == 5);
 	REQUIRE(cv.countPlane == 5);
-	REQUIRE(cv.countUnion == 2);
+	REQUIRE(cv.countUnion == 5);
 	REQUIRE(cv.countIntersection == 1);
 	REQUIRE(cv.countDifference == 1);
 	REQUIRE(cv.countRep == 1);
 	REQUIRE(cv.countTransform == 1);
+    REQUIRE(cv.countDisplacement == 1);
 
 }
 

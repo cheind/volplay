@@ -39,6 +39,7 @@ set(VOLPLAY_CORE_FILES
     inc/volplay/sdf_difference.h
     inc/volplay/sdf_rigid_transform.h
     inc/volplay/sdf_repetition.h
+	inc/volplay/sdf_displacement.h
     inc/volplay/sdf_sphere.h
     inc/volplay/sdf_box.h
     inc/volplay/sdf_plane.h
@@ -52,6 +53,7 @@ set(VOLPLAY_CORE_FILES
     src/sdf_difference.cpp
     src/sdf_rigid_transform.cpp
     src/sdf_repetition.cpp
+	src/sdf_displacement.cpp
     src/sdf_sphere.cpp
     src/sdf_box.cpp
     src/sdf_plane.cpp
@@ -81,7 +83,7 @@ set(VOLPLAY_RENDERING_FILES
 )
 
 set(VOLPLAY_SURFACE_FILES
-	inc/volplay/surface/types.h
+	inc/volplay/surface/indexed_surface.h
     inc/volplay/surface/dual_contouring.h
 	inc/volplay/surface/off_export.h
 	src/surface/dual_contouring.cpp

@@ -24,6 +24,7 @@ namespace volplay {
     class SDFDifference;
     class SDFRigidTransform;
     class SDFRepetition;
+    class SDFDisplacement;
     class SDFSphere;
     class SDFPlane;
     class SDFBox;
@@ -37,6 +38,7 @@ namespace volplay {
     typedef std::shared_ptr<SDFDifference> SDFDifferencePtr;
     typedef std::shared_ptr<SDFRigidTransform> SDFRigidTransformPtr;
     typedef std::shared_ptr<SDFRepetition> SDFRepetitionPtr;
+    typedef std::shared_ptr<SDFDisplacement> SDFDisplacementPtr;
     typedef std::shared_ptr<SDFSphere> SDFSpherePtr;
     typedef std::shared_ptr<SDFPlane> SDFPlanePtr;
     typedef std::shared_ptr<SDFBox> SDFBoxPtr;
