@@ -10,6 +10,8 @@
 #include <volplay/surface/dual_contouring.h>
 #include <volplay/surface/indexed_surface.h>
 #include <volplay/sdf_node.h>
+#include <volplay/sdf_displacement.h>
+#include <volplay/sdf_make.h>
 #include <volplay/util/function_output_iterator.h>
 #include <volplay/util/voxel_grid.h>
 #include <volplay/math/sign.h>
@@ -42,12 +44,17 @@ namespace volplay {
 
         void DualContouring::setUpperBounds(const Vector &upper)
         {
-            _upper = _upper;
+            _upper = upper;
         }
 
         void DualContouring::setResolution(const Vector &resolution)
         {
             _resolution = resolution;
+        }
+
+        void DualContouring::setIsoLevel(Scalar s)
+        {
+            _iso = s;
         }
 
         IndexedSurface
@@ -56,9 +63,17 @@ namespace volplay {
             namespace vg = util::voxelgrid;
 
             IndexedSurface surface;
-
             AffineTransform toVG = vg::buildWorldToLocal(_lower, _resolution);
             AffineTransform toWorld = toVG.inverse();
+
+            // If iso-level is other then zero, we simply offset the entire scene
+            // by the constant negative iso value.
+            if (_iso != S(0)) {
+                scene = make()
+                    .displacement().fnc([this](const Vector &v) -> S { return -_iso;})
+                        .wrap().node(scene)
+                    .end();   
+            }
             
             // 1. Iterate all edges and remember those with an surface itersection. 
             // For each such edge record the intersection data.
