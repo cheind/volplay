@@ -7,8 +7,8 @@
 // If a copy of the BSD was not distributed with this file, You can obtain
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
-#ifndef VOLPLAY_SURFACE_TYPES
-#define VOLPLAY_SURFACE_TYPES
+#ifndef VOLPLAY_INDEXED_SURFACE
+#define VOLPLAY_INDEXED_SURFACE
 
 #include <volplay/types.h>
 #include <vector>

@@ -11,7 +11,6 @@
 #define VOLPLAY_DUAL_CONTOURING
 
 #include <volplay/types.h>
-#include <volplay/surface/types.h>
 #include <volplay/fwd.h>
 
 namespace volplay {

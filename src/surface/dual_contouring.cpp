@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/surface/dual_contouring.h>
+#include <volplay/surface/indexed_surface.h>
 #include <volplay/sdf_node.h>
 #include <volplay/util/function_output_iterator.h>
 #include <volplay/util/voxel_grid.h>
@@ -26,6 +27,8 @@ namespace volplay {
                 :p(3), n(3)
             {}
         };
+
+
 
 
 

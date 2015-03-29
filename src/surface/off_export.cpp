@@ -8,6 +8,7 @@
 // one at http://opensource.org/licenses/BSD-3-Clause.
 
 #include <volplay/surface/off_export.h>
+#include <volplay/surface/indexed_surface.h>
 #include <stdio.h>
 #include <memory>
 

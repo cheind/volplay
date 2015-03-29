@@ -29,6 +29,7 @@
 #include <volplay/rendering/material.h>
 #include <volplay/rendering/light.h>
 
+#include <volplay/surface/indexed_surface.h>
 #include <volplay/surface/dual_contouring.h>
 #include <volplay/surface/off_export.h>
 

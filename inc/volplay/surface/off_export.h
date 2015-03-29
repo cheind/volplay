@@ -11,7 +11,6 @@
 #define VOLPLAY_OFF_EXPORT
 
 #include <volplay/types.h>
-#include <volplay/surface/types.h>
 #include <volplay/fwd.h>
 
 namespace volplay {

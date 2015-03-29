@@ -76,6 +76,7 @@ namespace volplay {
     }
 
     namespace surface {
+        struct IndexedSurface;
         class DualContouring;
         class OFFExport;
     }
