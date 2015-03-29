@@ -32,9 +32,25 @@ namespace volplay {
         public:
             /** Empty initializer. */
             DualContouring();
+
+            /** Set the lower bound of the volume to be reconstructed. */
+            void setLowerBounds(const Vector &lower);
+
+            /** Set the lower bound of the volume to be reconstructed. */
+            void setUpperBounds(const Vector &upper);
+
+            /** Set the resolution of the uniform grid. */
+            void setResolution(const Vector &resolution);
+
+            /** Set the iso value at which to contour. Defaults to zero. */
+            void setIsoLevel(Scalar iso);
         
-            /** Extract surface. */
-            IndexedSurface extractSurface(SDFNodePtr scene, const Vector &lower, const Vector &upper, const Vector &resolution);
+            /** Extract the surface. */
+            IndexedSurface compute(SDFNodePtr scene);
+        
+        private:
+            Vector _lower, _upper, _resolution;
+            Scalar _iso;
         };
 
     }

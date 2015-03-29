@@ -28,21 +28,36 @@ namespace volplay {
             {}
         };
 
-
-
-
-
         DualContouring::DualContouring()
+            : _lower(Vector::Constant(S(-1))),
+              _upper(Vector::Constant(S(1))),
+              _resolution(Vector::Constant(S(0.01))),
+              _iso(S(0))
         {}
 
+        void DualContouring::setLowerBounds(const Vector &lower)
+        {
+            _lower = lower;
+        }
+
+        void DualContouring::setUpperBounds(const Vector &upper)
+        {
+            _upper = _upper;
+        }
+
+        void DualContouring::setResolution(const Vector &resolution)
+        {
+            _resolution = resolution;
+        }
+
         IndexedSurface
-        DualContouring::extractSurface(SDFNodePtr scene, const Vector &lower, const Vector &upper, const Vector &resolution)
+        DualContouring::compute(SDFNodePtr scene)
         {
             namespace vg = util::voxelgrid;
 
             IndexedSurface surface;
 
-            AffineTransform toVG = vg::buildWorldToLocal(lower, resolution);
+            AffineTransform toVG = vg::buildWorldToLocal(_lower, _resolution);
             AffineTransform toWorld = toVG.inverse();
             
             // 1. Iterate all edges and remember those with an surface itersection. 
@@ -50,7 +65,7 @@ namespace volplay {
             
             vg::SparseVoxelSet voxels;
             vg::SparseVoxelEdgeProperty<Hermite> eHermite;
-            vg::edges(vg::worldToVoxel(toVG, lower), vg::worldToVoxel(toVG, upper), util::oiter([&](const vg::VoxelEdge &eUndirected) {
+            vg::edges(vg::worldToVoxel(toVG, _lower), vg::worldToVoxel(toVG, _upper), util::oiter([&](const vg::VoxelEdge &eUndirected) {
                
                 Vector verts[2] = {
                     Vector(toWorld * eUndirected.first.cast<Scalar>()),

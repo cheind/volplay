@@ -20,7 +20,10 @@ TEST_CASE("DualContouring Sphere")
     vp::SDFNodePtr scene = vp::make().sphere().radius(1);
 
     vps::DualContouring dc;
-    vps::IndexedSurface surface = dc.extractSurface(scene, vp::Vector(-2,-2,-2), vp::Vector(2,2,2), vp::Vector::Constant(0.1f));
+    dc.setLowerBounds(vp::Vector(-2,-2,-2));
+    dc.setUpperBounds(vp::Vector(2,2,2));
+    dc.setResolution(vp::Vector::Constant(vp::S(0.1)));
+    vps::IndexedSurface surface = dc.compute(scene);
     
     // Bounding box test
 
