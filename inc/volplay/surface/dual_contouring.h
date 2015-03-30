@@ -44,22 +44,19 @@ namespace volplay {
 
             /** Set the iso value at which to contour. Defaults to zero. */
             void setIsoLevel(Scalar iso);
-        
-            /** Extract the surface. */
-            IndexedSurface compute(SDFNodePtr scene);
-        
-        private:
 
-            /** Data associated with edges crossed by surface. */
-            struct Hermite {
-                Vector p;
-                Vector n;
-                bool needFlip;
-
-                Hermite();
+            /** Determine how the algorithm computes edge intersections and vertex locations. */
+            enum EComputeType {
+                /** Use linear edge intersection model and place vertices by solving the QEF of Dual Contouring. */
+                COMPUTE_LINEAR_DC,
+                /** Place Vertices at midpoints of cells. This results in a Minecraft style world. */
+                COMPUTE_MIDPOINT
             };
 
-
+            /** Extract the surface. */
+            IndexedSurface compute(SDFNodePtr scene, EComputeType et = COMPUTE_LINEAR_DC);
+        
+        private:
             Vector _lower, _upper, _resolution;
             Scalar _iso;
         };
