@@ -53,7 +53,7 @@ set(VOLPLAY_CORE_FILES
     src/sdf_difference.cpp
     src/sdf_rigid_transform.cpp
     src/sdf_repetition.cpp
-	src/sdf_displacement.cpp
+src/sdf_displacement.cpp
     src/sdf_sphere.cpp
     src/sdf_box.cpp
     src/sdf_plane.cpp
@@ -98,6 +98,7 @@ set(VOLPLAY_UTIL_FILES
 
 set(VOLPLAY_MATH_FILES
     inc/volplay/math/sign.h
+	inc/volplay/math/root.h
 )
 
 source_group(core FILES ${VOLPLAY_CORE_FILES})
@@ -119,6 +120,7 @@ add_library(volplay ${VOLPLAY_CORE_FILES}
 
 set(VOLPLAY_TEST_FILES
     tests/main.cpp
+	tests/test_math.cpp
     tests/test_sdf_result.cpp
     tests/test_sdf_node.cpp
     tests/test_sdf_node_visitor.cpp
