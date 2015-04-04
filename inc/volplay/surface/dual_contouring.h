@@ -47,6 +47,8 @@ namespace volplay {
 
             /** Determine how the algorithm computes edge intersections and vertex locations. */
             enum EComputeType {
+                /** Use non linear edge intersection model and place vertices by solving the QEF of Dual Contouring. */
+                COMPUTE_NONLINEAR_DC,
                 /** Use linear edge intersection model and place vertices by solving the QEF of Dual Contouring. */
                 COMPUTE_LINEAR_DC,
                 /** Place Vertices at midpoints of cells. This results in a Minecraft style world. */
@@ -54,7 +56,7 @@ namespace volplay {
             };
 
             /** Extract the surface. */
-            IndexedSurface compute(SDFNodePtr scene, EComputeType et = COMPUTE_LINEAR_DC);
+            IndexedSurface compute(SDFNodePtr scene, EComputeType et = COMPUTE_NONLINEAR_DC);
         
         private:
             Vector _lower, _upper, _resolution;

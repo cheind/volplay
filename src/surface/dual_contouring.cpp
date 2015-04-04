@@ -15,6 +15,7 @@
 #include <volplay/util/function_output_iterator.h>
 #include <volplay/util/voxel_grid.h>
 #include <volplay/math/sign.h>
+#include <volplay/math/root.h>
 #include <iostream>
 
 namespace volplay {
@@ -103,7 +104,7 @@ namespace volplay {
                 // Determine hermite data. Under the linear assumption a single step of the secant method
                 // should bring us to the root.
                 Vector v = verts[1] - verts[0];
-                Scalar t = 1.f - sdf[1]  * ((1.f) / (sdf[1] - sdf[0]));
+                Scalar t = S(1) - sdf[1]  * (S(1) / (sdf[1] - sdf[0]));
                 
                 if (t == Scalar(1)) // Exclude intersections on corners of other voxels.
                     return false;
@@ -115,6 +116,47 @@ namespace volplay {
                 return true;
             }
         };
+        
+        /** Computes edge itersection using a non linear model assumption */
+        class EdgeIntersectionNonLinear {
+        public:
+            EdgeIntersectionNonLinear()
+            {}
+            
+            bool operator()(const util::voxelgrid::VoxelEdge &e, WorldInfo &wi, Hermite &h) const
+            {
+                // Edge vertices in world space, SDFs and signs
+                Vector verts[2] = {Vector(wi.toWorld * e.first.cast<Scalar>()), Vector(wi.toWorld * e.second.cast<Scalar>())};
+                Scalar sdf[2] = { wi.scene->eval(verts[0]), wi.scene->eval(verts[1]) };
+                int sgn[2] = { math::sign(sdf[0]), math::sign(sdf[1]) };
+                
+                if ((sgn[0] - sgn[1]) == 0)
+                    return false;
+                
+                bool needFlip = false;
+                if (sgn[0] >= sgn[1]) {
+                    std::swap(verts[0], verts[1]);
+                    std::swap(sdf[0], sdf[1]);
+                    needFlip = true;
+                }
+                
+                // Determine hermite data.
+                Vector v = verts[1] - verts[0];
+                Scalar t;
+                auto f = [&](S x) { return wi.scene->eval(verts[0] + x * v); };
+                math::findRootBrent(f, S(0), S(1), S(0), 100, t);
+                
+                if (t == Scalar(1)) // Exclude intersections on corners of other voxels.
+                    return false;
+                
+                h.needFlip = needFlip;
+                h.p = verts[0] + t * v;
+                h.n = wi.scene->normal(h.p);
+                
+                return true;
+            }
+        };
+
 
         /** Vertex placement by minimizing the quadric error function QEF as described in Dual Contouring of Hermite data */
         class VertexPlacementDC {
@@ -265,6 +307,8 @@ namespace volplay {
             }
 
             switch (et) {
+            case COMPUTE_NONLINEAR_DC:
+                return computeSurface(wi, EdgeIntersectionNonLinear(), VertexPlacementDC());
             case COMPUTE_LINEAR_DC:
                 return computeSurface(wi, EdgeIntersectionLinear(), VertexPlacementDC());
             case COMPUTE_MIDPOINT:

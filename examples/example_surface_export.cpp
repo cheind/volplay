@@ -30,7 +30,8 @@ TEST_CASE("surface_export")
     dc.setLowerBounds(vp::Vector(-2,-2,-2));
     dc.setUpperBounds(vp::Vector(2,2,2));
     dc.setResolution(vp::Vector::Constant(vp::S(0.05)));
-    vps::IndexedSurface surface = dc.compute(scene);
+    vps::DualContouring::EComputeType compute = vps::DualContouring::COMPUTE_NONLINEAR_DC;
+    vps::IndexedSurface surface = dc.compute(scene, compute);
 
     vps::OFFExport off; 
     off.exportSurface("surface.off", surface);    
