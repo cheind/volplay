@@ -101,6 +101,7 @@ namespace volplay {
                     b += detail::makeSameSign(tol1,xm);
                 fb = f(b);
             }
+            root = b;
             return false; // Max number of iterations exceeded.
         }
         
